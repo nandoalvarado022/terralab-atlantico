@@ -82,8 +82,8 @@ Transcribe la letra manuscrita e impresa y devuelve SOLO un objeto JSON con esta
 Si un campo no aparece o es ilegible, déjalo como string vacío. No inventes nombres ni datos.`,
       },
       ...data.imagenes.map((url) => ({
-        type: "image_url" as const,
-        image_url: { url },
+        type: "image" as const,
+        data: url,
       })),
     ];
 

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import logo from "@/assets/terralab-logo.jpg.asset.json";
 import { labs, ruta, totalIdeas } from "@/data/labs";
 import { BancoInspiracion } from "@/components/BancoInspiracion";
@@ -116,6 +116,9 @@ function Index() {
             <a href="#cronograma" className="hover:text-primary">
               Cronograma
             </a>
+            <Link to="/mvp" className="hover:text-primary">
+              Forja MVP
+            </Link>
           </div>
           <a
             href="#banco"
