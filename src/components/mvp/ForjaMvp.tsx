@@ -9,14 +9,7 @@ import {
   type CanvasData,
   type Pregunta,
 } from "@/lib/mvp.functions";
-
-const PASOS = [
-  "Cargar el canvas",
-  "Elegir lab y enfoque",
-  "Preguntas del PRD",
-  "MVP final",
-  "Llevarlo a Lovable",
-];
+import { MisionesEcoTech, flattenRespuestasEcoTech } from "./MisionesEcoTech";
 
 const CANVAS_VACIO: CanvasData = {
   colegio: "",
@@ -63,6 +56,8 @@ type Guardado = {
   canvas: CanvasData;
   preguntas: Pregunta[];
   respuestas: Record<string, string>;
+  respuestasEcoTech: Record<string, string>;
+  misionIndice: number;
   resultado: Resultado | null;
 };
 
@@ -71,7 +66,7 @@ function fileSlug(text: string) {
     text
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[̀-ͯ]/g, "")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "") || "mvp-terralab"
   );
@@ -82,6 +77,8 @@ export function ForjaMvp() {
   const [canvas, setCanvas] = useState<CanvasData>(CANVAS_VACIO);
   const [preguntas, setPreguntas] = useState<Pregunta[]>([]);
   const [respuestas, setRespuestas] = useState<Record<string, string>>({});
+  const [respuestasEcoTech, setRespuestasEcoTech] = useState<Record<string, string>>({});
+  const [misionIndice, setMisionIndice] = useState(0);
   const [resultado, setResultado] = useState<Resultado | null>(null);
   const [cargando, setCargando] = useState<null | "foto" | "preguntas" | "mvp">(null);
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +89,19 @@ export function ForjaMvp() {
   const preguntar = useServerFn(generarPreguntas);
   const construir = useServerFn(construirMvp);
 
+  const esEcoTech = canvas.lab === "ecotech";
+
+  const pasos = useMemo(
+    () => [
+      "Cargar el canvas",
+      "Elegir lab y enfoque",
+      esEcoTech ? "Recorrer las misiones" : "Preguntas del PRD",
+      "MVP final",
+      "Llevarlo a Lovable",
+    ],
+    [esEcoTech],
+  );
+
   useEffect(() => {
     try {
       const raw = sessionStorage.getItem(STORAGE_KEY);
@@ -101,6 +111,8 @@ export function ForjaMvp() {
         setCanvas({ ...CANVAS_VACIO, ...g.canvas });
         setPreguntas(g.preguntas ?? []);
         setRespuestas(g.respuestas ?? {});
+        setRespuestasEcoTech(g.respuestasEcoTech ?? {});
+        setMisionIndice(g.misionIndice ?? 0);
         setResultado(g.resultado ?? null);
       }
     } catch {
@@ -111,13 +123,21 @@ export function ForjaMvp() {
 
   useEffect(() => {
     if (!hidratado) return;
-    const g: Guardado = { paso, canvas, preguntas, respuestas, resultado };
+    const g: Guardado = {
+      paso,
+      canvas,
+      preguntas,
+      respuestas,
+      respuestasEcoTech,
+      misionIndice,
+      resultado,
+    };
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(g));
     } catch {
       // cuota llena: el avance sigue en memoria
     }
-  }, [hidratado, paso, canvas, preguntas, respuestas, resultado]);
+  }, [hidratado, paso, canvas, preguntas, respuestas, respuestasEcoTech, misionIndice, resultado]);
 
   const labActual = useMemo(
     () => labs.find((l) => l.id === canvas.lab) ?? labs[labs.length - 1]!,
@@ -193,19 +213,11 @@ export function ForjaMvp() {
     }
   }
 
-  async function pedirMvp() {
+  async function pedirMvp(respuestasParaConstruir: { pregunta: string; respuesta: string }[]) {
     setError(null);
     setCargando("mvp");
     try {
-      const data = await construir({
-        data: {
-          canvas,
-          respuestas: preguntas.map((q) => ({
-            pregunta: q.pregunta,
-            respuesta: respuestas[q.id] ?? "",
-          })),
-        },
-      });
+      const data = await construir({ data: { canvas, respuestas: respuestasParaConstruir } });
       setResultado(data);
       setPaso(4);
     } catch (e) {
@@ -240,6 +252,8 @@ export function ForjaMvp() {
     setCanvas(CANVAS_VACIO);
     setPreguntas([]);
     setRespuestas({});
+    setRespuestasEcoTech({});
+    setMisionIndice(0);
     setResultado(null);
     setError(null);
   }
@@ -249,7 +263,7 @@ export function ForjaMvp() {
   return (
     <div className="mx-auto max-w-4xl px-5 py-14">
       <ol className="mb-10 flex flex-wrap gap-2 print:hidden">
-        {PASOS.map((p, i) => {
+        {pasos.map((p, i) => {
           const n = i + 1;
           const activo = n === paso;
           const hecho = n < paso;
@@ -414,14 +428,26 @@ export function ForjaMvp() {
           )}
 
           <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={pedirPreguntas}
-              disabled={cargando === "preguntas"}
-              className="rounded-full bg-primary px-7 py-3 font-extrabold text-primary-foreground shadow-pop transition-transform hover:-translate-y-0.5 disabled:opacity-50"
-            >
-              {cargando === "preguntas" ? "Preparando preguntas…" : "Generar las preguntas del PRD"}
-            </button>
+            {esEcoTech ? (
+              <button
+                type="button"
+                onClick={() => setPaso(3)}
+                className="rounded-full bg-primary px-7 py-3 font-extrabold text-primary-foreground shadow-pop transition-transform hover:-translate-y-0.5"
+              >
+                Continuar a las misiones
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={pedirPreguntas}
+                disabled={cargando === "preguntas"}
+                className="rounded-full bg-primary px-7 py-3 font-extrabold text-primary-foreground shadow-pop transition-transform hover:-translate-y-0.5 disabled:opacity-50"
+              >
+                {cargando === "preguntas"
+                  ? "Preparando preguntas…"
+                  : "Generar las preguntas del PRD"}
+              </button>
+            )}
             <button
               type="button"
               onClick={() => setPaso(1)}
@@ -433,7 +459,18 @@ export function ForjaMvp() {
         </section>
       )}
 
-      {paso === 3 && (
+      {paso === 3 && esEcoTech && (
+        <MisionesEcoTech
+          respuestas={respuestasEcoTech}
+          onCambiar={(k, v) => setRespuestasEcoTech({ ...respuestasEcoTech, [k]: v })}
+          indice={misionIndice}
+          onCambiarIndice={setMisionIndice}
+          onFinalizar={() => pedirMvp(flattenRespuestasEcoTech(respuestasEcoTech))}
+          cargando={cargando === "mvp"}
+        />
+      )}
+
+      {paso === 3 && !esEcoTech && (
         <section className="space-y-8">
           <div>
             <h2 className="text-3xl font-extrabold">3. Contesten lo que falta del PRD</h2>
@@ -474,7 +511,14 @@ export function ForjaMvp() {
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
-              onClick={pedirMvp}
+              onClick={() =>
+                pedirMvp(
+                  preguntas.map((q) => ({
+                    pregunta: q.pregunta,
+                    respuesta: respuestas[q.id] ?? "",
+                  })),
+                )
+              }
               disabled={cargando === "mvp"}
               className="rounded-full bg-deep px-7 py-3 font-extrabold text-deep-foreground shadow-pop transition-transform hover:-translate-y-0.5 disabled:opacity-50"
             >

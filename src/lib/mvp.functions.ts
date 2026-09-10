@@ -119,7 +119,7 @@ export const generarPreguntas = createServerFn({ method: "POST" })
         content: `Información del canvas de la brigada:
 ${contexto(data.canvas)}
 
-Genera 7 preguntas de PRD que faltan para poder construir el MVP de esta brigada. Deben ser específicas de ESTE reto (menciona su contexto real), no genéricas, y cubrir: usuario principal, acción clave que hace ese usuario, qué dato se registra o se mide, quién administra o revisa, cómo se muestra la evidencia o el avance, alcance mínimo del prototipo (qué SÍ y qué NO), e indicador de impacto.
+Genera 7 preguntas de PRD que faltan para poder construir el MVP de esta brigada. Deben ser específicas de ESTE reto (menciona su contexto real), no genéricas, y cubrir: el problema y la evidencia o pista real que lo respalda, usuario principal y la tarea que necesita lograr, una señal de éxito observable, cómo funciona el prototipo (qué entrada recibe, qué regla aplica, qué salida muestra y qué acción toma la persona después), alcance mínimo del prototipo (qué SÍ y qué NO), cómo lo van a probar con personas reales, e indicador de impacto y próximo paso.
 
 Devuelve SOLO un arreglo JSON, sin markdown, con objetos:
 [{"id":"usuario","pregunta":"...","ayuda":"una frase corta que explique por qué importa","sugerencia":"una respuesta sugerida y concreta que la brigada pueda aceptar tal cual"}]
@@ -164,9 +164,20 @@ Devuelve SOLO un objeto JSON, sin markdown fuera de los valores, con estas clave
   "prompt": "el prompt listo para pegar en Lovable"
 }
 
-El "documento" en Markdown debe tener, con títulos ##: Nombre del MVP, Brigada y colegio, Problema, Usuario principal, Propuesta de valor, Alcance del MVP (3 a 5 pantallas o piezas, cada una con su descripción y las acciones que permite), Fuera de alcance, Datos que se registran (lista de campos), Indicador de impacto, Criterios de listo (checklist), y Cómo lo probamos con la comunidad escolar.
+El "documento" en Markdown debe tener, en este orden y con títulos ##:
+1. Nombre del MVP
+2. Brigada y colegio
+3. El problema que descubrimos (el problema y la pista o dato real que lo respalda)
+4. A quién ayuda (usuario principal, la tarea que necesita lograr y la señal de éxito)
+5. Cómo funciona (el circuito: qué entrada recibe, qué regla aplica, qué salida muestra y qué acción toma la persona después)
+6. Alcance del MVP (3 a 5 pantallas o piezas mínimas, cada una con su descripción y las acciones que permite)
+7. Fuera de alcance
+8. Datos que se registran (lista de campos)
+9. Cómo lo probamos (con cuántas personas, qué tarea les daremos y qué observaremos)
+10. Indicador de impacto y próximo paso
+11. Criterios de listo (checklist)
 
-El "prompt" debe estar escrito en segunda persona dirigido a Lovable, en español, entre 200 y 350 palabras: qué construir, para quién, pantallas y flujos concretos, datos y campos, indicador que se muestra, tono visual apropiado para estudiantes, y la instrucción de empezar por una primera versión navegable sin cuentas de usuario si no son indispensables. No incluyas explicaciones fuera del JSON.`,
+El "prompt" debe estar escrito en segunda persona dirigido a Lovable, en español, entre 200 y 350 palabras: qué construir, para quién, el circuito entrada-regla-salida-acción en términos concretos de pantallas y flujos, datos y campos, indicador que se muestra, tono visual apropiado para estudiantes, y la instrucción de empezar por una primera versión navegable sin cuentas de usuario si no son indispensables. No incluyas explicaciones fuera del JSON.`,
       },
     ]);
 
