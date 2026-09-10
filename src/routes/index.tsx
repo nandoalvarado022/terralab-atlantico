@@ -138,13 +138,11 @@ function Index() {
                 CRA · ALITIC · Atlántico 2026
               </span>
               <h1 className="mt-6 text-5xl leading-[1.05] font-extrabold text-balance-tight sm:text-6xl lg:text-7xl">
-                Ideas sostenibles que{" "}
-                <span className="text-primary">transforman territorios</span>
+                Ideas sostenibles que <span className="text-primary">transforman territorios</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-                Terra Lab Atlántico convierte el colegio en un laboratorio de ideas: los
-                estudiantes investigan retos reales de su entorno y construyen prototipos con
-                impacto medible.
+                Terra Lab Atlántico convierte el colegio en un laboratorio de ideas: los estudiantes
+                investigan retos reales de su entorno y construyen prototipos con impacto medible.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
@@ -196,8 +194,8 @@ function Index() {
                   Los colegios enfrentan retos ambientales por la generación de residuos, el
                   consumo, la pérdida de biodiversidad, el uso de los recursos y la poca
                   participación juvenil. TerraLAB convierte esos retos en oportunidades de
-                  aprendizaje, innovación y acción: los estudiantes pasan de conocer los
-                  problemas a diseñar soluciones para su entorno.
+                  aprendizaje, innovación y acción: los estudiantes pasan de conocer los problemas a
+                  diseñar soluciones para su entorno.
                 </p>
                 <p className="mt-4 text-lg leading-relaxed opacity-85">
                   Está dirigida a estudiantes de 3.º de primaria a 9.º grado, acompañados por
@@ -230,8 +228,8 @@ function Index() {
               4 laboratorios temáticos para la innovación
             </h2>
             <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-              Cada equipo elige un lab y recorre la misma secuencia: activar, explorar,
-              prototipar y cerrar con un pitch.
+              Cada equipo elige un lab y recorre la misma secuencia: activar, explorar, prototipar y
+              cerrar con un pitch.
             </p>
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
               {labs.map((lab) => (
@@ -273,10 +271,7 @@ function Index() {
             </p>
             <ol className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {ruta.map((p) => (
-                <li
-                  key={p.n}
-                  className="rounded-3xl border border-border bg-card p-6 shadow-card"
-                >
+                <li key={p.n} className="rounded-3xl border border-border bg-card p-6 shadow-card">
                   <div className="flex items-center justify-between">
                     <span className="font-display text-4xl font-extrabold text-lime">
                       {String(p.n).padStart(2, "0")}
@@ -371,6 +366,12 @@ function Index() {
             Una estrategia de la Corporación Autónoma Regional del Atlántico (CRA) y ALITIC.
             TerraLAB: ideas sostenibles que transforman territorios.
           </p>
+          <Link
+            to="/admin"
+            className="text-xs font-extrabold tracking-wider text-muted-foreground uppercase hover:text-primary"
+          >
+            Panel interno
+          </Link>
         </div>
       </footer>
     </div>
