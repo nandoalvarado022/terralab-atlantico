@@ -217,7 +217,13 @@ export function ForjaMvp() {
     setError(null);
     setCargando("mvp");
     try {
-      const data = await construir({ data: { canvas, respuestas: respuestasParaConstruir } });
+      const data = await construir({
+        data: {
+          canvas,
+          respuestas: respuestasParaConstruir,
+          respuestasEcoTech: esEcoTech ? respuestasEcoTech : undefined,
+        },
+      });
       setResultado(data);
       setPaso(4);
     } catch (e) {

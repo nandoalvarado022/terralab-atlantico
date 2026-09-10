@@ -45,18 +45,21 @@ export async function callGateway(messages: ChatMessage[]): Promise<string> {
   try {
     const response = await client.messages.create({
       model: MODEL,
-      max_tokens: 4096,
+      max_tokens: 8192,
       ...(typeof system?.content === "string" ? { system: system.content } : {}),
       messages: resto.map((m) => ({
         role: "user" as const,
-        content:
-          typeof m.content === "string" ? m.content : m.content.map(toAnthropicBlock),
+        content: typeof m.content === "string" ? m.content : m.content.map(toAnthropicBlock),
       })),
     });
 
-    const text = response.content.find(
-      (b): b is Anthropic.TextBlock => b.type === "text",
-    )?.text;
+    const text = response.content.find((b): b is Anthropic.TextBlock => b.type === "text")?.text;
+    if (response.stop_reason === "max_tokens") {
+      throw new GatewayError(
+        502,
+        "El documento quedó demasiado largo para la IA. Intenta de nuevo o resume alguna respuesta.",
+      );
+    }
     return (text ?? "").trim();
   } catch (e) {
     if (e instanceof Anthropic.RateLimitError) {

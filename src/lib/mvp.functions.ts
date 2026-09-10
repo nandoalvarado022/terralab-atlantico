@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { callGateway, parseJsonLoose } from "./ai-gateway.server";
+import { getSupabase } from "./supabase.server";
 
 export const canvasSchema = z.object({
   colegio: z.string(),
@@ -138,6 +139,7 @@ export const construirMvp = createServerFn({ method: "POST" })
       .object({
         canvas: canvasSchema,
         respuestas: z.array(z.object({ pregunta: z.string(), respuesta: z.string() })),
+        respuestasEcoTech: z.record(z.string(), z.string()).optional(),
       })
       .parse(input),
   )
@@ -182,7 +184,32 @@ El "prompt" debe estar escrito en segunda persona dirigido a Lovable, en españo
     ]);
 
     const parsed = parseJsonLoose<Record<string, unknown>>(raw);
-    return z
+    const resultado = z
       .object({ nombre: z.string(), documento: z.string(), prompt: z.string() })
       .parse(parsed);
+
+    try {
+      const { error } = await getSupabase()
+        .from("mvps")
+        .insert({
+          colegio: data.canvas.colegio,
+          brigada: data.canvas.brigada,
+          lema: data.canvas.lema,
+          integrantes: data.canvas.integrantes,
+          pistas: data.canvas.pistas,
+          desafio: data.canvas.desafio,
+          idea_semilla: data.canvas.ideaSemilla,
+          lab: data.canvas.lab,
+          respuestas: data.respuestas,
+          respuestas_ecotech: data.respuestasEcoTech ?? null,
+          nombre: resultado.nombre,
+          documento: resultado.documento,
+          prompt: resultado.prompt,
+        });
+      if (error) console.error("[mvps] error al guardar", error);
+    } catch (e) {
+      console.error("[mvps] no se pudo guardar el MVP", e);
+    }
+
+    return resultado;
   });
