@@ -9,6 +9,7 @@ import {
   type CanvasData,
   type Pregunta,
 } from "@/lib/mvp.functions";
+import { EcoFluencerQuestions, flattenRespuestasEcoFluencer } from "./EcoFluencerQuestions";
 import { MisionesEcoTech, flattenRespuestasEcoTech } from "./MisionesEcoTech";
 
 const CANVAS_VACIO: CanvasData = {
@@ -57,6 +58,7 @@ type Guardado = {
   preguntas: Pregunta[];
   respuestas: Record<string, string>;
   respuestasEcoTech: Record<string, string>;
+  respuestasEcoFluencer: Record<string, string>;
   misionIndice: number;
   resultado: Resultado | null;
 };
@@ -78,6 +80,7 @@ export function ForjaMvp() {
   const [preguntas, setPreguntas] = useState<Pregunta[]>([]);
   const [respuestas, setRespuestas] = useState<Record<string, string>>({});
   const [respuestasEcoTech, setRespuestasEcoTech] = useState<Record<string, string>>({});
+  const [respuestasEcoFluencer, setRespuestasEcoFluencer] = useState<Record<string, string>>({});
   const [misionIndice, setMisionIndice] = useState(0);
   const [resultado, setResultado] = useState<Resultado | null>(null);
   const [cargando, setCargando] = useState<null | "foto" | "preguntas" | "mvp">(null);
@@ -90,16 +93,18 @@ export function ForjaMvp() {
   const construir = useServerFn(construirMvp);
 
   const esEcoTech = canvas.lab === "ecotech";
+  const esEcoFluencer = canvas.lab === "influencia";
+  const esMisiones = esEcoTech || esEcoFluencer;
 
   const pasos = useMemo(
     () => [
       "Cargar el canvas",
       "Elegir lab y enfoque",
-      esEcoTech ? "Recorrer las misiones" : "Preguntas del PRD",
+      esMisiones ? "Recorrer las misiones" : "Preguntas del PRD",
       "MVP final",
       "Llevarlo a Lovable",
     ],
-    [esEcoTech],
+    [esMisiones],
   );
 
   useEffect(() => {
@@ -112,6 +117,7 @@ export function ForjaMvp() {
         setPreguntas(g.preguntas ?? []);
         setRespuestas(g.respuestas ?? {});
         setRespuestasEcoTech(g.respuestasEcoTech ?? {});
+        setRespuestasEcoFluencer(g.respuestasEcoFluencer ?? {});
         setMisionIndice(g.misionIndice ?? 0);
         setResultado(g.resultado ?? null);
       }
@@ -129,6 +135,7 @@ export function ForjaMvp() {
       preguntas,
       respuestas,
       respuestasEcoTech,
+      respuestasEcoFluencer,
       misionIndice,
       resultado,
     };
@@ -137,7 +144,17 @@ export function ForjaMvp() {
     } catch {
       // cuota llena: el avance sigue en memoria
     }
-  }, [hidratado, paso, canvas, preguntas, respuestas, respuestasEcoTech, misionIndice, resultado]);
+  }, [
+    hidratado,
+    paso,
+    canvas,
+    preguntas,
+    respuestas,
+    respuestasEcoTech,
+    respuestasEcoFluencer,
+    misionIndice,
+    resultado,
+  ]);
 
   const labActual = useMemo(
     () => labs.find((l) => l.id === canvas.lab) ?? labs[labs.length - 1]!,
@@ -259,6 +276,7 @@ export function ForjaMvp() {
     setPreguntas([]);
     setRespuestas({});
     setRespuestasEcoTech({});
+    setRespuestasEcoFluencer({});
     setMisionIndice(0);
     setResultado(null);
     setError(null);
@@ -397,7 +415,11 @@ export function ForjaMvp() {
                 <button
                   key={lab.id}
                   type="button"
-                  onClick={() => setCanvas({ ...canvas, lab: lab.id })}
+                  onClick={() => {
+                    if (lab.id === canvas.lab) return;
+                    setCanvas({ ...canvas, lab: lab.id });
+                    setMisionIndice(0);
+                  }}
                   className={`rounded-3xl border-2 p-6 text-left transition-colors ${
                     activo ? "border-primary bg-secondary" : "border-border bg-card hover:bg-muted"
                   }`}
@@ -442,6 +464,14 @@ export function ForjaMvp() {
               >
                 Continuar a las misiones
               </button>
+            ) : esEcoFluencer ? (
+              <button
+                type="button"
+                onClick={() => setPaso(3)}
+                className="rounded-full bg-primary px-7 py-3 font-extrabold text-primary-foreground shadow-pop transition-transform hover:-translate-y-0.5"
+              >
+                Continuar con las misiones
+              </button>
             ) : (
               <button
                 type="button"
@@ -476,7 +506,18 @@ export function ForjaMvp() {
         />
       )}
 
-      {paso === 3 && !esEcoTech && (
+      {paso === 3 && esEcoFluencer && (
+        <EcoFluencerQuestions
+          respuestas={respuestasEcoFluencer}
+          onCambiar={(k, v) => setRespuestasEcoFluencer({ ...respuestasEcoFluencer, [k]: v })}
+          indice={misionIndice}
+          onCambiarIndice={setMisionIndice}
+          onFinalizar={() => pedirMvp(flattenRespuestasEcoFluencer(respuestasEcoFluencer))}
+          cargando={cargando === "mvp"}
+        />
+      )}
+
+      {paso === 3 && !esMisiones && (
         <section className="space-y-8">
           <div>
             <h2 className="text-3xl font-extrabold">3. Contesten lo que falta del PRD</h2>
