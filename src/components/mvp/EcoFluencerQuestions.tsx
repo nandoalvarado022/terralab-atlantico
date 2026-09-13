@@ -1,5 +1,30 @@
-import { useEffect, useState, type ReactNode } from "react";
-import { CircleHelp, HeartPulse, Waves } from "lucide-react";
+import { useEffect, useState, type ComponentType } from "react";
+import {
+  AlarmClock,
+  Award,
+  Ban,
+  CircleHelp,
+  Cloud,
+  CloudRain,
+  Eye,
+  EyeOff,
+  Fingerprint,
+  Frown,
+  HandHeart,
+  HeartPulse,
+  HelpCircle,
+  Lightbulb,
+  Scale,
+  Shield,
+  Smile,
+  Sparkles,
+  UserX,
+  Users,
+  Waves,
+  Wind,
+  Zap,
+  type LucideProps,
+} from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -47,20 +72,232 @@ type Props = {
 
 type TipoAyuda = "pulso" | "eco";
 
-/** Contenedor listo para ayudas visuales (ilustraciones, diagramas, etc.). */
-function AyudaVisualSlot({ tipo, children }: { tipo: TipoAyuda; children?: ReactNode }) {
+type PulsoItem = {
+  nombre: string;
+  descripcion: string;
+  color: string;
+  colorBorde: string;
+  Icono: ComponentType<LucideProps>;
+};
+
+const pulsosAyuda: PulsoItem[] = [
+  {
+    nombre: "Esperanza",
+    descripcion: "Sentir que un cambio positivo es posible.",
+    color: "#fef9c3",
+    colorBorde: "#facc15",
+    Icono: Sparkles,
+  },
+  {
+    nombre: "Motivación",
+    descripcion: "Tener energía y ganas de actuar.",
+    color: "#ffedd5",
+    colorBorde: "#fb923c",
+    Icono: Zap,
+  },
+  {
+    nombre: "Curiosidad",
+    descripcion: "Querer preguntar, explorar y saber más.",
+    color: "#e0e7ff",
+    colorBorde: "#818cf8",
+    Icono: Lightbulb,
+  },
+  {
+    nombre: "Alegría",
+    descripcion: "Sentir bienestar al reconocer avances o soluciones.",
+    color: "#fce7f3",
+    colorBorde: "#f472b6",
+    Icono: Smile,
+  },
+  {
+    nombre: "Confianza",
+    descripcion: "Creer en el mensaje, su fuente y su propuesta.",
+    color: "#dbeafe",
+    colorBorde: "#60a5fa",
+    Icono: Shield,
+  },
+  {
+    nombre: "Empatía",
+    descripcion: "Conectar con lo que viven otras personas, seres vivos o territorios.",
+    color: "#fee2e2",
+    colorBorde: "#f87171",
+    Icono: HandHeart,
+  },
+  {
+    nombre: "Orgullo",
+    descripcion: "Sentir satisfacción por aportar a un logro colectivo.",
+    color: "#f3e8ff",
+    colorBorde: "#c084fc",
+    Icono: Award,
+  },
+  {
+    nombre: "Responsabilidad",
+    descripcion: "Reconocer que nuestras decisiones tienen consecuencias.",
+    color: "#ccfbf1",
+    colorBorde: "#2dd4bf",
+    Icono: Scale,
+  },
+  {
+    nombre: "Urgencia",
+    descripcion: "Comprender que es necesario actuar pronto.",
+    color: "#fecaca",
+    colorBorde: "#ef4444",
+    Icono: AlarmClock,
+  },
+  {
+    nombre: "Pertenencia",
+    descripcion: "Sentir que somos parte del reto y de la solución.",
+    color: "#dcfce7",
+    colorBorde: "#4ade80",
+    Icono: Users,
+  },
+];
+
+const ecosAyuda: PulsoItem[] = [
+  {
+    nombre: "Desesperanza",
+    descripcion: "Pensar que nada puede cambiar.",
+    color: "#e2e8f0",
+    colorBorde: "#64748b",
+    Icono: CloudRain,
+  },
+  {
+    nombre: "Frustración",
+    descripcion: "Sentir que actuar es muy difícil o que no sirve.",
+    color: "#ffedd5",
+    colorBorde: "#ea580c",
+    Icono: Frown,
+  },
+  {
+    nombre: "Confusión",
+    descripcion: "No entender la idea o la acción propuesta.",
+    color: "#fef3c7",
+    colorBorde: "#d97706",
+    Icono: HelpCircle,
+  },
+  {
+    nombre: "Tristeza",
+    descripcion: "Sentir dolor o desánimo sin encontrar un camino posible.",
+    color: "#e0e7ff",
+    colorBorde: "#6366f1",
+    Icono: Cloud,
+  },
+  {
+    nombre: "Desconfianza",
+    descripcion: "Dudar de la información o de quien comunica.",
+    color: "#fce7f3",
+    colorBorde: "#db2777",
+    Icono: EyeOff,
+  },
+  {
+    nombre: "Rechazo",
+    descripcion: "Querer alejarse u oponerse al mensaje.",
+    color: "#fee2e2",
+    colorBorde: "#dc2626",
+    Icono: Ban,
+  },
+  {
+    nombre: "Vergüenza",
+    descripcion: "Sentir que otras personas nos están juzgando.",
+    color: "#fae8ff",
+    colorBorde: "#a855f7",
+    Icono: Eye,
+  },
+  {
+    nombre: "Culpa",
+    descripcion: "Sentirse señalado como causante del problema.",
+    color: "#fecaca",
+    colorBorde: "#b91c1c",
+    Icono: Fingerprint,
+  },
+  {
+    nombre: "Ansiedad",
+    descripcion: "Sentir miedo o presión que puede paralizar.",
+    color: "#fef9c3",
+    colorBorde: "#ca8a04",
+    Icono: Wind,
+  },
+  {
+    nombre: "Exclusión",
+    descripcion: "Sentir que el mensaje no nos representa o no nos incluye.",
+    color: "#f1f5f9",
+    colorBorde: "#475569",
+    Icono: UserX,
+  },
+];
+
+function ListaEmocionesAyuda({ items }: { items: PulsoItem[] }) {
   return (
-    <div
-      className={`mt-4 flex min-h-40 items-center justify-center rounded-2xl border-2 border-dashed p-6 ${
-        tipo === "pulso" ? "border-primary/40 bg-secondary/50" : "border-lime/50 bg-sand/60"
-      }`}
-      data-ayuda-visual={tipo}
-    >
-      {children ?? (
-        <p className="text-center text-sm text-muted-foreground">
-          Aquí irá la ayuda visual de {tipo === "pulso" ? "PULSO" : "ECO"}.
+    <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+      {items.map((item) => (
+        <li
+          key={item.nombre}
+          className="flex gap-3 rounded-2xl border-2 p-3"
+          style={{ backgroundColor: item.color, borderColor: item.colorBorde }}
+        >
+          <span
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/80"
+            style={{ color: item.colorBorde }}
+            aria-hidden
+          >
+            <item.Icono className="h-5 w-5" strokeWidth={2.25} />
+          </span>
+          <span className="min-w-0">
+            <span className="block text-sm font-extrabold text-deep">{item.nombre}</span>
+            <span className="mt-0.5 block text-xs leading-snug text-deep/80">{item.descripcion}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ContenidoAyudaPulso() {
+  return (
+    <div className="space-y-5">
+      <div className="rounded-2xl bg-secondary/60 p-4">
+        <p className="text-sm font-extrabold text-deep">PULSO: Lo que queremos despertar</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          El Pulso es la emoción principal que queremos activar para acercar a nuestra audiencia al
+          propósito del mensaje.
         </p>
-      )}
+        <p className="mt-3 text-sm font-bold text-deep">Pregunta guía:</p>
+        <p className="mt-1 text-sm text-muted-foreground italic">
+          ¿Qué quiero que sientan las personas para que puedan comprender y actuar?
+        </p>
+      </div>
+
+      <div>
+        <p className="text-xs font-extrabold tracking-widest text-primary uppercase">
+          Algunos Pulsos son
+        </p>
+        <ListaEmocionesAyuda items={pulsosAyuda} />
+      </div>
+    </div>
+  );
+}
+
+function ContenidoAyudaEco() {
+  return (
+    <div className="space-y-5">
+      <div className="rounded-2xl bg-sand p-4">
+        <p className="text-sm font-extrabold text-deep">ECO: Lo que debemos anticipar</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          En este workbook llamamos Eco a una emoción o reacción diferente a la que queríamos
+          despertar y que podría dificultar la comprensión o la acción.
+        </p>
+        <p className="mt-3 text-sm font-bold text-deep">Pregunta guía:</p>
+        <p className="mt-1 text-sm text-muted-foreground italic">
+          ¿Qué más podrían sentir las personas al recibir nuestro mensaje?
+        </p>
+      </div>
+
+      <div>
+        <p className="text-xs font-extrabold tracking-widest text-primary uppercase">
+          Algunos Ecos son
+        </p>
+        <ListaEmocionesAyuda items={ecosAyuda} />
+      </div>
     </div>
   );
 }
@@ -78,23 +315,18 @@ function ModalAyudaEmocion({
 
   return (
     <Dialog open={abierto} onOpenChange={(o) => !o && onCerrar()}>
-      <DialogContent className="max-w-md sm:rounded-3xl">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto sm:rounded-3xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-extrabold">
             {esPulso ? (
               <HeartPulse className="h-5 w-5 text-primary" aria-hidden />
             ) : (
-              <Waves className="h-5 w-5 text-lime-foreground" aria-hidden />
+              <Waves className="h-5 w-5 text-deep" aria-hidden />
             )}
             Ayuda visual · {esPulso ? "PULSO" : "ECO"}
           </DialogTitle>
-          <DialogDescription className="text-left text-sm text-muted-foreground">
-            {esPulso
-              ? "El Pulso es la emoción que mueve a la gente a actuar: curiosidad, orgullo, cuidado, esperanza…"
-              : "El Eco es la contraemoción que frena o desvía: culpa, miedo, vergüenza, rechazo…"}
-          </DialogDescription>
         </DialogHeader>
-        <AyudaVisualSlot tipo={esPulso ? "pulso" : "eco"} />
+        {esPulso ? <ContenidoAyudaPulso /> : <ContenidoAyudaEco />}
       </DialogContent>
     </Dialog>
   );
