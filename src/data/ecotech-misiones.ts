@@ -3,6 +3,7 @@ export type Opcion = string;
 export type CampoTexto = { id: string; tipo: "texto"; etiqueta: string; ayuda?: string };
 export type CampoTextarea = { id: string; tipo: "textarea"; etiqueta: string; ayuda?: string };
 export type CampoNumero = { id: string; tipo: "numero"; etiqueta: string; ayuda?: string };
+export type CampoFecha = { id: string; tipo: "fecha"; etiqueta: string; ayuda?: string };
 export type CampoOpcion = {
   id: string;
   tipo: "opcion";
@@ -29,7 +30,7 @@ export type CampoTabla = {
   filas: FilaTabla[];
 };
 
-export type Campo = CampoTexto | CampoTextarea | CampoNumero | CampoOpcion | CampoTabla;
+export type Campo = CampoTexto | CampoTextarea | CampoNumero | CampoFecha | CampoOpcion | CampoTabla;
 
 export type Seccion = {
   titulo?: string;
@@ -165,7 +166,7 @@ export const misionesEcoTech: Pantalla[] = [
             opciones: ["Observación real", "Datos de ensayo"],
           },
           { id: "m3-que-observamos", tipo: "texto", etiqueta: "Qué observamos" },
-          { id: "m3-fecha", tipo: "texto", etiqueta: "Fecha" },
+          { id: "m3-fecha", tipo: "fecha", etiqueta: "Fecha" },
           { id: "m3-hora", tipo: "texto", etiqueta: "Hora / intervalo" },
           { id: "m3-metodo", tipo: "texto", etiqueta: "Método" },
           { id: "m3-unidad", tipo: "texto", etiqueta: "Unidad u opciones" },
@@ -184,25 +185,6 @@ export const misionesEcoTech: Pantalla[] = [
               },
             ],
             filas: filasBitacora,
-          },
-          {
-            id: "m3-mejora-instruccion",
-            tipo: "texto",
-            etiqueta: "Mejoramos una instrucción o nombre de campo",
-          },
-          { id: "m3-prueba1-dato", tipo: "texto", etiqueta: "Prueba nueva 1 · punto + dato" },
-          {
-            id: "m3-prueba1-entendio",
-            tipo: "opcion",
-            etiqueta: "Prueba nueva 1 · ¿Se entendió?",
-            opciones: ["Sí", "Ajustar"],
-          },
-          { id: "m3-prueba2-dato", tipo: "texto", etiqueta: "Prueba nueva 2 · punto + dato" },
-          {
-            id: "m3-prueba2-entendio",
-            tipo: "opcion",
-            etiqueta: "Prueba nueva 2 · ¿Se entendió?",
-            opciones: ["Sí", "Ajustar"],
           },
         ],
       },

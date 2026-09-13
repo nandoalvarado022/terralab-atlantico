@@ -8,3 +8,8 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Contexto de producto (agentes)
+
+- Flujo estructurado **ECOFluencer** (lab `influencia`): ver [`docs/ecofluencer-overview.md`](docs/ecofluencer-overview.md).
+- Flujo estructurado **Emprende Circular** (lab `circular`): ver [`docs/emprende-circular-overview.md`](docs/emprende-circular-overview.md).

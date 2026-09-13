@@ -5,17 +5,21 @@ import { labs } from "@/data/labs";
 import {
   construirMvp,
   generarPreguntas,
-  transcribirCanvas,
   type CanvasData,
   type Pregunta,
 } from "@/lib/mvp.functions";
 import { EcoFluencerQuestions, flattenRespuestasEcoFluencer } from "./EcoFluencerQuestions";
+import {
+  EmprendeCircularQuestions,
+  flattenRespuestasEmprendeCircular,
+} from "./EmprendeCircularQuestions";
 import { MisionesEcoTech, flattenRespuestasEcoTech } from "./MisionesEcoTech";
 
 const CANVAS_VACIO: CanvasData = {
   colegio: "",
   brigada: "",
   lema: "",
+  correoLider: "",
   integrantes: "",
   pistas: "",
   desafio: "",
@@ -23,30 +27,42 @@ const CANVAS_VACIO: CanvasData = {
   lab: "ecotech",
 };
 
-const CAMPOS: Array<{ key: keyof CanvasData; label: string; hint: string; area?: boolean }> = [
-  { key: "colegio", label: "Colegio", hint: "Ej. Marymount School Barranquilla" },
-  { key: "brigada", label: "Nombre de la brigada", hint: "Ej. Los Marineros" },
-  { key: "lema", label: "Lema de la brigada", hint: "Ej. Cuidando todo, hasta más allá del mar" },
-  {
-    key: "integrantes",
-    label: "Terranautas y roles",
-    hint: "Nombre — rol, separados por comas",
-    area: true,
-  },
-  {
-    key: "pistas",
-    label: "Pistas del safari",
-    hint: "Los hallazgos del recorrido, separados por punto y coma",
-    area: true,
-  },
-  { key: "desafio", label: "Desafío elegido", hint: "El reto que decidieron resolver", area: true },
-  {
-    key: "ideaSemilla",
-    label: "Idea semilla",
-    hint: "La solución que imaginaron en el canvas",
-    area: true,
-  },
-];
+const CAMPOS: Array<{
+  key: keyof CanvasData;
+  label: string;
+  hint: string;
+  area?: boolean;
+  type?: "email";
+}> = [
+    { key: "colegio", label: "Colegio", hint: "Ej. Marymount School Barranquilla" },
+    { key: "brigada", label: "Nombre de la brigada", hint: "Ej. Los Marineros" },
+    { key: "lema", label: "Lema de la brigada", hint: "Ej. Cuidando todo, hasta más allá del mar" },
+    {
+      key: "correoLider",
+      label: "Correo electrónico del líder del equipo",
+      hint: "Ej. lider@colegio.edu.co",
+      type: "email",
+    },
+    {
+      key: "integrantes",
+      label: "Terranautas y roles",
+      hint: "Nombre — rol, separados por comas",
+      area: true,
+    },
+    {
+      key: "pistas",
+      label: "Desafío de expedición terra lab definido",
+      hint: "Los hallazgos del recorrido, separados por punto y coma",
+      area: true,
+    },
+    { key: "desafio", label: "Desafío elegido", hint: "El reto que decidieron resolver", area: true },
+    {
+      key: "ideaSemilla",
+      label: "Idea semilla",
+      hint: "La solución que imaginaron en el canvas",
+      area: true,
+    },
+  ];
 
 const STORAGE_KEY = "terralab-forja-mvp";
 
@@ -59,6 +75,7 @@ type Guardado = {
   respuestas: Record<string, string>;
   respuestasEcoTech: Record<string, string>;
   respuestasEcoFluencer: Record<string, string>;
+  respuestasEmprendeCircular: Record<string, string>;
   misionIndice: number;
   resultado: Resultado | null;
 };
@@ -81,20 +98,23 @@ export function ForjaMvp() {
   const [respuestas, setRespuestas] = useState<Record<string, string>>({});
   const [respuestasEcoTech, setRespuestasEcoTech] = useState<Record<string, string>>({});
   const [respuestasEcoFluencer, setRespuestasEcoFluencer] = useState<Record<string, string>>({});
+  const [respuestasEmprendeCircular, setRespuestasEmprendeCircular] = useState<
+    Record<string, string>
+  >({});
   const [misionIndice, setMisionIndice] = useState(0);
   const [resultado, setResultado] = useState<Resultado | null>(null);
-  const [cargando, setCargando] = useState<null | "foto" | "preguntas" | "mvp">(null);
+  const [cargando, setCargando] = useState<null | "preguntas" | "mvp">(null);
   const [error, setError] = useState<string | null>(null);
   const [copiado, setCopiado] = useState<string | null>(null);
   const [hidratado, setHidratado] = useState(false);
 
-  const transcribir = useServerFn(transcribirCanvas);
   const preguntar = useServerFn(generarPreguntas);
   const construir = useServerFn(construirMvp);
 
   const esEcoTech = canvas.lab === "ecotech";
   const esEcoFluencer = canvas.lab === "influencia";
-  const esMisiones = esEcoTech || esEcoFluencer;
+  const esEmprendeCircular = canvas.lab === "circular";
+  const esMisiones = esEcoTech || esEcoFluencer || esEmprendeCircular;
 
   const pasos = useMemo(
     () => [
@@ -118,6 +138,7 @@ export function ForjaMvp() {
         setRespuestas(g.respuestas ?? {});
         setRespuestasEcoTech(g.respuestasEcoTech ?? {});
         setRespuestasEcoFluencer(g.respuestasEcoFluencer ?? {});
+        setRespuestasEmprendeCircular(g.respuestasEmprendeCircular ?? {});
         setMisionIndice(g.misionIndice ?? 0);
         setResultado(g.resultado ?? null);
       }
@@ -136,6 +157,7 @@ export function ForjaMvp() {
       respuestas,
       respuestasEcoTech,
       respuestasEcoFluencer,
+      respuestasEmprendeCircular,
       misionIndice,
       resultado,
     };
@@ -152,6 +174,7 @@ export function ForjaMvp() {
     respuestas,
     respuestasEcoTech,
     respuestasEcoFluencer,
+    respuestasEmprendeCircular,
     misionIndice,
     resultado,
   ]);
@@ -161,58 +184,12 @@ export function ForjaMvp() {
     [canvas.lab],
   );
 
-  const sugerencias = useMemo(() => {
-    const texto = `${canvas.desafio} ${canvas.ideaSemilla} ${canvas.pistas}`.toLowerCase();
-    const palabras = texto.split(/[^a-záéíóúñ]+/i).filter((w) => w.length > 4);
-    return [...labActual.ideas]
-      .map((idea) => {
-        const blob = `${idea.problema} ${idea.proyecto} ${idea.descripcion}`.toLowerCase();
-        const score = palabras.reduce((n, w) => (blob.includes(w) ? n + 1 : n), 0);
-        return { idea, score };
-      })
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3)
-      .map((s) => s.idea);
-  }, [labActual, canvas.desafio, canvas.ideaSemilla, canvas.pistas]);
-
   function fallar(e: unknown) {
     setError(
       e instanceof Error && e.message
         ? e.message
         : "No pudimos completar el paso. Intenta de nuevo en unos segundos.",
     );
-  }
-
-  async function onFotos(files: FileList | null) {
-    if (!files?.length) return;
-    setError(null);
-    setCargando("foto");
-    try {
-      const imagenes = await Promise.all(
-        Array.from(files)
-          .slice(0, 3)
-          .map(
-            (file) =>
-              new Promise<string>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(String(reader.result));
-                reader.onerror = () => reject(new Error("No pudimos leer la imagen."));
-                reader.readAsDataURL(file);
-              }),
-          ),
-      );
-      const data = await transcribir({ data: { imagenes } });
-      setCanvas((prev) => ({
-        ...prev,
-        ...Object.fromEntries(
-          Object.entries(data).filter(([, v]) => typeof v === "string" && v.trim()),
-        ),
-      }));
-    } catch (e) {
-      fallar(e);
-    } finally {
-      setCargando(null);
-    }
   }
 
   async function pedirPreguntas() {
@@ -277,6 +254,7 @@ export function ForjaMvp() {
     setRespuestas({});
     setRespuestasEcoTech({});
     setRespuestasEcoFluencer({});
+    setRespuestasEmprendeCircular({});
     setMisionIndice(0);
     setResultado(null);
     setError(null);
@@ -297,13 +275,12 @@ export function ForjaMvp() {
                 type="button"
                 onClick={() => n <= paso && setPaso(n)}
                 disabled={n > paso}
-                className={`rounded-full border-2 px-4 py-2 text-xs font-extrabold tracking-wide uppercase transition-colors ${
-                  activo
+                className={`rounded-full border-2 px-4 py-2 text-xs font-extrabold tracking-wide uppercase transition-colors ${activo
                     ? "border-primary bg-primary text-primary-foreground"
                     : hecho
                       ? "border-lime bg-secondary"
                       : "border-border text-muted-foreground"
-                }`}
+                  }`}
               >
                 {n}. {p}
               </button>
@@ -326,28 +303,9 @@ export function ForjaMvp() {
           <div>
             <h2 className="text-3xl font-extrabold">1. Carga el canvas de la brigada</h2>
             <p className="mt-3 text-muted-foreground">
-              Toma foto del canvas <strong>Expedición TerraLAB</strong> y del{" "}
-              <strong>Pase al Día 2</strong>: la IA transcribe lo escrito a marcador. También puedes
-              escribirlo a mano si la letra no se lee.
+              Escribe aquí lo que anotaron en el canvas <strong>Expedición TerraLAB</strong> y en el{" "}
+              <strong>Pase al Día 2</strong>: brigada, desafío, idea semilla y demás.
             </p>
-          </div>
-
-          <div className="rounded-3xl border-2 border-dashed border-lime bg-secondary/60 p-7 text-center">
-            <p className="font-extrabold">Subir foto del canvas (hasta 3 imágenes)</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              La foto solo se usa para transcribir el canvas; no se guarda.
-            </p>
-            <label className="mt-5 inline-block cursor-pointer rounded-full bg-deep px-6 py-3 font-extrabold text-deep-foreground shadow-pop transition-transform hover:-translate-y-0.5">
-              {cargando === "foto" ? "Transcribiendo…" : "Elegir fotos"}
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                disabled={cargando === "foto"}
-                onChange={(e) => onFotos(e.target.files)}
-              />
-            </label>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2">
@@ -371,6 +329,7 @@ export function ForjaMvp() {
                 ) : (
                   <input
                     id={`campo-${c.key}`}
+                    type={c.type ?? "text"}
                     value={canvas[c.key]}
                     placeholder={c.hint}
                     onChange={(e) => setCanvas({ ...canvas, [c.key]: e.target.value })}
@@ -420,9 +379,8 @@ export function ForjaMvp() {
                     setCanvas({ ...canvas, lab: lab.id });
                     setMisionIndice(0);
                   }}
-                  className={`rounded-3xl border-2 p-6 text-left transition-colors ${
-                    activo ? "border-primary bg-secondary" : "border-border bg-card hover:bg-muted"
-                  }`}
+                  className={`rounded-3xl border-2 p-6 text-left transition-colors ${activo ? "border-primary bg-secondary" : "border-border bg-card hover:bg-muted"
+                    }`}
                 >
                   <span className="text-2xl">{lab.emoji}</span>
                   <p className="mt-3 text-xs font-extrabold tracking-widest text-muted-foreground uppercase">
@@ -436,41 +394,14 @@ export function ForjaMvp() {
             })}
           </div>
 
-          {sugerencias.length > 0 && (
-            <div className="rounded-3xl bg-sand p-6">
-              <h3 className="text-sm font-extrabold tracking-widest uppercase">
-                Del banco de inspiración, cercano a su desafío
-              </h3>
-              <ul className="mt-4 space-y-4">
-                {sugerencias.map((idea) => (
-                  <li key={idea.proyecto} className="border-l-2 border-lime pl-4">
-                    <p className="font-extrabold">{idea.proyecto}</p>
-                    <p className="text-sm text-muted-foreground">{idea.problema}</p>
-                    <p className="mt-1 text-xs font-extrabold tracking-wider uppercase">
-                      Indicador: {idea.indicador}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
           <div className="flex flex-wrap gap-3">
-            {esEcoTech ? (
+            {esMisiones ? (
               <button
                 type="button"
                 onClick={() => setPaso(3)}
                 className="rounded-full bg-primary px-7 py-3 font-extrabold text-primary-foreground shadow-pop transition-transform hover:-translate-y-0.5"
               >
-                Continuar a las misiones
-              </button>
-            ) : esEcoFluencer ? (
-              <button
-                type="button"
-                onClick={() => setPaso(3)}
-                className="rounded-full bg-primary px-7 py-3 font-extrabold text-primary-foreground shadow-pop transition-transform hover:-translate-y-0.5"
-              >
-                Continuar con las misiones
+                {esEcoTech ? "Continuar a las misiones" : "Continuar con las misiones"}
               </button>
             ) : (
               <button
@@ -513,6 +444,19 @@ export function ForjaMvp() {
           indice={misionIndice}
           onCambiarIndice={setMisionIndice}
           onFinalizar={() => pedirMvp(flattenRespuestasEcoFluencer(respuestasEcoFluencer))}
+          cargando={cargando === "mvp"}
+        />
+      )}
+
+      {paso === 3 && esEmprendeCircular && (
+        <EmprendeCircularQuestions
+          respuestas={respuestasEmprendeCircular}
+          onCambiar={(k, v) => setRespuestasEmprendeCircular((prev) => ({ ...prev, [k]: v }))}
+          indice={misionIndice}
+          onCambiarIndice={setMisionIndice}
+          onFinalizar={() =>
+            pedirMvp(flattenRespuestasEmprendeCircular(respuestasEmprendeCircular))
+          }
           cargando={cargando === "mvp"}
         />
       )}

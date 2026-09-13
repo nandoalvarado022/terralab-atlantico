@@ -155,6 +155,15 @@ function CampoMision({
             className="w-full rounded-2xl border-2 border-border bg-card p-3 text-sm outline-none focus:border-primary"
           />
         )}
+        {campo.tipo === "fecha" && (
+          <input
+            id={`campo-${campo.id}`}
+            type="date"
+            value={valor}
+            onChange={(e) => onCambiar(campo.id, e.target.value)}
+            className="w-full rounded-2xl border-2 border-border bg-card p-3 text-sm outline-none focus:border-primary"
+          />
+        )}
         {campo.tipo === "numero" && (
           <input
             id={`campo-${campo.id}`}
