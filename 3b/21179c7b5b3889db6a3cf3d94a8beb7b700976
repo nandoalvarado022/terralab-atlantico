@@ -1,0 +1,29 @@
+src/components/mvp/EcoFluencerQuestions.tsx
+  s_6cc4119a45b8ed::t_2876d45b0ecd12 1
+  s_6cc4119a45b8ed::t_47194022f6e48e 2-4,6,13-14,16-20,22-23,25-27
+  s_6cc4119a45b8ed::t_625435b0d9e558 75-155,255-272,300,318
+  s_6cc4119a45b8ed::t_85c99d14cd9189 156-228
+  s_6cc4119a45b8ed::t_9629a070252775 229,231-254,273-297,299,324,329
+  s_6cc4119a45b8ed::t_d8c6eac9a957fd 5,7-12,15,21,24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3b21179c7b5b3889db6a3cf3d94a8beb7b700976",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_6cc4119a45b8ed": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1fe3a7a5-3655-4377-9b43-752e3583b9a7",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
