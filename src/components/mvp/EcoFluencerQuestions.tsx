@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { CircleHelp, HeartPulse, Waves } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -18,7 +18,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  camposMapaUsuario,
   clavesEcoFluencer,
   criteriosImpacto,
   criteriosMensaje,
@@ -27,15 +26,15 @@ import {
   pantallasEcoFluencer,
   personasImpacto,
   publicosObjetivo,
-  sugerenciasMapaUsuario,
   tarjetasBrief,
   tarjetasComprension,
-  tiposPista,
   verbosInvisibles,
   verbosObservables,
   type PantallaEcoFluencer,
 } from "@/data/ecofluencer-misiones";
 import { TarjetaEcoFluencer } from "./TarjetaEcoFluencer";
+import { FabricaCampanasEcoFluencer, flattenFabricaCampanas } from "./FabricaCampanasEcoFluencer";
+import { SubirImagenEcoFluencer } from "./SubirImagenEcoFluencer";
 
 type Props = {
   respuestas: Record<string, string>;
@@ -49,19 +48,11 @@ type Props = {
 type TipoAyuda = "pulso" | "eco";
 
 /** Contenedor listo para ayudas visuales (ilustraciones, diagramas, etc.). */
-function AyudaVisualSlot({
-  tipo,
-  children,
-}: {
-  tipo: TipoAyuda;
-  children?: ReactNode;
-}) {
+function AyudaVisualSlot({ tipo, children }: { tipo: TipoAyuda; children?: ReactNode }) {
   return (
     <div
       className={`mt-4 flex min-h-40 items-center justify-center rounded-2xl border-2 border-dashed p-6 ${
-        tipo === "pulso"
-          ? "border-primary/40 bg-secondary/50"
-          : "border-lime/50 bg-sand/60"
+        tipo === "pulso" ? "border-primary/40 bg-secondary/50" : "border-lime/50 bg-sand/60"
       }`}
       data-ayuda-visual={tipo}
     >
@@ -350,6 +341,18 @@ function PantallaEvaluacion({
   onCambiar: (clave: string, valor: string) => void;
 }) {
   const publico = respuestas[clavesEcoFluencer.publicoObjetivo] ?? "";
+  const mensajeDesdeReto1 =
+    respuestas[clavesEcoFluencer.ajuste]?.trim() ||
+    respuestas[clavesEcoFluencer.mensaje]?.trim() ||
+    "";
+  const mensajeActual = respuestas[clavesEcoFluencer.mensajeAjustado]?.trim() ?? "";
+  const valorMensaje = mensajeActual || mensajeDesdeReto1;
+
+  useEffect(() => {
+    if (!mensajeActual && mensajeDesdeReto1) {
+      onCambiar(clavesEcoFluencer.mensajeAjustado, mensajeDesdeReto1);
+    }
+  }, [mensajeActual, mensajeDesdeReto1, onCambiar]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_min(100%,17rem)] lg:items-start">
@@ -359,16 +362,18 @@ function PantallaEvaluacion({
           <p className="mt-1 text-sm text-muted-foreground">
             Seleccionen solo uno: el grupo al que va dirigido el mensaje.
           </p>
-          <div role="radiogroup" aria-label="Público objetivo" className="mt-4 flex flex-wrap gap-3">
+          <div
+            role="radiogroup"
+            aria-label="Público objetivo"
+            className="mt-4 flex flex-wrap gap-3"
+          >
             {publicosObjetivo.map((op) => {
               const activo = publico === op.id;
               return (
                 <label
                   key={op.id}
                   className={`inline-flex cursor-pointer items-center gap-2 rounded-2xl border-2 px-4 py-2.5 text-sm font-extrabold transition-colors ${
-                    activo
-                      ? "border-primary bg-secondary"
-                      : "border-border bg-card hover:bg-muted"
+                    activo ? "border-primary bg-secondary" : "border-border bg-card hover:bg-muted"
                   }`}
                 >
                   <Checkbox
@@ -396,7 +401,7 @@ function PantallaEvaluacion({
           <textarea
             id={clavesEcoFluencer.mensajeAjustado}
             rows={4}
-            value={respuestas[clavesEcoFluencer.mensajeAjustado] ?? ""}
+            value={valorMensaje}
             onChange={(e) => onCambiar(clavesEcoFluencer.mensajeAjustado, e.target.value)}
             placeholder="Escriban aquí el mensaje ajustado al público…"
             className="mt-3 w-full rounded-2xl border-2 border-border bg-card p-3 text-sm outline-none focus:border-primary"
@@ -404,11 +409,27 @@ function PantallaEvaluacion({
         </div>
 
         <div className="space-y-4">
-          <div>
-            <h3 className="text-lg font-extrabold">Evaluación del impacto</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Escriban hasta 3 nombres del público y marquen cada criterio por persona.
-            </p>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 className="text-lg font-extrabold">Evaluación del impacto</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Escriban hasta 3 nombres del público y marquen cada criterio por persona.
+              </p>
+            </div>
+            {/* TEMP: solo para testing — quitar en producción */}
+            <button
+              type="button"
+              onClick={() => {
+                for (const n of personasImpacto) {
+                  for (const c of criteriosImpacto) {
+                    onCambiar(clavesEcoFluencer.checkImpacto(n, c.id), "si");
+                  }
+                }
+              }}
+              className="rounded-full border-2 border-dashed border-muted-foreground/40 px-4 py-2 text-xs font-extrabold tracking-wide text-muted-foreground uppercase hover:border-primary hover:text-primary"
+            >
+              Seleccionar todos
+            </button>
           </div>
 
           <div className="overflow-x-auto rounded-3xl border border-border bg-card p-3 shadow-card sm:p-4">
@@ -446,9 +467,7 @@ function PantallaEvaluacion({
                             <div className="flex justify-center">
                               <Checkbox
                                 checked={marcado}
-                                onCheckedChange={(v) =>
-                                  onCambiar(clave, v === true ? "si" : "")
-                                }
+                                onCheckedChange={(v) => onCambiar(clave, v === true ? "si" : "")}
                                 aria-label={`${c.etiqueta} — persona ${n}`}
                                 className="h-5 w-5"
                               />
@@ -466,9 +485,7 @@ function PantallaEvaluacion({
       </div>
 
       <aside className="rounded-3xl border-2 border-lime bg-secondary p-5 lg:sticky lg:top-6">
-        <p className="text-xs font-extrabold tracking-widest text-primary uppercase">
-          Recuerden
-        </p>
+        <p className="text-xs font-extrabold tracking-widest text-primary uppercase">Recuerden</p>
         <p className="mt-3 text-sm leading-relaxed font-bold text-deep">
           Un EcoInfluencer no se enamora de su primera idea. Escucha al público, aprende de la
           evidencia y mejora el mensaje antes de compartirlo.
@@ -617,10 +634,7 @@ function PantallaBrief({
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {tarjetasBrief.map((tarjeta, i) => {
           const clave = clavesEcoFluencer.brief(tarjeta.id);
-          const valor =
-            tarjeta.id === "publico"
-              ? valorPublico
-              : (respuestas[clave] ?? "");
+          const valor = tarjeta.id === "publico" ? valorPublico : (respuestas[clave] ?? "");
 
           return (
             <TarjetaEcoFluencer
@@ -634,9 +648,7 @@ function PantallaBrief({
               indiceAnimacion={i}
               retardoPorTarjetaMs={5}
               className="min-w-0 w-full"
-              onAyuda={
-                tarjeta.conAyudaVerbos ? () => setAyudaVerbos(true) : undefined
-              }
+              onAyuda={tarjeta.conAyudaVerbos ? () => setAyudaVerbos(true) : undefined}
               etiquetaAyuda="Verbos"
             />
           );
@@ -645,7 +657,7 @@ function PantallaBrief({
 
       <div className="w-full overflow-hidden rounded-2xl border-2 border-deep bg-deep shadow-card">
         <p className="px-5 pt-4 text-xs font-extrabold tracking-widest text-deep-foreground uppercase">
-          Frase del cambio
+          Frase del cambio - Queremos que...
         </p>
         <p className="px-5 py-4 text-sm leading-relaxed font-bold text-deep-foreground">
           {frase || (
@@ -663,9 +675,7 @@ function PantallaBrief({
           <strong>[lugar y momento]</strong>, con frecuencia <strong>[frecuencia]</strong>, porque{" "}
           <strong>[beneficio]</strong>, superando <strong>[barrera]</strong>.
         </p>
-        <p className="mt-4 text-xs font-extrabold tracking-widest uppercase">
-          Ejemplo hipotético
-        </p>
+        <p className="mt-4 text-xs font-extrabold tracking-widest uppercase">Ejemplo hipotético</p>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground italic">
           “Queremos que estudiantes de 7.º lleven una botella reutilizable a la cafetería durante el
           recreo, dos veces por semana, porque pueden ahorrar y evitar residuos desechables,
@@ -679,119 +689,6 @@ function PantallaBrief({
         seleccionados={parseListaVerbos(valorVerbo)}
         onAlternar={(verbo) => onCambiar(claveVerbo, alternarVerbo(valorVerbo, verbo))}
       />
-    </div>
-  );
-}
-
-function valorMapaCampo(
-  respuestas: Record<string, string>,
-  campoId: string,
-  sugerencias: Record<string, string>,
-): string {
-  const clave = clavesEcoFluencer.mapa(campoId);
-  if (Object.prototype.hasOwnProperty.call(respuestas, clave)) {
-    return respuestas[clave] ?? "";
-  }
-  return sugerencias[campoId] ?? "";
-}
-
-function PantallaMapaUsuario({
-  respuestas,
-  onCambiar,
-}: {
-  respuestas: Record<string, string>;
-  onCambiar: (clave: string, valor: string) => void;
-}) {
-  const sugerencias = sugerenciasMapaUsuario(respuestas);
-
-  return (
-    <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
-      <article className="overflow-hidden rounded-t-2xl border-[3px] border-deep bg-card">
-        <header className="bg-deep px-5 py-4">
-          <h3 className="text-lg font-extrabold tracking-wide text-deep-foreground uppercase">
-            Mapa del usuario
-          </h3>
-        </header>
-        <div className="space-y-4 p-5">
-          {camposMapaUsuario.map((campo) => {
-            const clave = clavesEcoFluencer.mapa(campo.id);
-            const valor = valorMapaCampo(respuestas, campo.id, sugerencias);
-            return (
-              <div key={campo.id}>
-                <label
-                  htmlFor={clave}
-                  className="block text-xs font-extrabold tracking-wider uppercase"
-                >
-                  {campo.etiqueta}
-                </label>
-                <textarea
-                  id={clave}
-                  rows={2}
-                  value={valor}
-                  onChange={(e) => onCambiar(clave, e.target.value)}
-                  className="mt-2 w-full rounded-2xl border-2 border-border bg-background p-3 text-sm outline-none focus:border-primary"
-                />
-              </div>
-            );
-          })}
-        </div>
-      </article>
-
-      <article
-        className="overflow-hidden rounded-t-2xl border-[3px] bg-card"
-        style={{ borderColor: "#d97706" }}
-      >
-        <header className="px-5 py-4" style={{ backgroundColor: "#d97706" }}>
-          <h3 className="text-lg font-extrabold tracking-wide text-white uppercase">
-            Pista que lo sustenta
-          </h3>
-        </header>
-        <div className="space-y-5 p-5">
-          <div>
-            <p className="text-xs font-extrabold tracking-wider uppercase">Tipo de pista</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {tiposPista.map((tipo) => {
-                const clave = clavesEcoFluencer.tipoPista(tipo.id);
-                const marcado = respuestas[clave] === "si";
-                return (
-                  <label
-                    key={tipo.id}
-                    className={`inline-flex cursor-pointer items-center gap-2 rounded-full border-2 px-3 py-2 text-xs font-extrabold transition-colors ${
-                      marcado
-                        ? "border-[#d97706] bg-sun/40 text-deep"
-                        : "border-border bg-card text-muted-foreground hover:bg-muted"
-                    }`}
-                  >
-                    <Checkbox
-                      checked={marcado}
-                      onCheckedChange={(v) => onCambiar(clave, v === true ? "si" : "")}
-                      className="h-4 w-4"
-                    />
-                    <span>{tipo.etiqueta}</span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor={clavesEcoFluencer.evidenciaPista}
-              className="block text-sm font-bold text-deep"
-            >
-              ¿Qué evidencia muestra que esta persona necesita resolver la tarea?
-            </label>
-            <textarea
-              id={clavesEcoFluencer.evidenciaPista}
-              rows={6}
-              value={respuestas[clavesEcoFluencer.evidenciaPista] ?? ""}
-              onChange={(e) => onCambiar(clavesEcoFluencer.evidenciaPista, e.target.value)}
-              placeholder="Escriban la evidencia observada…"
-              className="mt-3 w-full rounded-2xl border-2 border-border bg-background p-3 text-sm outline-none focus:border-primary"
-            />
-          </div>
-        </div>
-      </article>
     </div>
   );
 }
@@ -821,13 +718,23 @@ function ContenidoPantalla({
     return <PantallaBrief respuestas={respuestas} onCambiar={onCambiar} />;
   }
 
-  if (pantalla.id === "mapa-usuario") {
-    return <PantallaMapaUsuario respuestas={respuestas} onCambiar={onCambiar} />;
+  if (pantalla.id === "fabrica-campanas") {
+    return <FabricaCampanasEcoFluencer respuestas={respuestas} onCambiar={onCambiar} />;
   }
 
-  return (
-    <p className="text-muted-foreground">Esta sub-pantalla aún no está definida.</p>
-  );
+  if (pantalla.id === "construir") {
+    return (
+      <SubirImagenEcoFluencer
+        titulo="Construir"
+        ayuda="Suban el archivo o la imagen de lo que van a construir."
+        alt="Archivo o imagen de construcción"
+        valor={respuestas[clavesEcoFluencer.construirImagen] ?? ""}
+        onCambiar={(v) => onCambiar(clavesEcoFluencer.construirImagen, v)}
+      />
+    );
+  }
+
+  return <p className="text-muted-foreground">Esta sub-pantalla aún no está definida.</p>;
 }
 
 export function EcoFluencerQuestions({
@@ -839,10 +746,16 @@ export function EcoFluencerQuestions({
   cargando,
 }: Props) {
   const [avisoNormas, setAvisoNormas] = useState<string | null>(null);
-  const pantalla = pantallasEcoFluencer[indice];
+  const indiceSeguro = Math.min(Math.max(indice, 0), pantallasEcoFluencer.length - 1);
+  const pantalla = pantallasEcoFluencer[indiceSeguro];
+
+  useEffect(() => {
+    if (indice !== indiceSeguro) onCambiarIndice(indiceSeguro);
+  }, [indice, indiceSeguro, onCambiarIndice]);
+
   if (!pantalla) return null;
 
-  const esUltima = indice === pantallasEcoFluencer.length - 1;
+  const esUltima = indiceSeguro === pantallasEcoFluencer.length - 1;
   const esEvaluacion = pantalla.id === "evaluacion";
 
   function intentarAvanzar(accion: () => void) {
@@ -863,14 +776,13 @@ export function EcoFluencerQuestions({
           <li key={p.id}>
             <button
               type="button"
-              onClick={() => i <= indice && onCambiarIndice(i)}
-              disabled={i > indice}
+              onClick={() => onCambiarIndice(i)}
               className={`rounded-full border-2 px-3 py-1 text-xs font-extrabold transition-colors ${
-                i === indice
+                i === indiceSeguro
                   ? "border-primary bg-primary text-primary-foreground"
-                  : i < indice
+                  : i < indiceSeguro
                     ? "border-lime bg-secondary"
-                    : "border-border text-muted-foreground"
+                    : "border-border text-muted-foreground hover:bg-muted"
               }`}
             >
               {p.numero}
@@ -881,7 +793,7 @@ export function EcoFluencerQuestions({
 
       <div>
         <p className="text-xs font-extrabold tracking-widest text-primary uppercase">
-          Pregunta {pantalla.numero} de {pantallasEcoFluencer.length} · {pantalla.nombre}
+          Reto {pantalla.numero} de {pantallasEcoFluencer.length} · {pantalla.nombre}
         </p>
         <h2 className="mt-1 text-3xl font-extrabold">{pantalla.tagline ?? pantalla.nombre}</h2>
         <p className="mt-3 text-muted-foreground">{pantalla.instrucciones}</p>
@@ -903,9 +815,9 @@ export function EcoFluencerQuestions({
           type="button"
           onClick={() => {
             setAvisoNormas(null);
-            onCambiarIndice(indice - 1);
+            onCambiarIndice(indiceSeguro - 1);
           }}
-          disabled={indice === 0}
+          disabled={indiceSeguro === 0}
           className="rounded-full border-2 border-deep px-7 py-3 font-extrabold hover:bg-secondary disabled:opacity-40"
         >
           Anterior
@@ -922,7 +834,7 @@ export function EcoFluencerQuestions({
         ) : (
           <button
             type="button"
-            onClick={() => intentarAvanzar(() => onCambiarIndice(indice + 1))}
+            onClick={() => intentarAvanzar(() => onCambiarIndice(indiceSeguro + 1))}
             className="rounded-full bg-primary px-7 py-3 font-extrabold text-primary-foreground shadow-pop transition-transform hover:-translate-y-0.5"
           >
             Siguiente
@@ -1026,37 +938,12 @@ export function flattenRespuestasEcoFluencer(
     });
   }
 
-  const sugerencias = sugerenciasMapaUsuario(respuestas);
-  for (const campo of camposMapaUsuario) {
-    const valor = Object.prototype.hasOwnProperty.call(
-      respuestas,
-      clavesEcoFluencer.mapa(campo.id),
-    )
-      ? (respuestas[clavesEcoFluencer.mapa(campo.id)] ?? "").trim()
-      : (sugerencias[campo.id] ?? "").trim();
-    if (valor) {
-      salida.push({
-        pregunta: `Mapa del usuario · ${campo.etiqueta}`,
-        respuesta: valor,
-      });
-    }
-  }
+  salida.push(...flattenFabricaCampanas(respuestas));
 
-  const tiposMarcados = tiposPista
-    .filter((t) => respuestas[clavesEcoFluencer.tipoPista(t.id)] === "si")
-    .map((t) => t.etiqueta);
-  if (tiposMarcados.length) {
+  if (respuestas[clavesEcoFluencer.construirImagen]?.trim()) {
     salida.push({
-      pregunta: "Pista que lo sustenta · tipo",
-      respuesta: tiposMarcados.join("; "),
-    });
-  }
-
-  const evidencia = respuestas[clavesEcoFluencer.evidenciaPista]?.trim();
-  if (evidencia) {
-    salida.push({
-      pregunta: "Pista que lo sustenta · evidencia",
-      respuesta: evidencia,
+      pregunta: "Construir · archivo o imagen",
+      respuesta: "imagen cargada",
     });
   }
 

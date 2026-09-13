@@ -509,7 +509,7 @@ export function ForjaMvp() {
       {paso === 3 && esEcoFluencer && (
         <EcoFluencerQuestions
           respuestas={respuestasEcoFluencer}
-          onCambiar={(k, v) => setRespuestasEcoFluencer({ ...respuestasEcoFluencer, [k]: v })}
+          onCambiar={(k, v) => setRespuestasEcoFluencer((prev) => ({ ...prev, [k]: v }))}
           indice={misionIndice}
           onCambiarIndice={setMisionIndice}
           onFinalizar={() => pedirMvp(flattenRespuestasEcoFluencer(respuestasEcoFluencer))}

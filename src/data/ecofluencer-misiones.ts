@@ -132,12 +132,19 @@ export const pantallasEcoFluencer: PantallaEcoFluencer[] = [
       "Completen las seis piezas del brief. Al final verán la frase completa del cambio que quieren lograr.",
   },
   {
-    id: "mapa-usuario",
+    id: "fabrica-campanas",
     numero: 5,
-    nombre: "Mapa",
-    tagline: "Mapa del usuario",
+    nombre: "Fábrica",
+    tagline: "Fábrica de campañas",
     instrucciones:
-      "Organicen lo que saben de la persona o grupo y la pista que sustenta el reto. Algunos campos llegan precargados desde pasos anteriores.",
+      "Armen el brief, los seis momentos, la identidad, el mensaje y los canales de su campaña.",
+  },
+  {
+    id: "construir",
+    numero: 6,
+    nombre: "Construir",
+    tagline: "Construir",
+    instrucciones: "Suban el archivo o la imagen de lo que van a construir.",
   },
 ];
 
@@ -234,22 +241,6 @@ export const tarjetasBrief: TarjetaBrief[] = [
   },
 ];
 
-export const tiposPista = [
-  { id: "observacion", etiqueta: "Observación" },
-  { id: "testimonio", etiqueta: "Testimonio" },
-  { id: "dato", etiqueta: "Dato" },
-  { id: "dia-1", etiqueta: "Día 1" },
-  { id: "prueba-anterior", etiqueta: "Prueba anterior" },
-] as const;
-
-export const camposMapaUsuario = [
-  { id: "usuario", etiqueta: "Usuario o grupo" },
-  { id: "lugar-momento", etiqueta: "Lugar y momento" },
-  { id: "intenta-lograr", etiqueta: "Qué intenta lograr" },
-  { id: "dificulta", etiqueta: "Qué le dificulta actuar" },
-  { id: "apoyo", etiqueta: "Qué apoyo ya tiene" },
-] as const;
-
 export const clavesEcoFluencer = {
   mensaje: "ef1-mensaje",
   pulso: "ef1-pulso",
@@ -265,10 +256,135 @@ export const clavesEcoFluencer = {
   checkImpacto: (persona: number, criterioId: string) =>
     `ef3-check-${persona}-${criterioId}`,
   brief: (id: string) => `ef4-${id}`,
-  mapa: (id: string) => `ef5-${id}`,
-  tipoPista: (id: string) => `ef5-pista-tipo-${id}`,
-  evidenciaPista: "ef5-pista-evidencia",
+  briefCampana: (id: string) => `ef6-brief-${id}`,
+  momentoDecision: (id: string) => `ef6-momento-${id}-decision`,
+  momentoCanal: (id: string) => `ef6-momento-${id}-canal`,
+  campanaNombre: "ef6-identidad-nombre",
+  campanaLema: "ef6-identidad-lema",
+  campanaTono: "ef6-identidad-tono",
+  campanaTonoOtro: "ef6-identidad-tono-otro",
+  campanaSimbolo: "ef6-identidad-simbolo",
+  mensajePrincipal: "ef6-mensaje-principal",
+  canalAccesible: (id: string) => `ef6-canal-acc-${id}`,
+  canalDetalle: (tipo: "principal" | "apoyo", campo: string) =>
+    `ef6-canal-${tipo}-${campo}`,
+  canalAtributo: (tipo: "principal" | "apoyo", id: string) =>
+    `ef6-canal-${tipo}-attr-${id}`,
+  construirImagen: "ef7-construir-imagen",
 } as const;
+
+export const camposBriefCampana = [
+  { id: "publico", etiqueta: "Público" },
+  { id: "accion-observable", etiqueta: "Acción observable" },
+  { id: "lugar-momento", etiqueta: "Lugar / momento" },
+  { id: "barrera", etiqueta: "Barrera principal" },
+  { id: "beneficio", etiqueta: "Motivación" },
+  { id: "indicador", etiqueta: "Indicador de comportamiento" },
+] as const;
+
+export const momentosCampana = [
+  {
+    id: "gancho",
+    titulo: "Gancho",
+    subtitulo: "Hace detenerse y prestar atención",
+    color: "#dbeafe",
+    colorBorde: "#93c5fd",
+  },
+  {
+    id: "evidencia",
+    titulo: "Evidencia",
+    subtitulo: "Hace detenerse y prestar atención",
+    color: "#dcfce7",
+    colorBorde: "#86efac",
+  },
+  {
+    id: "mensaje",
+    titulo: "Mensaje",
+    subtitulo: "Explica la idea central con claridad",
+    color: "#e0e7ff",
+    colorBorde: "#a5b4fc",
+  },
+  {
+    id: "accion",
+    titulo: "Acción",
+    subtitulo: "Indica qué hacer ahora",
+    color: "#ffedd5",
+    colorBorde: "#fdba74",
+  },
+  {
+    id: "recordatorio",
+    titulo: "Recordatorio",
+    subtitulo: "Reaparece en el momento oportuno",
+    color: "#f3e8ff",
+    colorBorde: "#d8b4fe",
+  },
+  {
+    id: "retroalimentacion",
+    titulo: "Retroalimentación",
+    subtitulo: "Devuelve resultados y escucha",
+    color: "#fce7f3",
+    colorBorde: "#f9a8d4",
+  },
+] as const;
+
+export const tonosCampana = [
+  { id: "cercano", etiqueta: "Cercano" },
+  { id: "energico", etiqueta: "Enérgico" },
+  { id: "sereno", etiqueta: "Sereno" },
+  { id: "divertido", etiqueta: "Divertido" },
+] as const;
+
+export const canalesAccesibles = [
+  { id: "senalizacion", etiqueta: "Señalización" },
+  { id: "reto-cursos", etiqueta: "Reto por cursos" },
+  { id: "video", etiqueta: "Video" },
+  { id: "podcast", etiqueta: "Podcast / audio" },
+  { id: "intervencion", etiqueta: "Intervención" },
+  { id: "personaje", etiqueta: "Personaje" },
+  { id: "experiencia", etiqueta: "Experiencia" },
+  { id: "canal-oficial", etiqueta: "Canal oficial" },
+  { id: "otros", etiqueta: "Otros" },
+] as const;
+
+export const atributosCanal = [
+  { id: "se-ve", etiqueta: "Se ve" },
+  { id: "se-oye", etiqueta: "Se oye" },
+  { id: "se-lee", etiqueta: "Se lee fácil" },
+  { id: "sin-internet", etiqueta: "Sin internet" },
+  { id: "responsable", etiqueta: "Responsable" },
+] as const;
+
+export function sugerenciasBriefCampana(
+  respuestas: Record<string, string>,
+): Record<string, string> {
+  return {
+    publico: primeroNoVacio(
+      respuestas[clavesEcoFluencer.brief("publico")],
+      etiquetaPublico(respuestas[clavesEcoFluencer.publicoObjetivo]),
+      respuestas[clavesEcoFluencer.tarjeta("quien")],
+    ),
+    "accion-observable": primeroNoVacio(
+      unirPartes(
+        respuestas[clavesEcoFluencer.brief("verbo")],
+        respuestas[clavesEcoFluencer.brief("objeto")],
+      ),
+      respuestas[clavesEcoFluencer.tarjeta("que-hace")],
+    ),
+    "lugar-momento": primeroNoVacio(
+      unirPartes(
+        respuestas[clavesEcoFluencer.brief("lugar")],
+        respuestas[clavesEcoFluencer.brief("momento")],
+      ),
+      respuestas[clavesEcoFluencer.tarjeta("donde-cuando")],
+    ),
+    barrera: primeroNoVacio(respuestas[clavesEcoFluencer.tarjeta("barrera")]),
+    beneficio: primeroNoVacio(respuestas[clavesEcoFluencer.tarjeta("motivacion")]),
+    indicador: primeroNoVacio(
+      respuestas[clavesEcoFluencer.hallazgoComportamiento],
+      respuestas[clavesEcoFluencer.brief("frecuencia")],
+    ),
+  };
+}
 
 export function etiquetaPublico(id: string | undefined): string {
   if (!id) return "";
@@ -288,38 +404,6 @@ function unirPartes(...partes: Array<string | undefined>): string {
     .map((p) => p?.trim())
     .filter(Boolean)
     .join(" · ");
-}
-
-/** Valores sugeridos del mapa a partir de respuestas previas. */
-export function sugerenciasMapaUsuario(respuestas: Record<string, string>): Record<string, string> {
-  return {
-    usuario: primeroNoVacio(
-      respuestas[clavesEcoFluencer.brief("publico")],
-      etiquetaPublico(respuestas[clavesEcoFluencer.publicoObjetivo]),
-      respuestas[clavesEcoFluencer.tarjeta("quien")],
-    ),
-    "lugar-momento": primeroNoVacio(
-      unirPartes(
-        respuestas[clavesEcoFluencer.brief("lugar")],
-        respuestas[clavesEcoFluencer.brief("momento")],
-      ),
-      respuestas[clavesEcoFluencer.tarjeta("donde-cuando")],
-    ),
-    "intenta-lograr": primeroNoVacio(
-      unirPartes(
-        respuestas[clavesEcoFluencer.brief("verbo")],
-        respuestas[clavesEcoFluencer.brief("objeto")],
-      ),
-      respuestas[clavesEcoFluencer.mensajeAjustado],
-      respuestas[clavesEcoFluencer.mensaje],
-      respuestas[clavesEcoFluencer.tarjeta("que-hace")],
-    ),
-    dificulta: primeroNoVacio(respuestas[clavesEcoFluencer.tarjeta("barrera")]),
-    apoyo: primeroNoVacio(
-      respuestas[clavesEcoFluencer.tarjeta("senal")],
-      respuestas[clavesEcoFluencer.tarjeta("motivacion")],
-    ),
-  };
 }
 
 export function evaluacionImpactoCompleta(respuestas: Record<string, string>): boolean {
