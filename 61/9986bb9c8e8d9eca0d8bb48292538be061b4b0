@@ -1,0 +1,159 @@
+src/components/mvp/SubirImagenEcoFluencer.tsx
+  s_24c3d1247b517f::t_9d05454f05f010 1,11,14-21
+src/lib/mvp.functions.ts
+  s_0b80a1e76a088e::t_7ed085f3dbf8b8 79
+  s_0b80a1e76a088e::t_8fd9e8b32fab69 53
+  s_0b80a1e76a088e::t_64a13391fc8ee5 107
+  s_0b80a1e76a088e::t_908b767d73cff3 11
+docs/emprende-circular-overview.md
+  s_24c3d1247b517f::t_7a5379a2e2cb45 46,48,50,54
+  s_24c3d1247b517f::t_bc2457e85b824e 1-16,30-36,38,42,44,73-82,84,87
+  s_24c3d1247b517f::t_aa84df64e189d9 22,29
+  s_24c3d1247b517f::t_b410a18bd54c90 57,59
+  s_24c3d1247b517f::t_abcb8603f5c5d7 65-70,72
+  s_24c3d1247b517f::t_fd72091f6c2897 61-63
+  s_24c3d1247b517f::t_ed7d588c391edc 71
+  s_24c3d1247b517f::t_6ab4da89ee568e 60
+  s_24c3d1247b517f::t_54373087f115d7 17-21,24-28,37,39-41,43,45,47,49,51,83,85-86
+  s_24c3d1247b517f::t_f2b383fe57ca25 52-53
+  s_24c3d1247b517f::t_d5fe75da837ea0 55-56,58,64
+  s_24c3d1247b517f::t_581495950cb814 23
+src/components/mvp/emprende-circular/Reto1Activar.tsx
+  s_24c3d1247b517f::t_9ddaeac47ab136 188,191-193
+  s_24c3d1247b517f::t_c32a0287da9586 1,3,5-187,189-190,194-330
+  s_24c3d1247b517f::t_81b819116fa3ed 2,4
+AGENTS.md
+  s_6cc4119a45b8ed::t_fda4cd7935f8fc 11-14
+  s_24c3d1247b517f::t_580bf0962f574a 15
+src/components/mvp/emprende-circular/types.ts
+  s_24c3d1247b517f::t_c32a0287da9586 1-4
+src/components/mvp/EmprendeCircularQuestions.tsx
+  s_24c3d1247b517f::t_1f43a3cf8a7843 46
+  s_24c3d1247b517f::t_5023306c419e20 10
+  s_24c3d1247b517f::t_36d8f93478b458 1,7-9,12-13,33-39,44-45
+  s_24c3d1247b517f::t_2bbaa3921ce225 40-41
+  s_24c3d1247b517f::t_25635311237ea9 2-6,14-32,47-130
+  s_24c3d1247b517f::t_39ef2dd81a0d59 42-43
+  s_24c3d1247b517f::t_d33faa7c810835 11
+src/data/emprende-circular-misiones.ts
+  s_24c3d1247b517f::t_04193c5ffbb64b 285-288,290,292
+  s_24c3d1247b517f::t_70e087dc354678 341,344-354,356-363,365-375,377-385,387-388
+  h_15f0de19236f1a 153-154,160,166,172,178,184,264-265
+  s_24c3d1247b517f::t_63603f56fb58fe 316-317
+  s_24c3d1247b517f::t_fa921a424aaf88 283
+  s_24c3d1247b517f::t_48eca2553744ec 318-321
+  s_24c3d1247b517f::t_eaae6e9510fcc9 199-258
+  s_24c3d1247b517f::t_1856f8514f31d3 322-323,486-503
+  s_24c3d1247b517f::t_3dcb459209020c 1-19,22-42,44-52,54-62,64-72,74-82,84-92,94-102,104-112,114-122,124-134,260-263,266-267,276,301-311,343,504-508
+  s_24c3d1247b517f::t_aaaca4c77915b6 355,364,376,386
+  s_24c3d1247b517f::t_491b7e83ab2569 135-152,155-159,161-165,167-171,173-177,179-183,185-198,259,268-275,312-315
+  s_24c3d1247b517f::t_3722c0f3cdfe57 324-327,394-429,460-466
+  s_24c3d1247b517f::t_09d9eb36c39e46 293-300
+  s_24c3d1247b517f::t_76af34ab8d487b 289,291
+  s_24c3d1247b517f::t_5134e1207c4716 334-340,467-485
+  s_24c3d1247b517f::t_b40bcd1c5113bb 342
+  s_24c3d1247b517f::t_51aa2bae242e45 43,53,63,73,83,93,103,113,123
+  s_24c3d1247b517f::t_1843422345da69 430-459
+  s_24c3d1247b517f::t_19a5d3b1165a59 277-282,284
+  s_24c3d1247b517f::t_4dd6e9002d1705 328-333,389-393
+  s_24c3d1247b517f::t_f605046d8e6929 20-21
+docs/ecofluencer-overview.md
+  s_6cc4119a45b8ed::t_e9d9b2da8e67c9 1-100
+src/components/mvp/ForjaMvp.tsx
+  s_24c3d1247b517f::t_00a82ba624aaed 78
+  s_24c3d1247b517f::t_b4fd4d481bad28 141
+  s_24c3d1247b517f::t_28533c7d1f30b7 12-15
+  s_0b80a1e76a088e::t_e5f786f7bb5de1 106
+  s_24c3d1247b517f::t_8ff5ce78fe25c7 160,177
+  s_24c3d1247b517f::t_0dcb5ef2020b3a 257
+  h_15f0de19236f1a 54,278,382-383
+  s_0b80a1e76a088e::t_5e82658990dc76 332
+  s_24c3d1247b517f::t_31cccc1e945f55 101-103,116-117
+  s_24c3d1247b517f::t_63ec2a28f1e9d9 398,404
+  s_24c3d1247b517f::t_0288849a14da98 451-463
+  s_0b80a1e76a088e::t_bf26a40afabd1b 22,30-46,51-52,57,59,64
+  s_0b80a1e76a088e::t_1ffa5c047085b7 306-307
+  s_0b80a1e76a088e::t_2f24abf1a8609a 47-50
+  s_0b80a1e76a088e::t_02b933cf664dc5 58
+  s_0b80a1e76a088e::t_aa9e0452fccbb2 60-63
+  s_0b80a1e76a088e::t_9e35b35a275f26 65
+  h_15f0de19236f1a 53,55-56,283
+src/components/mvp/emprende-circular/flatten.ts
+  s_24c3d1247b517f::t_de5670e5ce8e73 111-112,115-125
+  s_24c3d1247b517f::t_8ef4b9868cb04e 200-203
+  s_24c3d1247b517f::t_da37327ef15c25 143-161
+  s_24c3d1247b517f::t_df87ebdb30671a 162-192
+  s_24c3d1247b517f::t_e7d79b19f6b6fd 13
+  s_24c3d1247b517f::t_c368f123904760 1-3,5-6,8-10,15-110,113-114,204-205
+  s_24c3d1247b517f::t_f8e2f8903df02b 126-128
+  s_24c3d1247b517f::t_b94472bfda8bad 193-199
+  s_24c3d1247b517f::t_f6b5ac9aca1486 4
+  s_24c3d1247b517f::t_b573f2be34896c 7,14
+  s_24c3d1247b517f::t_75043099e635e5 129-142
+  s_24c3d1247b517f::t_4951c83484e4ea 11-12
+src/components/mvp/emprende-circular/Reto5Disenar.tsx
+  s_24c3d1247b517f::t_48fd2e260079dd 1,10,64-73
+  s_24c3d1247b517f::t_b12afe1c531de9 2-9,11-63,74-76
+src/components/commons/FileUploader.tsx
+  s_24c3d1247b517f::t_047f3882fbc6dd 1-133
+src/components/mvp/emprende-circular/Reto2Comprender.tsx
+  s_24c3d1247b517f::t_0d0d6e8d8d18ba 181
+  s_24c3d1247b517f::t_c32a0287da9586 1-144,146-180,182-254
+  s_24c3d1247b517f::t_23c7ee452000b4 145
+src/components/mvp/emprende-circular/Reto3Experimentar.tsx
+  s_24c3d1247b517f::t_27fb179dfbb3a7 188,190-204,211-216
+  s_24c3d1247b517f::t_044e163a0d7a55 5,46-104,110-156,158,160,164-167,169-180,183,185-187,189,208-210
+  s_24c3d1247b517f::t_3be39cb3f54307 1-4,6-45,105-109,157,159,162-163,168,181-182,184,205-207,217-219
+  s_24c3d1247b517f::t_ae1321e281d0c1 161
+src/components/mvp/emprende-circular/Reto4Definir.tsx
+  s_24c3d1247b517f::t_47517115d1ddcc 390,393
+  s_24c3d1247b517f::t_61333ee5c88b1b 215-309,311,314
+  s_24c3d1247b517f::t_1089a4790f95e3 1,10-11
+  s_24c3d1247b517f::t_d53a0a81c41356 4
+  s_24c3d1247b517f::t_1f293f0d212957 5,8-9,78-126,134,159-160,163-166,168-185,187-195,197-213,310,312-313,315-322,324-327,331-339,342,347,349-350,356-386,388-389,391-392,394-452
+  s_24c3d1247b517f::t_e5e35fd9014b87 2-3,6-7,12-77,127-133,135-138,158,161-162,167,186,196,214,323,328-330,340-341,343-346,348,351-355,387,453-455
+  s_24c3d1247b517f::t_10300091629c44 139-157
+src/components/mvp/MisionesEcoTech.tsx
+  s_0b80a1e76a088e::t_234310bd544f0d 158-166
+src/data/ecotech-misiones.ts
+  s_0b80a1e76a088e::t_10c9539a1fdae3 169
+  s_0b80a1e76a088e::t_f11dfb1fb6218e 6
+  s_0b80a1e76a088e::t_504c4e381544b4 33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "619986bb9c8e8d9eca0d8bb48292538be061b4b0",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_0b80a1e76a088e": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "db618359-8a5c-45e8-8e85-a7aa9519f6d6",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    },
+    "s_24c3d1247b517f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2783023d-e07f-4a7d-ba35-a77189775a6e",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    },
+    "s_6cc4119a45b8ed": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1fe3a7a5-3655-4377-9b43-752e3583b9a7",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
