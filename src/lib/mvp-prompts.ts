@@ -62,7 +62,7 @@ Devuelve SOLO un objeto JSON, sin markdown fuera de los valores, con estas clave
 {
   "nombre": "nombre corto y memorable de la campaña o proyecto",
   "documento": "formulación completa del proyecto en Markdown, lista para exportar a PDF",
-  "prompt": "resumen ejecutivo de 120 a 180 palabras para la portada o ficha del PDF"
+  "prompt": "prompt completo, en español, con instrucciones para que otra IA o herramienta genere el PDF usando toda la información del proyecto"
 }
 
 El "documento" es el cuerpo del PDF. Debe integrar de forma coherente TODO lo relevante que la brigada escribió (brigada, colegio, desafío, idea, misiones, mensaje, público, evaluación, brief, fábrica de campañas, construir, probar, inspirar). No dejes secciones vacías si hay dato; si falta un dato, indica “no indicado por la brigada”. Usa títulos ## en este orden:
@@ -78,7 +78,12 @@ El "documento" es el cuerpo del PDF. Debe integrar de forma coherente TODO lo re
 10. Cronograma o próximos pasos
 11. Anexos: síntesis de respuestas clave del formulario (lista breve pregunta → respuesta de lo más importante)
 
-El "prompt" NO es para Lovable: es el texto corto de portada/ficha del PDF (quiénes son, qué problema atacan, qué campaña proponen y qué van a medir). No incluyas explicaciones fuera del JSON.`,
+El "prompt" NO es para Lovable. Debe ser un texto listo para copiar y pegar en una IA o herramienta de documentos, e incluir:
+- la instrucción explícita de generar un PDF profesional de formulación de proyecto Terra Lab · ECOFluencer
+- requisitos de formato (portada, secciones, español, sin inventar datos)
+- un resumen ejecutivo del proyecto
+- la orden de usar íntegramente el contenido del "documento" y los datos de la brigada
+Entre 250 y 450 palabras. No incluyas explicaciones fuera del JSON.`,
 };
 
 /**
@@ -96,7 +101,7 @@ Devuelve SOLO un objeto JSON, sin markdown fuera de los valores, con estas clave
 {
   "nombre": "nombre corto y memorable del producto, servicio o sistema circular",
   "documento": "formulación completa del proyecto en Markdown, lista para exportar a PDF",
-  "prompt": "resumen ejecutivo de 120 a 180 palabras para la portada o ficha del PDF"
+  "prompt": "prompt completo, en español, con instrucciones para que otra IA o herramienta genere el PDF usando toda la información del proyecto"
 }
 
 El "documento" es el cuerpo del PDF. Debe integrar de forma coherente TODO lo relevante que la brigada escribió (brigada, colegio, desafío, idea, material, comprender, experimentar, definir, diseñar, construir, probar, inspirar). No dejes secciones vacías si hay dato; si falta un dato, indica “no indicado por la brigada”. Usa títulos ## en este orden:
@@ -112,7 +117,12 @@ El "documento" es el cuerpo del PDF. Debe integrar de forma coherente TODO lo re
 10. Próximos pasos y continuidad
 11. Anexos: síntesis de respuestas clave del formulario (lista breve pregunta → respuesta de lo más importante)
 
-El "prompt" NO es para Lovable: es el texto corto de portada/ficha del PDF (quiénes son, qué material transforman, qué solución proponen y qué van a medir). No incluyas explicaciones fuera del JSON.`,
+El "prompt" NO es para Lovable. Debe ser un texto listo para copiar y pegar en una IA o herramienta de documentos, e incluir:
+- la instrucción explícita de generar un PDF profesional de formulación de proyecto Terra Lab · Emprende Circular
+- requisitos de formato (portada, secciones, español, sin inventar datos)
+- un resumen ejecutivo del proyecto
+- la orden de usar íntegramente el contenido del "documento" y los datos de la brigada
+Entre 250 y 450 palabras. No incluyas explicaciones fuera del JSON.`,
 };
 
 /**
@@ -136,4 +146,68 @@ const promptsPorLab: Record<string, PromptMvpLab> = {
 /** Devuelve el prompt del lab; si no hay match, usa EcoTech. */
 export function promptMvpParaLab(lab: string): PromptMvpLab {
   return promptsPorLab[lab] ?? promptMvpEcoTech;
+}
+
+type DatoCanvasPdf = {
+  colegio: string;
+  brigada: string;
+  lema: string;
+  correoLider: string;
+  integrantes: string;
+  desafio: string;
+  ideaSemilla: string;
+};
+
+type ParQa = { pregunta: string; respuesta: string };
+
+/**
+ * Texto completo para el botón Copiar (ECOFluencer / Emprende Circular):
+ * instrucciones + prompt IA + formulación + canvas + respuestas del formulario.
+ */
+export function armarTextoCopiaPdf(opts: {
+  labNombre: string;
+  nombreProyecto: string;
+  promptIa: string;
+  documento: string;
+  canvas: DatoCanvasPdf;
+  preguntasRespuestas: ParQa[];
+}): string {
+  const canvasLineas = [
+    `Colegio: ${opts.canvas.colegio || "no indicado"}`,
+    `Brigada: ${opts.canvas.brigada || "no indicada"}`,
+    `Lema: ${opts.canvas.lema || "no indicado"}`,
+    `Correo del líder: ${opts.canvas.correoLider || "no indicado"}`,
+    `Integrantes: ${opts.canvas.integrantes || "no indicados"}`,
+    `Desafío de expedición: ${opts.canvas.desafio || "no indicado"}`,
+    `Idea semilla: ${opts.canvas.ideaSemilla || "no indicada"}`,
+  ].join("\n");
+
+  const qa = (opts.preguntasRespuestas ?? [])
+    .filter((r) => r.pregunta.trim() && r.respuesta.trim())
+    .map((r, i) => `${i + 1}. ${r.pregunta}\n   → ${r.respuesta}`)
+    .join("\n\n");
+
+  return `Genera un documento PDF profesional de formulación de proyecto para Terra Lab Atlántico — ${opts.labNombre}.
+
+INSTRUCCIONES OBLIGATORIAS PARA EL PDF:
+- Título del proyecto: ${opts.nombreProyecto}
+- Idioma: español
+- Público: docentes, mentores o jurado escolar
+- Formato: PDF formal con portada, índice o secciones claras, tipografía legible y sin inventar datos
+- Usa TODA la información de este mensaje (prompt, formulación, canvas y respuestas)
+- Si un dato no aparece, escribe exactamente: "no indicado por la brigada"
+- El PDF debe quedar listo para entregar como formulación del proyecto
+
+PROMPT / INSTRUCCIONES DE CONTENIDO:
+${opts.promptIa.trim()}
+
+FORMULACIÓN DEL PROYECTO (cuerpo principal del PDF):
+${opts.documento.trim()}
+
+DATOS DEL CANVAS (paso 1):
+${canvasLineas}
+
+RESPUESTAS DEL FORMULARIO (misiones / retos):
+${qa || "sin respuestas adicionales"}
+`;
 }

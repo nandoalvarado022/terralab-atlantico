@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import { ForjaMvp } from "@/components/mvp/ForjaMvp";
 import { MvpHeader } from "@/components/mvp/MvpHeader";
+import { installDevFillEcoFluencer } from "@/lib/dev-fill-ecofluencer";
 
 export const Route = createFileRoute("/mvp")({
   head: () => ({
@@ -26,6 +28,10 @@ export const Route = createFileRoute("/mvp")({
 });
 
 function Mvp() {
+  useEffect(() => {
+    installDevFillEcoFluencer();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <MvpHeader />

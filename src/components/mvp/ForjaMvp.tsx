@@ -19,6 +19,7 @@ import {
   type CanvasData,
   type Pregunta,
 } from "@/lib/mvp.functions";
+import { armarTextoCopiaPdf } from "@/lib/mvp-prompts";
 import { EcoFluencerQuestions, flattenRespuestasEcoFluencer } from "./EcoFluencerQuestions";
 import {
   EmprendeCircularQuestions,
@@ -306,11 +307,53 @@ export function ForjaMvp() {
     void pedirMvp(payload.respuestasParaConstruir, payload.respuestasMisiones, true);
   }
 
+  function textoParaCopiar(): string {
+    if (!resultado) return "";
+    if (!entregaPdf) return resultado.prompt;
+    const { respuestasParaConstruir } = payloadMvpActual();
+    return armarTextoCopiaPdf({
+      labNombre: labActual.nombre,
+      nombreProyecto: resultado.nombre,
+      promptIa: resultado.prompt,
+      documento: resultado.documento,
+      canvas: {
+        colegio: canvas.colegio,
+        brigada: canvas.brigada,
+        lema: canvas.lema,
+        correoLider: canvas.correoLider,
+        integrantes: canvas.integrantes,
+        desafio: canvas.desafio,
+        ideaSemilla: canvas.ideaSemilla,
+      },
+      preguntasRespuestas: respuestasParaConstruir,
+    });
+  }
+
   async function copiar(texto: string, etiqueta: string) {
+    const contenido = texto?.trim();
+    if (!contenido) {
+      setError("No hay texto para copiar todavía.");
+      return;
+    }
+
     try {
-      await navigator.clipboard.writeText(texto);
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(contenido);
+      } else {
+        const area = document.createElement("textarea");
+        area.value = contenido;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.left = "-9999px";
+        document.body.appendChild(area);
+        area.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(area);
+        if (!ok) throw new Error("execCommand copy failed");
+      }
       setCopiado(etiqueta);
-      setTimeout(() => setCopiado(null), 2200);
+      setError(null);
+      window.setTimeout(() => setCopiado((actual) => (actual === etiqueta ? null : actual)), 2200);
     } catch {
       setError("Tu navegador no permitió copiar. Selecciona el texto y cópialo a mano.");
     }
@@ -751,22 +794,24 @@ export function ForjaMvp() {
 
           <div className="rounded-3xl bg-deep p-7 text-deep-foreground print:hidden">
             <h3 className="text-xl font-extrabold">
-              {entregaPdf ? "Ficha / resumen para el PDF" : "Prompt para Lovable"}
+              {entregaPdf ? "Prompt para generar el PDF" : "Prompt para Lovable"}
             </h3>
+            {entregaPdf && (
+              <p className="mt-2 text-sm opacity-80">
+                Al pulsar Copiar se incluye el prompt con instrucciones, la formulación completa, el
+                canvas y las respuestas del formulario.
+              </p>
+            )}
             <pre className="mt-4 max-h-80 overflow-auto text-sm leading-relaxed whitespace-pre-wrap opacity-90">
               {resultado.prompt}
             </pre>
             <div className="mt-5 flex flex-wrap gap-3">
               <button
                 type="button"
-                onClick={() => copiar(resultado.prompt, "prompt")}
+                onClick={() => void copiar(textoParaCopiar(), "prompt")}
                 className="rounded-full bg-lime px-6 py-3 font-extrabold text-lime-foreground"
               >
-                {copiado === "prompt"
-                  ? "¡Copiado!"
-                  : entregaPdf
-                    ? "Copiar ficha"
-                    : "Copiar prompt"}
+                {copiado === "prompt" ? "¡Copiado!" : entregaPdf ? "Copiar" : "Copiar prompt"}
               </button>
               <button
                 type="button"
