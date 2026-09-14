@@ -1,0 +1,33 @@
+src/components/mvp/emprende-circular/Reto5Disenar.tsx
+  s_fa6b993930c281::t_06eee16a1450e9 55
+src/components/mvp/emprende-circular/flatten.ts
+  s_fa6b993930c281::t_ce1646302f83bf 6
+  s_fa6b993930c281::t_dcb52762a2570d 116
+src/data/emprende-circular-misiones.ts
+  s_fa6b993930c281::t_496942e598a574 298-299
+  s_fa6b993930c281::t_12b85bc9647d07 343-346
+  s_fa6b993930c281::t_d910be115d1d0e 504,506-517,522,528
+src/lib/dev-fill-emprende-circular.ts
+  s_fa6b993930c281::t_7fa8e2165238bd 131-132
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "46520833dee580bc44ead48c5fbcdabbfeb70a94",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_fa6b993930c281": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "afe2dccf-002d-41a8-85c2-13c882a7533a",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
