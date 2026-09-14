@@ -1,0 +1,81 @@
+src/components/mvp/EcoFluencerQuestions.tsx
+  s_6cc4119a45b8ed::t_c1c471ae4b6e91 985,1027-1031
+  s_6cc4119a45b8ed::t_56b22b5ef8e737 1001
+  s_6cc4119a45b8ed::t_dd9104fe67b210 62-65
+  s_6cc4119a45b8ed::t_8167018980f380 1054
+  s_6cc4119a45b8ed::t_db5be3d0105569 60
+  s_6cc4119a45b8ed::t_aa0d5747a14ae8 964,971-984,986
+  s_6cc4119a45b8ed::t_146de6f296b9f3 1202,1204-1205
+  s_6cc4119a45b8ed::t_7aa97ae1a67c27 987,1209-1217
+  s_6cc4119a45b8ed::t_3b17e7307c9163 988
+  s_6cc4119a45b8ed::t_062b7d2b13924e 1218
+  h_15f0de19236f1a 250-252
+src/components/mvp/emprende-circular/Reto2Comprender.tsx
+  h_15f0de19236f1a 144-149,233
+  h_15f0de19236f1a 94-98,135,152-156,160-164,174-178,196-200,204-208,232,234
+src/components/mvp/emprende-circular/Reto5Disenar.tsx
+  s_6cc4119a45b8ed::t_cd329c8b8a1733 3,9-67,134-139
+  s_6cc4119a45b8ed::t_9200c6c8c0504b 140
+src/components/mvp/BienvenidaEmprendeCircular.tsx
+  s_6cc4119a45b8ed::t_8e5a996267ed87 1-91
+src/components/mvp/MisionInspirar.tsx
+  s_6cc4119a45b8ed::t_cd82581e1918f8 1-24
+src/components/mvp/MisionConstruir.tsx
+  s_6cc4119a45b8ed::t_c2a630da9fac85 4-5,8,10-22
+  s_6cc4119a45b8ed::t_9bbf2c79ed9ebd 1-3,6-7,9,23-24
+src/styles.css
+  s_6cc4119a45b8ed::t_7a31bacedf0b2f 64,78-86
+  s_6cc4119a45b8ed::t_576f06ae2b7bb0 87-88
+src/components/commons/FileUploader.tsx
+  s_6cc4119a45b8ed::t_b659ddcafc02c1 1,24-27,49,67-85,117
+  s_6cc4119a45b8ed::t_b16f1d6415b76a 50-55
+  s_6cc4119a45b8ed::t_9ebe5a483d0190 56
+src/components/mvp/EmprendeCircularQuestions.tsx
+  s_6cc4119a45b8ed::t_39e8cd074d2f72 4
+  s_6cc4119a45b8ed::t_b6ed97aa5427fc 52-53
+  s_6cc4119a45b8ed::t_f83b56dc83a9e6 83,97-101
+  s_6cc4119a45b8ed::t_e8135d0ae22483 124
+  s_6cc4119a45b8ed::t_74f863f24a90ef 49-51,54-69
+  s_6cc4119a45b8ed::t_61caa5be06b46c 14-16
+  s_6cc4119a45b8ed::t_cb4563a33d8c4c 1,8
+src/components/mvp/emprende-circular/flatten.ts
+  s_6cc4119a45b8ed::t_5d8a96d2a6ad8a 205-209
+  s_6cc4119a45b8ed::t_f2aff5272d5385 204,210-224
+src/components/mvp/MisionProbar.tsx
+  s_6cc4119a45b8ed::t_aad7c7ffef16e5 1-25
+src/data/ecofluencer-misiones.ts
+  s_6cc4119a45b8ed::t_04d565a6be2e54 288-289
+  s_6cc4119a45b8ed::t_abc37426f936d7 148-161
+  s_6cc4119a45b8ed::t_24342ed8ad7d82 147
+src/components/mvp/BienvenidaEcoFluencer.tsx
+  s_6cc4119a45b8ed::t_3a58c6bedc4632 1-89
+src/data/emprende-circular-misiones.ts
+  s_6cc4119a45b8ed::t_a0e29c96c387d0 362-364
+  s_6cc4119a45b8ed::t_4a8eaefb56c23c 306
+  s_6cc4119a45b8ed::t_e785876afe1696 283,299
+  s_6cc4119a45b8ed::t_1ad303dc7fbc8b 300-305,307-320
+  h_15f0de19236f1a 345-346,471-472
+src/components/mvp/emprende-circular/Reto4Definir.tsx
+  h_15f0de19236f1a 199,290,321-325
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "46648f489cbb326764650db0a5ac382af10f2380",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_6cc4119a45b8ed": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1fe3a7a5-3655-4377-9b43-752e3583b9a7",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
