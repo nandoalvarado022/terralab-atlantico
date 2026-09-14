@@ -1,0 +1,86 @@
+src/lib/ai-deepseek.server.ts
+  s_fa6b993930c281::t_88d27b175c543f 1-69
+src/components/mvp/ForjaMvp.tsx
+  s_0b80a1e76a088e::t_90abe46473c7e6 312-314,318-333,337-341,343-348
+  s_0b80a1e76a088e::t_ac46585af043e5 118
+  s_fa6b993930c281::t_c53b0458e15aca 266-268
+  s_fa6b993930c281::t_0362b7da2eb361 315-317,334-336,342
+  s_0b80a1e76a088e::t_914e9539076cbe 799,814-816,818-819,821-891,900,902,926,930-931
+  h_15f0de19236f1a 149,153-156,994-996
+src/lib/dev-fill-ecofluencer.ts
+  s_24c3d1247b517f::t_65e93168070f72 225-228,231
+  s_24c3d1247b517f::t_a45bedb1968b5a 213,216
+  s_24c3d1247b517f::t_4af5244c37cfc3 22,24
+src/lib/ai-gateway.server.ts
+  h_15f0de19236f1a 3
+  s_fa6b993930c281::t_8051857e68617d 1-2,4-18,21-24,26-30
+package.json
+  s_0b80a1e76a088e::t_3947c5eb69c34f 65
+  s_24c3d1247b517f::t_a326d5fddfca91 4-8
+  s_fa6b993930c281::t_a90d61b2dc672e 67
+src/lib/forja-storage.ts
+  s_24c3d1247b517f::t_3fd7af8b97fdd5 1-12
+src/lib/ai-anthropic.server.ts
+  s_fa6b993930c281::t_818b988cdaafda 1-64
+src/lib/mvp-prompts.ts
+  s_fa6b993930c281::t_3a573bc892fb0b 13
+  s_fa6b993930c281::t_84c88e42acf76c 60,62,64,75
+  s_fa6b993930c281::t_65927061f498a7 87,89,91,102
+src/lib/dev-fill-emprende-circular.ts
+  s_24c3d1247b517f::t_f1e0544cbc2761 1-25,27-251,253-254,256-261,263-278
+  s_24c3d1247b517f::t_78a1db37f992b3 252,255,262
+  s_24c3d1247b517f::t_6b8f49b636b87d 26
+docs/emprende-circular-overview.md
+  s_24c3d1247b517f::t_d19f786fa4ef15 79-89
+src/routes/mvp.tsx
+  s_24c3d1247b517f::t_6fe46c9b38d052 7
+  s_24c3d1247b517f::t_81dc09342e1c8c 33-35
+src/lib/ai-gateway.types.ts
+  s_fa6b993930c281::t_aede4935e883fd 1-36
+src/lib/mvp.functions.ts
+  s_fa6b993930c281::t_eac01c7c680fc3 38-50
+  s_fa6b993930c281::t_83310ed4020031 4
+  s_fa6b993930c281::t_1c552226ff9aee 212-230
+  s_fa6b993930c281::t_45271b6a23fd25 51
+src/lib/mvp-pdf.ts
+  s_0b80a1e76a088e::t_755b3b495fa780 1-311
+pnpm-lock.yaml
+  s_fa6b993930c281::t_6e03c06374e2da 134-136,140-142,1820-1825,1834-1836,1940-1943,1968-1971,2017-2019,2035-2037,2147-2149,2296-2298,2311-2313,2393-2396,2436-2438,2491-2493,2752-2775,2795-2797,2813-2815,2850-2852,2950-2952,2957-2960,3049-3052,3064-3067,3082-3084,3219-3221,4874-4878,4887-4889,5031-5033,5057-5068,5112-5114,5127-5131,5206-5210,5346-5351,5358-5359,5419-5424,5451-5452,5488-5498,5708-5712,5760-5761,5772-5774,5803-5807,5911-5913,5916-5918,6006-6008,6019-6021,6032-6036,6127-6131
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ed367c34d54af397e93b203149e4f03553787993",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_0b80a1e76a088e": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "db618359-8a5c-45e8-8e85-a7aa9519f6d6",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    },
+    "s_24c3d1247b517f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2783023d-e07f-4a7d-ba35-a77189775a6e",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    },
+    "s_fa6b993930c281": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "afe2dccf-002d-41a8-85c2-13c882a7533a",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
