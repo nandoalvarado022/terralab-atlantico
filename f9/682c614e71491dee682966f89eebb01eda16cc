@@ -1,0 +1,38 @@
+src/lib/dev-fill-ecofluencer.ts
+  s_0b80a1e76a088e::t_63cb140116742a 1-128,130-210,212-213,232-238,240,246
+  s_0b80a1e76a088e::t_41e1b0d125852d 211,214-231,239,241-245
+  h_15f0de19236f1a 129
+src/components/mvp/ForjaMvp.tsx
+  s_0b80a1e76a088e::t_17a1246268d6a0 310-312,314-327,329-331
+  s_0b80a1e76a088e::t_95585de43a5511 811
+  s_0b80a1e76a088e::t_08d4e4751ef82c 22
+  s_0b80a1e76a088e::t_beabe829cd4997 313,328,333-338,340-353,355-356
+  s_0b80a1e76a088e::t_380600cc05141e 797,799-804,814
+src/routes/mvp.tsx
+  s_0b80a1e76a088e::t_75fe064fb2efac 2,6,31-34
+src/lib/mvp-prompts.ts
+  s_0b80a1e76a088e::t_6f4cd9a8190ac4 65,81-86,104,120-125
+  s_0b80a1e76a088e::t_76a473055b4135 150-184,186-213
+  s_0b80a1e76a088e::t_e157c2e37c455f 185
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f9682c614e71491dee682966f89eebb01eda16cc",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_0b80a1e76a088e": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "db618359-8a5c-45e8-8e85-a7aa9519f6d6",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
