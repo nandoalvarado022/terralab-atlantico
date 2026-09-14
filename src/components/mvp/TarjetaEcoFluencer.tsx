@@ -84,7 +84,7 @@ export function TarjetaEcoFluencer({
           rows={4}
           value={valor}
           onChange={(e) => onCambiar(e.target.value)}
-          className="min-h-24 w-full flex-1 resize-y rounded-xl border-0 bg-transparent p-0 text-sm outline-none focus:ring-0"
+          className="min-h-24 w-full flex-1 resize-y rounded-xl border-0 bg-transparent px-2 py-1.5 text-sm outline-none focus:ring-0"
         />
         {pista && <p className="text-xs text-deep/80 italic">{pista}</p>}
         {pie}

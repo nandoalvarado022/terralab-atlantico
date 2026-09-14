@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import personaje from "@/assets/images/character-ecoinfluencer.png";
 
-const TEXTO = "BIENVENIDOS AL WORKBOOK DE ECOFLUENCER";
+const TEXTO = "BIENVENIDOS AL LAB DE ECOFLUENCER";
 
 type Props = {
   abierto: boolean;

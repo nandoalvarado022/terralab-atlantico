@@ -4,7 +4,39 @@ import { format } from "date-fns";
 
 import { labs } from "@/data/labs";
 import { adminLogin, adminLogout, listMvps, type MvpGuardado } from "@/lib/admin.functions";
+import { aplanarCamposMisiones, esArrayMisiones, esArrayPlano } from "@/lib/respuestas-misiones";
 import { VisorEcoTech } from "./VisorEcoTech";
+import { VisorRespuestasMisiones } from "./VisorRespuestasMisiones";
+
+function VisorRespuestas({ m }: { m: MvpGuardado }) {
+  if (m.lab === "ecotech") {
+    if (esArrayMisiones(m.respuestas)) {
+      return <VisorEcoTech respuestas={aplanarCamposMisiones(m.respuestas)} />;
+    }
+    if (m.respuestas_ecotech) {
+      return <VisorEcoTech respuestas={m.respuestas_ecotech} />;
+    }
+  }
+
+  if (esArrayMisiones(m.respuestas)) {
+    return <VisorRespuestasMisiones misiones={m.respuestas} />;
+  }
+
+  if (esArrayPlano(m.respuestas) && m.respuestas.length > 0) {
+    return (
+      <ul className="space-y-3">
+        {m.respuestas.map((r, i) => (
+          <li key={i} className="rounded-2xl border border-border bg-secondary/30 p-4">
+            <p className="text-xs font-extrabold tracking-wider uppercase">{r.pregunta}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{r.respuesta}</p>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  return <p className="text-sm text-muted-foreground">No hay respuestas registradas.</p>;
+}
 
 export function AdminDashboard() {
   const [autenticado, setAutenticado] = useState<boolean | null>(null);
@@ -194,6 +226,9 @@ export function AdminDashboard() {
                       {m.brigada || "Brigada sin nombre"} ·{" "}
                       {format(new Date(m.created_at), "d MMM yyyy, HH:mm")}
                     </p>
+                    {m.correo_lider && (
+                      <p className="mt-1 text-sm text-muted-foreground">{m.correo_lider}</p>
+                    )}
                   </div>
                   <span className="text-xs font-extrabold uppercase text-muted-foreground">
                     {abierto ? "Ocultar" : "Ver documento"}
@@ -207,27 +242,7 @@ export function AdminDashboard() {
                         Respuestas de la brigada
                       </h3>
                       <div className="mt-3">
-                        {m.lab === "ecotech" && m.respuestas_ecotech ? (
-                          <VisorEcoTech respuestas={m.respuestas_ecotech} />
-                        ) : m.respuestas.length > 0 ? (
-                          <ul className="space-y-3">
-                            {m.respuestas.map((r, i) => (
-                              <li
-                                key={i}
-                                className="rounded-2xl border border-border bg-secondary/30 p-4"
-                              >
-                                <p className="text-xs font-extrabold tracking-wider uppercase">
-                                  {r.pregunta}
-                                </p>
-                                <p className="mt-1 text-sm text-muted-foreground">{r.respuesta}</p>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">
-                            No hay respuestas registradas.
-                          </p>
-                        )}
+                        <VisorRespuestas m={m} />
                       </div>
                     </div>
                     <article className="rounded-3xl border border-border bg-secondary/40 p-6">

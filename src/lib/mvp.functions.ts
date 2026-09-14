@@ -2,13 +2,30 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { callGateway, parseJsonLoose } from "./ai-gateway.server";
-import { getSupabase } from "./supabase.server";
+import {
+  CorreoLiderDuplicadoError,
+  CorreoLiderInvalidoError,
+  correoLiderYaRegistrado,
+  guardarMvpEnSupabase,
+  validarCorreoLider,
+} from "./mvp-save.server";
+import { promptMvpParaLab } from "./mvp-prompts";
+import {
+  empaquetarRespuestasEcoFluencer,
+  empaquetarRespuestasEcoTech,
+  empaquetarRespuestasEmprendeCircular,
+  empaquetarRespuestasPrd,
+} from "./respuestas-misiones";
 
 export const canvasSchema = z.object({
   colegio: z.string(),
   brigada: z.string(),
   lema: z.string(),
-  correoLider: z.string(),
+  correoLider: z
+    .string()
+    .trim()
+    .min(1, "Indica el correo del líder del equipo")
+    .email("Indica un correo electrónico válido"),
   integrantes: z.string(),
   pistas: z.string(),
   desafio: z.string(),
@@ -52,8 +69,7 @@ function contexto(canvas: CanvasData) {
     `Lema: ${canvas.lema || "no indicado"}`,
     `Correo del líder del equipo: ${canvas.correoLider || "no indicado"}`,
     `Integrantes y roles: ${canvas.integrantes || "no indicados"}`,
-    `Pistas del safari / hallazgos: ${canvas.pistas || "no indicadas"}`,
-    `Desafío elegido: ${canvas.desafio || "no indicado"}`,
+    `Desafío de expedición terra lab definido: ${canvas.desafio || "no indicado"}`,
     `Idea semilla: ${canvas.ideaSemilla || "no indicada"}`,
     `Lab activado: ${canvas.lab}`,
     `Enfoque del lab: ${enfoque(canvas.lab)}`,
@@ -142,19 +158,31 @@ export const construirMvp = createServerFn({ method: "POST" })
     z
       .object({
         canvas: canvasSchema,
+        /** Q&A aplanado solo para el prompt de IA. */
         respuestas: z.array(z.object({ pregunta: z.string(), respuesta: z.string() })),
-        respuestasEcoTech: z.record(z.string(), z.string()).optional(),
+        /** Record crudo de misiones (EcoTech / Circular / EcoFluencer). */
+        respuestasMisiones: z.record(z.string(), z.string()).optional(),
+        /** Regenera y actualiza el MVP ya guardado con este correo. */
+        regenerar: z.boolean().optional(),
       })
       .parse(input),
   )
   .handler(async ({ data }) => {
+    // Validar correo (formato). La unicidad solo aplica en la primera generación.
+    const correo = validarCorreoLider(data.canvas.correoLider);
+    if (!data.regenerar && (await correoLiderYaRegistrado(correo))) {
+      throw new CorreoLiderDuplicadoError(correo);
+    }
+
     const qa = data.respuestas
       .filter((r) => r.respuesta.trim())
       .map((r) => `- ${r.pregunta}\n  → ${r.respuesta}`)
       .join("\n");
 
+    const promptLab = promptMvpParaLab(data.canvas.lab);
+
     const raw = await callGateway([
-      { role: "system", content: SISTEMA },
+      { role: "system", content: promptLab.sistema },
       {
         role: "user",
         content: `Información del canvas:
@@ -163,27 +191,7 @@ ${contexto(data.canvas)}
 Respuestas de PRD de la brigada:
 ${qa || "sin respuestas adicionales"}
 
-Devuelve SOLO un objeto JSON, sin markdown fuera de los valores, con estas claves:
-{
-  "nombre": "nombre corto y memorable del producto",
-  "documento": "el documento de MVP completo en Markdown",
-  "prompt": "el prompt listo para pegar en Lovable"
-}
-
-El "documento" en Markdown debe tener, en este orden y con títulos ##:
-1. Nombre del MVP
-2. Brigada y colegio
-3. El problema que descubrimos (el problema y la pista o dato real que lo respalda)
-4. A quién ayuda (usuario principal, la tarea que necesita lograr y la señal de éxito)
-5. Cómo funciona (el circuito: qué entrada recibe, qué regla aplica, qué salida muestra y qué acción toma la persona después)
-6. Alcance del MVP (3 a 5 pantallas o piezas mínimas, cada una con su descripción y las acciones que permite)
-7. Fuera de alcance
-8. Datos que se registran (lista de campos)
-9. Cómo lo probamos (con cuántas personas, qué tarea les daremos y qué observaremos)
-10. Indicador de impacto y próximo paso
-11. Criterios de listo (checklist)
-
-El "prompt" debe estar escrito en segunda persona dirigido a Lovable, en español, entre 200 y 350 palabras: qué construir, para quién, el circuito entrada-regla-salida-acción en términos concretos de pantallas y flujos, datos y campos, indicador que se muestra, tono visual apropiado para estudiantes, y la instrucción de empezar por una primera versión navegable sin cuentas de usuario si no son indispensables. No incluyas explicaciones fuera del JSON.`,
+${promptLab.instrucciones}`,
       },
     ]);
 
@@ -192,27 +200,30 @@ El "prompt" debe estar escrito en segunda persona dirigido a Lovable, en españo
       .object({ nombre: z.string(), documento: z.string(), prompt: z.string() })
       .parse(parsed);
 
+    const mapa = data.respuestasMisiones;
+    const respuestasParaDb =
+      data.canvas.lab === "ecotech" && mapa
+        ? empaquetarRespuestasEcoTech(mapa)
+        : data.canvas.lab === "circular" && mapa
+          ? empaquetarRespuestasEmprendeCircular(mapa)
+          : data.canvas.lab === "influencia" && mapa
+            ? empaquetarRespuestasEcoFluencer(mapa)
+            : empaquetarRespuestasPrd(data.respuestas);
+
     try {
-      const { error } = await getSupabase()
-        .from("mvps")
-        .insert({
-          colegio: data.canvas.colegio,
-          brigada: data.canvas.brigada,
-          lema: data.canvas.lema,
-          integrantes: data.canvas.integrantes,
-          pistas: data.canvas.pistas,
-          desafio: data.canvas.desafio,
-          idea_semilla: data.canvas.ideaSemilla,
-          lab: data.canvas.lab,
-          respuestas: data.respuestas,
-          respuestas_ecotech: data.respuestasEcoTech ?? null,
-          nombre: resultado.nombre,
-          documento: resultado.documento,
-          prompt: resultado.prompt,
-        });
-      if (error) console.error("[mvps] error al guardar", error);
+      await guardarMvpEnSupabase({
+        canvas: data.canvas,
+        respuestas: respuestasParaDb,
+        resultado,
+        ...(data.regenerar ? { regenerar: true } : {}),
+      });
     } catch (e) {
+      if (e instanceof CorreoLiderDuplicadoError || e instanceof CorreoLiderInvalidoError) {
+        throw e;
+      }
       console.error("[mvps] no se pudo guardar el MVP", e);
+      if (e instanceof Error) throw e;
+      throw new Error("No pudimos guardar el MVP en la base de datos.");
     }
 
     return resultado;

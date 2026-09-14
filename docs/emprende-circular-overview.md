@@ -64,11 +64,9 @@ Tres bloques:
 
 ### 5. Diseñar (`disenar`) — `Reto5Disenar`
 
-Paso 1: cuatro dimensiones con ícono (F / M / T / R), título y textarea.
+Paso 1: **Alternativa A** (descripción, recursos, resultado esperado).
 
-- Catálogo: `dimensionesDiseno` en `emprende-circular-misiones.ts`.
-- Para cambiar el subtítulo de cada opción, editar solo el campo `subtitulo` de cada entrada (hoy vacío a propósito).
-- **Foto del prototipo** con `FileUploader` (`src/components/commons/FileUploader.tsx`).
+Paso 2: cuatro dimensiones con ícono (F / M / T / R), título y textarea + **logo o marca del producto**.
 
 ## Comportamientos UX a respetar
 

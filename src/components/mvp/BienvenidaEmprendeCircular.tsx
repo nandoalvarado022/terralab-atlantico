@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import personaje from "@/assets/images/character-emprende-circular.png";
 
-const TEXTO = "BIENVENIDOS AL WORKBOOK DE EMPRENDE CIRCULAR";
+const TEXTO = "BIENVENIDOS AL LAB DE EMPRENDE CIRCULAR";
 
 type Props = {
   abierto: boolean;

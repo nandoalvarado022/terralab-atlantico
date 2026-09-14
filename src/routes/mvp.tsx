@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ForjaMvp } from "@/components/mvp/ForjaMvp";
+import { MvpHeader } from "@/components/mvp/MvpHeader";
 
 export const Route = createFileRoute("/mvp")({
   head: () => ({
@@ -25,5 +26,10 @@ export const Route = createFileRoute("/mvp")({
 });
 
 function Mvp() {
-  return <ForjaMvp />;
+  return (
+    <div className="min-h-screen bg-background">
+      <MvpHeader />
+      <ForjaMvp />
+    </div>
+  );
 }

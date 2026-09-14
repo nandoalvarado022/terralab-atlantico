@@ -2,23 +2,41 @@ import { createServerFn } from "@tanstack/react-start";
 import { useSession } from "@tanstack/react-start/server";
 import { z } from "zod";
 
+import {
+  esArrayMisiones,
+  esArrayPlano,
+  type RespuestaMision,
+  type RespuestaPlana,
+} from "./respuestas-misiones";
 import { getSupabase } from "./supabase.server";
+
+const respuestaPlanaSchema = z.object({ pregunta: z.string(), respuesta: z.string() });
+const respuestaMisionSchema = z.object({
+  id: z.string(),
+  numero: z.number(),
+  nombre: z.string(),
+  tagline: z.string().optional(),
+  campos: z.record(z.string(), z.string()),
+});
 
 const mvpSchema = z.object({
   id: z.string(),
   created_at: z.string(),
   colegio: z.string(),
   brigada: z.string(),
-  lema: z.string(),
+  lema: z.string().nullable().optional(),
+  correo_lider: z.string().nullable().optional(),
   lab: z.string(),
   nombre: z.string(),
   documento: z.string(),
   prompt: z.string(),
-  respuestas: z.array(z.object({ pregunta: z.string(), respuesta: z.string() })),
+  respuestas: z.array(z.union([respuestaMisionSchema, respuestaPlanaSchema])),
   respuestas_ecotech: z.record(z.string(), z.string()).nullable(),
 });
 
-export type MvpGuardado = z.infer<typeof mvpSchema>;
+export type MvpGuardado = Omit<z.infer<typeof mvpSchema>, "respuestas"> & {
+  respuestas: RespuestaMision[] | RespuestaPlana[];
+};
 
 function adminSession() {
   const secret = process.env["SESSION_SECRET"];
@@ -58,11 +76,32 @@ export const listMvps = createServerFn({ method: "POST" }).handler(async () => {
   const { data, error } = await getSupabase()
     .from("mvps")
     .select(
-      "id, created_at, colegio, brigada, lema, lab, nombre, documento, prompt, respuestas, respuestas_ecotech",
+      "id, created_at, colegio, brigada, lema, correo_lider, lab, nombre, documento, prompt, respuestas, respuestas_ecotech",
     )
     .order("created_at", { ascending: false });
 
-  if (error) throw new Error("No pudimos cargar los MVPs guardados.");
+  if (error) {
+    // Compatibilidad si aún no corrieron la migración de correo_lider.
+    if (error.code === "42703" && /correo_lider/i.test(error.message)) {
+      const fallback = await getSupabase()
+        .from("mvps")
+        .select(
+          "id, created_at, colegio, brigada, lema, lab, nombre, documento, prompt, respuestas, respuestas_ecotech",
+        )
+        .order("created_at", { ascending: false });
+      if (fallback.error) throw new Error("No pudimos cargar los MVPs guardados.");
+      return z.array(mvpSchema).parse(
+        (fallback.data ?? []).map((row) => ({ ...row, correo_lider: null })),
+      ) as MvpGuardado[];
+    }
+    throw new Error("No pudimos cargar los MVPs guardados.");
+  }
 
-  return z.array(mvpSchema).parse(data);
+  const parsed = z.array(mvpSchema).parse(data) as MvpGuardado[];
+  return parsed.map((m) => {
+    if (esArrayMisiones(m.respuestas) || esArrayPlano(m.respuestas)) {
+      return m;
+    }
+    return { ...m, respuestas: [] as RespuestaPlana[] };
+  });
 });

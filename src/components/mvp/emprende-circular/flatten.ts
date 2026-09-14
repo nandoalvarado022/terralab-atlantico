@@ -198,7 +198,7 @@ export function flattenRespuestasEmprendeCircular(
   }
 
   if (respuestas[clavesEmprendeCircular.prototipoImagen]?.trim()) {
-    salida.push({ pregunta: "Foto del prototipo", respuesta: "(imagen adjuntada)" });
+    salida.push({ pregunta: "Logo o marca del producto", respuesta: "(imagen adjuntada)" });
   }
 
   if (respuestas[clavesEmprendeCircular.construirImagen]?.trim()) {

@@ -295,8 +295,7 @@ export const pantallasEmprendeCircular: PantallaEmprendeCircular[] = [
     numero: 5,
     nombre: "Diseñar",
     tagline: "Diseñar: criterios de la solución",
-    instrucciones:
-      "Completen cada dimensión de diseño: función, material, tiempo y esfuerzo, y recursos. Suban la foto del prototipo y detallen la alternativa A.",
+    instrucciones: "Detallen la alternativa A: descripción, recursos y resultado esperado.",
   },
   {
     id: "construir",
