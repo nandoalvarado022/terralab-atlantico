@@ -52,7 +52,7 @@ function TarjetaAlternativa({
               <p className="mt-0.5 text-xs text-[#1f5c4a]/70">{campo.pista}</p>
               <textarea
                 id={clave}
-                rows={2}
+                rows={campo.filas}
                 value={respuestas[clave] ?? ""}
                 onChange={(e) => onCambiar(clave, e.target.value)}
                 className="mt-2 w-full resize-none rounded-none border-0 border-b border-[#1f5c4a]/30 bg-transparent px-0 py-1.5 text-sm text-deep outline-none focus:border-[#1f5c4a]"

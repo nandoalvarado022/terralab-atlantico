@@ -3,6 +3,7 @@ import {
   accionesCirculares,
   accionesRetoDefinir,
   camposAuditoria,
+  camposDetalleAlternativa,
   clavesEmprendeCircular,
   comprobacionesDefinicion,
   etapasComprender,
@@ -112,11 +113,7 @@ export function flattenRespuestasEmprendeCircular(
     salida.push({ pregunta: "Alternativa A", respuesta: altA });
   }
 
-  for (const campo of [
-    { id: "descripcion" as const, titulo: "Descripción" },
-    { id: "recursos" as const, titulo: "Recursos" },
-    { id: "resultado" as const, titulo: "Resultado esperado" },
-  ]) {
+  for (const campo of camposDetalleAlternativa) {
     const valor = respuestas[clavesEmprendeCircular.alternativaCampo("a", campo.id)]?.trim();
     if (valor) {
       salida.push({

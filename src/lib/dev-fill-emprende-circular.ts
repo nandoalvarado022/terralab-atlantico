@@ -128,8 +128,9 @@ function respuestasEmprendeCircularDemo(): Record<string, string> {
   }
   r[clavesEmprendeCircular.alternativaA] = "Segunda Página (blocs con papel recuperado)";
   const detalleAlt: Record<string, string> = {
+    nombre: "Segunda Página",
+    lema: "Una hoja más, un bloc menos de basura",
     descripcion: "Recoger hojas limpias y fabricar blocs de 40 hojas para vender o prestar.",
-    recursos: "Guillotina segura, grapas, cartón de respaldo, 2 mesas, 3 voluntarios.",
     resultado: "Al menos 20 blocs piloto en 2 semanas y menos papel en caneca mixta.",
   };
   for (const c of camposDetalleAlternativa) {

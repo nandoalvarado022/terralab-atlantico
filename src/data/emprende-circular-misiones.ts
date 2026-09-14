@@ -295,7 +295,8 @@ export const pantallasEmprendeCircular: PantallaEmprendeCircular[] = [
     numero: 5,
     nombre: "Diseñar",
     tagline: "Diseñar: criterios de la solución",
-    instrucciones: "Detallen la alternativa A: descripción, recursos y resultado esperado.",
+    instrucciones:
+      "Detallen la alternativa A: nombre del producto, lema comercial, descripción y resultado esperado.",
   },
   {
     id: "construir",
@@ -339,8 +340,10 @@ export const clavesEmprendeCircular = {
   oportunidad: (id: string) => `ec3-oportunidad-${id}`,
   alternativaA: "ec3-alternativa-a",
   alternativaB: "ec3-alternativa-b",
-  alternativaCampo: (letra: "a" | "b", campo: "descripcion" | "recursos" | "resultado") =>
-    `ec3-alt-${letra}-${campo}`,
+  alternativaCampo: (
+    letra: "a" | "b",
+    campo: "nombre" | "lema" | "descripcion" | "recursos" | "resultado",
+  ) => `ec3-alt-${letra}-${campo}`,
   recorridoCampo: (etapaId: string, campo: "lugar" | "actor" | "ocurre" | "cantidad" | "costo") =>
     `ec4-recorrido-${etapaId}-${campo}`,
   retoPara: "ec4-reto-para",
@@ -498,21 +501,31 @@ export const comprobacionesDefinicion = [
   { id: "seguro-inclusivo", etiqueta: "seguro e inclusivo", columna: "izq" as const },
 ];
 
+/** Campos de Alternativa A en Reto 5 · Diseñar (sin “recursos”; ese va en dimensiones F/M/T/R). */
 export const camposDetalleAlternativa = [
+  {
+    id: "nombre" as const,
+    titulo: "NOMBRE DEL PRODUCTO",
+    pista: "cómo se llamará el producto o servicio",
+    filas: 1,
+  },
+  {
+    id: "lema" as const,
+    titulo: "LEMA COMERCIAL",
+    pista: "frase corta que lo identifica",
+    filas: 1,
+  },
   {
     id: "descripcion" as const,
     titulo: "DESCRIPCIÓN",
     pista: "qué cambiaremos o probaremos",
-  },
-  {
-    id: "recursos" as const,
-    titulo: "RECURSOS",
-    pista: "materiales seguros y cantidad",
+    filas: 2,
   },
   {
     id: "resultado" as const,
     titulo: "RESULTADO ESPERADO",
     pista: "qué creemos que ocurrirá",
+    filas: 2,
   },
 ];
 
