@@ -57,9 +57,12 @@ import {
   verbosObservables,
   type PantallaEcoFluencer,
 } from "@/data/ecofluencer-misiones";
-import { TarjetaEcoFluencer } from "./TarjetaEcoFluencer";
+import { BienvenidaEcoFluencer } from "./BienvenidaEcoFluencer";
 import { FabricaCampanasEcoFluencer, flattenFabricaCampanas } from "./FabricaCampanasEcoFluencer";
-import { SubirImagenEcoFluencer } from "./SubirImagenEcoFluencer";
+import { MisionConstruir } from "./MisionConstruir";
+import { MisionInspirar } from "./MisionInspirar";
+import { MisionProbar } from "./MisionProbar";
+import { TarjetaEcoFluencer } from "./TarjetaEcoFluencer";
 
 type Props = {
   respuestas: Record<string, string>;
@@ -244,7 +247,9 @@ function ListaEmocionesAyuda({ items }: { items: PulsoItem[] }) {
           </span>
           <span className="min-w-0">
             <span className="block text-sm font-extrabold text-deep">{item.nombre}</span>
-            <span className="mt-0.5 block text-xs leading-snug text-deep/80">{item.descripcion}</span>
+            <span className="mt-0.5 block text-xs leading-snug text-deep/80">
+              {item.descripcion}
+            </span>
           </span>
         </li>
       ))}
@@ -956,12 +961,27 @@ function ContenidoPantalla({
 
   if (pantalla.id === "construir") {
     return (
-      <SubirImagenEcoFluencer
-        titulo="Construir"
-        ayuda="Suban el archivo o la imagen de lo que van a construir."
-        alt="Archivo o imagen de construcción"
+      <MisionConstruir
         valor={respuestas[clavesEcoFluencer.construirImagen] ?? ""}
         onCambiar={(v) => onCambiar(clavesEcoFluencer.construirImagen, v)}
+      />
+    );
+  }
+
+  if (pantalla.id === "probar") {
+    return (
+      <MisionProbar
+        valor={respuestas[clavesEcoFluencer.probarMejora] ?? ""}
+        onCambiar={(v) => onCambiar(clavesEcoFluencer.probarMejora, v)}
+      />
+    );
+  }
+
+  if (pantalla.id === "inspirar") {
+    return (
+      <MisionInspirar
+        valor={respuestas[clavesEcoFluencer.inspirarTexto] ?? ""}
+        onCambiar={(v) => onCambiar(clavesEcoFluencer.inspirarTexto, v)}
       />
     );
   }
@@ -978,6 +998,7 @@ export function EcoFluencerQuestions({
   cargando,
 }: Props) {
   const [avisoNormas, setAvisoNormas] = useState<string | null>(null);
+  const [bienvenidaAbierta, setBienvenidaAbierta] = useState(true);
   const indiceSeguro = Math.min(Math.max(indice, 0), pantallasEcoFluencer.length - 1);
   const pantalla = pantallasEcoFluencer[indiceSeguro];
 
@@ -1003,6 +1024,11 @@ export function EcoFluencerQuestions({
 
   return (
     <section className="space-y-8">
+      <BienvenidaEcoFluencer
+        abierto={bienvenidaAbierta && indiceSeguro === 0}
+        onCerrar={() => setBienvenidaAbierta(false)}
+      />
+
       <ol className="flex flex-wrap gap-2 print:hidden">
         {pantallasEcoFluencer.map((p, i) => (
           <li key={p.id}>
@@ -1025,7 +1051,7 @@ export function EcoFluencerQuestions({
 
       <div>
         <p className="text-xs font-extrabold tracking-widest text-primary uppercase">
-          Reto {pantalla.numero} de {pantallasEcoFluencer.length} · {pantalla.nombre}
+          Misión {pantalla.numero} de {pantallasEcoFluencer.length} · {pantalla.nombre}
         </p>
         <h2 className="mt-1 text-3xl font-extrabold">{pantalla.tagline ?? pantalla.nombre}</h2>
         <p className="mt-3 text-muted-foreground">{pantalla.instrucciones}</p>
@@ -1173,10 +1199,21 @@ export function flattenRespuestasEcoFluencer(
   salida.push(...flattenFabricaCampanas(respuestas));
 
   if (respuestas[clavesEcoFluencer.construirImagen]?.trim()) {
+    const esVideo = /^data:video\//i.test(respuestas[clavesEcoFluencer.construirImagen]);
     salida.push({
-      pregunta: "Construir · archivo o imagen",
-      respuesta: "imagen cargada",
+      pregunta: "Construir · archivo",
+      respuesta: esVideo ? "video cargado" : "imagen cargada",
     });
+  }
+
+  const mejora = respuestas[clavesEcoFluencer.probarMejora]?.trim();
+  if (mejora) {
+    salida.push({ pregunta: "Probar · qué se puede mejorar", respuesta: mejora });
+  }
+
+  const inspirar = respuestas[clavesEcoFluencer.inspirarTexto]?.trim();
+  if (inspirar) {
+    salida.push({ pregunta: "Inspirar · como esto te inspiró a construir", respuesta: inspirar });
   }
 
   return salida;

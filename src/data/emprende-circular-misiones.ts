@@ -280,7 +280,7 @@ export const pantallasEmprendeCircular: PantallaEmprendeCircular[] = [
     nombre: "Experimentar",
     tagline: "Experimentar: ficha y oportunidades",
     instrucciones:
-      "Completen la ficha de auditoría del material, marquen las oportunidades circulares posibles y desarrollen la alternativa A.",
+      "Completen la ficha de auditoría del material, marquen las oportunidades circulares posibles y nombren la alternativa A a desarrollar.",
   },
   {
     id: "definir",
@@ -296,7 +296,28 @@ export const pantallasEmprendeCircular: PantallaEmprendeCircular[] = [
     nombre: "Diseñar",
     tagline: "Diseñar: criterios de la solución",
     instrucciones:
-      "Completen cada dimensión de diseño: función, material, tiempo y esfuerzo, y recursos.",
+      "Completen cada dimensión de diseño: función, material, tiempo y esfuerzo, y recursos. Suban la foto del prototipo y detallen la alternativa A.",
+  },
+  {
+    id: "construir",
+    numero: 6,
+    nombre: "Construir",
+    tagline: "Construir",
+    instrucciones: "Suban una imagen o un video de lo que van a construir.",
+  },
+  {
+    id: "probar",
+    numero: 7,
+    nombre: "Probar",
+    tagline: "Probar",
+    instrucciones: "Después de probar, anoten qué se puede mejorar.",
+  },
+  {
+    id: "inspirar",
+    numero: 8,
+    nombre: "Inspirar",
+    tagline: "Inspirar",
+    instrucciones: "Reflexionen sobre cómo esto los inspiró a construir.",
   },
 ];
 
@@ -321,10 +342,8 @@ export const clavesEmprendeCircular = {
   alternativaB: "ec3-alternativa-b",
   alternativaCampo: (letra: "a" | "b", campo: "descripcion" | "recursos" | "resultado") =>
     `ec3-alt-${letra}-${campo}`,
-  recorridoCampo: (
-    etapaId: string,
-    campo: "lugar" | "actor" | "ocurre" | "cantidad" | "costo",
-  ) => `ec4-recorrido-${etapaId}-${campo}`,
+  recorridoCampo: (etapaId: string, campo: "lugar" | "actor" | "ocurre" | "cantidad" | "costo") =>
+    `ec4-recorrido-${etapaId}-${campo}`,
   retoPara: "ec4-reto-para",
   retoAccion: "ec4-reto-accion",
   retoMaterial: "ec4-reto-material",
@@ -340,6 +359,9 @@ export const clavesEmprendeCircular = {
   comprobacion: (id: string) => `ec4-check-${id}`,
   diseno: (id: string) => `ec5-diseno-${id}`,
   prototipoImagen: "ec5-prototipo-imagen",
+  construirImagen: "ec6-construir-imagen",
+  probarMejora: "ec7-probar-mejora",
+  inspirarTexto: "ec8-inspirar-texto",
 } as const;
 
 /** Dimensiones del Reto 5 · paso 1. Editar solo `subtitulo` cuando se defina el copy. */
@@ -446,7 +468,8 @@ export function sugerenciasRecorridoDesdeComprender(
   const salida: Record<string, string> = {};
   for (const map of precargaRecorridoDesdeComprender) {
     const nota = respuestas[clavesEmprendeCircular.etapaNota(map.etapaComprenderId)]?.trim() ?? "";
-    const quien = respuestas[clavesEmprendeCircular.etapaQuien(map.etapaComprenderId)]?.trim() ?? "";
+    const quien =
+      respuestas[clavesEmprendeCircular.etapaQuien(map.etapaComprenderId)]?.trim() ?? "";
     if (nota) {
       salida[clavesEmprendeCircular.recorridoCampo(map.etapaRecorridoId, "ocurre")] = nota;
     }
@@ -456,14 +479,6 @@ export function sugerenciasRecorridoDesdeComprender(
   }
   return salida;
 }
-
-export const leyendaRecorridoReal = [
-  { id: "uso", etiqueta: "permanece en uso", color: "#3d8b5c" },
-  { id: "perdida", etiqueta: "pérdida o desperdicio", color: "#d97706" },
-  { id: "mezcla", etiqueta: "mezcla", color: "#dc2626" },
-  { id: "desconocido", etiqueta: "dato desconocido", color: "#8b5cb8" },
-  { id: "oportunidad", etiqueta: "oportunidad", color: "#06b6d4" },
-] as const;
 
 export const unidadesBaseIndicador = [
   { id: "unidades", etiqueta: "unidades" },

@@ -201,5 +201,26 @@ export function flattenRespuestasEmprendeCircular(
     salida.push({ pregunta: "Foto del prototipo", respuesta: "(imagen adjuntada)" });
   }
 
+  if (respuestas[clavesEmprendeCircular.construirImagen]?.trim()) {
+    const esVideo = /^data:video\//i.test(respuestas[clavesEmprendeCircular.construirImagen]);
+    salida.push({
+      pregunta: "Construir · archivo",
+      respuesta: esVideo ? "video cargado" : "imagen cargada",
+    });
+  }
+
+  const mejora = respuestas[clavesEmprendeCircular.probarMejora]?.trim();
+  if (mejora) {
+    salida.push({ pregunta: "Probar · qué se puede mejorar", respuesta: mejora });
+  }
+
+  const inspirar = respuestas[clavesEmprendeCircular.inspirarTexto]?.trim();
+  if (inspirar) {
+    salida.push({
+      pregunta: "Inspirar · como esto te inspiró a construir",
+      respuesta: inspirar,
+    });
+  }
+
   return salida;
 }

@@ -61,6 +61,7 @@
   --shadow-pop: 0 10px 0 -4px oklch(0.24 0.06 232 / 0.12), 0 18px 40px -18px oklch(0.24 0.06 232 / 0.5);
   --shadow-card: 0 1px 2px oklch(0.24 0.06 232 / 0.06), 0 16px 32px -24px oklch(0.24 0.06 232 / 0.45);
   --animate-tarjeta-entrada: tarjeta-entrada 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-letra-caida: letra-caida 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes tarjeta-entrada {
@@ -71,6 +72,17 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes letra-caida {
+  from {
+    opacity: 0;
+    transform: translateY(-1.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

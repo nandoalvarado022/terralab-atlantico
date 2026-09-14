@@ -91,7 +91,11 @@ function CajonEtapaComprender({
 
         <div>
           <p className="text-sm font-extrabold text-[#1f5c4a]">¿Cómo lo sabemos?</p>
-          <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Tipo de evidencia">
+          <div
+            className="mt-2 flex flex-wrap gap-2"
+            role="radiogroup"
+            aria-label="Tipo de evidencia"
+          >
             {evidenciasComprender.map((ev) => {
               const activo = evidencia === ev.id;
               return (
@@ -128,10 +132,7 @@ function CajonEtapaComprender({
   );
 }
 
-export function Reto2Comprender({
-  respuestas,
-  onCambiar,
-}: RetoProps) {
+export function Reto2Comprender({ respuestas, onCambiar }: RetoProps) {
   const porId = Object.fromEntries(etapasComprender.map((e) => [e.id, e])) as Record<
     string,
     EtapaComprender
@@ -140,13 +141,27 @@ export function Reto2Comprender({
   return (
     <div className="space-y-4">
       {/* Escritorio: filas del flujo en S; flechas en el flujo del documento */}
+      <p className="text-center text-sm font-bold text-[#1f5c4a]">
+        <span className="font-extrabold">D</span> = dato · <span className="font-extrabold">E</span>{" "}
+        = estimación · <span className="font-extrabold">?</span> = pregunta. Rodeen uno y expliquen
+        su fuente o método.
+      </p>
+
       <div className="hidden sm:block">
         <div className="grid items-stretch grid-cols-[1fr_auto_1fr] gap-x-3 gap-y-0">
-          <CajonEtapaComprender etapa={porId["entra"]!} respuestas={respuestas} onCambiar={onCambiar} />
+          <CajonEtapaComprender
+            etapa={porId["entra"]!}
+            respuestas={respuestas}
+            onCambiar={onCambiar}
+          />
           <div className="flex items-center justify-center px-1">
             <FlechaFlujo direccion="derecha" />
           </div>
-          <CajonEtapaComprender etapa={porId["se-usa"]!} respuestas={respuestas} onCambiar={onCambiar} />
+          <CajonEtapaComprender
+            etapa={porId["se-usa"]!}
+            respuestas={respuestas}
+            onCambiar={onCambiar}
+          />
 
           <div className="col-span-3 grid grid-cols-[1fr_auto_1fr] py-3">
             <div />
@@ -156,7 +171,11 @@ export function Reto2Comprender({
             </div>
           </div>
 
-          <CajonEtapaComprender etapa={porId["se-mezcla"]!} respuestas={respuestas} onCambiar={onCambiar} />
+          <CajonEtapaComprender
+            etapa={porId["se-mezcla"]!}
+            respuestas={respuestas}
+            onCambiar={onCambiar}
+          />
           <div className="flex items-center justify-center px-1">
             <FlechaFlujo direccion="izquierda" />
           </div>
@@ -174,11 +193,19 @@ export function Reto2Comprender({
             <div />
           </div>
 
-          <CajonEtapaComprender etapa={porId["se-mueve"]!} respuestas={respuestas} onCambiar={onCambiar} />
+          <CajonEtapaComprender
+            etapa={porId["se-mueve"]!}
+            respuestas={respuestas}
+            onCambiar={onCambiar}
+          />
           <div className="flex items-center justify-center px-1">
             <FlechaFlujo direccion="derecha" />
           </div>
-          <CajonEtapaComprender etapa={porId["destino"]!} respuestas={respuestas} onCambiar={onCambiar} />
+          <CajonEtapaComprender
+            etapa={porId["destino"]!}
+            respuestas={respuestas}
+            onCambiar={onCambiar}
+          />
         </div>
       </div>
 
@@ -202,10 +229,9 @@ export function Reto2Comprender({
       </div>
 
       <p className="text-center text-sm font-bold text-[#1f5c4a]">
-        <span className="font-extrabold">D</span> = dato ·{" "}
-        <span className="font-extrabold">E</span> = estimación ·{" "}
-        <span className="font-extrabold">?</span> = pregunta. Rodeen uno y expliquen su fuente o
-        método.
+        <span className="font-extrabold">D</span> = dato · <span className="font-extrabold">E</span>{" "}
+        = estimación · <span className="font-extrabold">?</span> = pregunta. Rodeen uno y expliquen
+        su fuente o método.
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -228,27 +254,7 @@ export function Reto2Comprender({
             className="mt-3 w-full resize-none rounded-2xl border border-[#5a9e8a]/40 bg-white/90 p-3 text-sm text-deep outline-none focus:border-[#1f5c4a]"
           />
         </div>
-
-        <div className="rounded-3xl border-2 border-[#5a9e8a] bg-[#dceee6] p-5 shadow-card">
-          <label
-            htmlFor={clavesEmprendeCircular.preguntaPrioritaria}
-            className="block text-sm font-extrabold tracking-widest text-[#1f5c4a] uppercase"
-          >
-            Pregunta prioritaria
-          </label>
-          <textarea
-            id={clavesEmprendeCircular.preguntaPrioritaria}
-            rows={4}
-            value={respuestas[clavesEmprendeCircular.preguntaPrioritaria] ?? ""}
-            placeholder="¿Qué pregunta guía el siguiente paso?"
-            onChange={(e) =>
-              onCambiar(clavesEmprendeCircular.preguntaPrioritaria, e.target.value)
-            }
-            className="mt-3 w-full resize-none rounded-2xl border border-[#5a9e8a]/40 bg-white/90 p-3 text-sm text-deep outline-none focus:border-[#1f5c4a]"
-          />
-        </div>
       </div>
     </div>
   );
 }
-

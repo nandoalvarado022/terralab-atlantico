@@ -1,9 +1,69 @@
 import { FileUploader } from "@/components/commons/FileUploader";
 import {
+  camposDetalleAlternativa,
   clavesEmprendeCircular,
   dimensionesDiseno,
 } from "@/data/emprende-circular-misiones";
 import type { RetoProps } from "./types";
+
+function TarjetaAlternativa({
+  letra,
+  nombre,
+  respuestas,
+  onCambiar,
+}: {
+  letra: "a" | "b";
+  nombre: string;
+  respuestas: Record<string, string>;
+  onCambiar: (clave: string, valor: string) => void;
+}) {
+  const etiqueta = letra.toUpperCase();
+
+  return (
+    <article className="rounded-3xl border-2 border-[#5a9e8a] bg-[#eaf6f1] p-5 shadow-card sm:p-6">
+      <div className="flex items-center gap-3">
+        <span
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1f5c4a] text-sm font-extrabold text-white"
+          aria-hidden
+        >
+          {etiqueta}
+        </span>
+        <div className="min-w-0">
+          <h3 className="text-sm font-extrabold tracking-widest text-[#1f5c4a] uppercase">
+            Alternativa {etiqueta}
+          </h3>
+          {nombre.trim() ? (
+            <p className="truncate text-xs font-bold text-[#1f5c4a]/80">{nombre.trim()}</p>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="mt-5 space-y-5">
+        {camposDetalleAlternativa.map((campo) => {
+          const clave = clavesEmprendeCircular.alternativaCampo(letra, campo.id);
+          return (
+            <div key={campo.id}>
+              <label
+                htmlFor={clave}
+                className="block text-sm font-extrabold tracking-wide text-[#1f5c4a] uppercase"
+              >
+                {campo.titulo}
+              </label>
+              <p className="mt-0.5 text-xs text-[#1f5c4a]/70">{campo.pista}</p>
+              <textarea
+                id={clave}
+                rows={2}
+                value={respuestas[clave] ?? ""}
+                onChange={(e) => onCambiar(clave, e.target.value)}
+                className="mt-2 w-full resize-none rounded-none border-0 border-b border-[#1f5c4a]/30 bg-transparent px-0 py-1.5 text-sm text-deep outline-none focus:border-[#1f5c4a]"
+              />
+            </div>
+          );
+        })}
+      </div>
+    </article>
+  );
+}
 
 export function Reto5Disenar({ respuestas, onCambiar }: RetoProps) {
   return (
@@ -70,6 +130,13 @@ export function Reto5Disenar({ respuestas, onCambiar }: RetoProps) {
         alt="Foto del prototipo"
         etiquetaSubir="Subir foto del prototipo"
         variante="card"
+      />
+
+      <TarjetaAlternativa
+        letra="a"
+        nombre={respuestas[clavesEmprendeCircular.alternativaA] ?? ""}
+        respuestas={respuestas}
+        onCambiar={onCambiar}
       />
     </div>
   );

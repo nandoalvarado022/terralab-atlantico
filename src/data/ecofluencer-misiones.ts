@@ -144,7 +144,21 @@ export const pantallasEcoFluencer: PantallaEcoFluencer[] = [
     numero: 6,
     nombre: "Construir",
     tagline: "Construir",
-    instrucciones: "Suban el archivo o la imagen de lo que van a construir.",
+    instrucciones: "Suban una imagen o un video de lo que van a construir.",
+  },
+  {
+    id: "probar",
+    numero: 7,
+    nombre: "Probar",
+    tagline: "Probar",
+    instrucciones: "Después de probar, anoten qué se puede mejorar.",
+  },
+  {
+    id: "inspirar",
+    numero: 8,
+    nombre: "Inspirar",
+    tagline: "Inspirar",
+    instrucciones: "Reflexionen sobre cómo esto los inspiró a construir.",
   },
 ];
 
@@ -271,6 +285,8 @@ export const clavesEcoFluencer = {
   canalAtributo: (tipo: "principal" | "apoyo", id: string) =>
     `ef6-canal-${tipo}-attr-${id}`,
   construirImagen: "ef7-construir-imagen",
+  probarMejora: "ef7-probar-mejora",
+  inspirarTexto: "ef8-inspirar-texto",
 } as const;
 
 export const camposBriefCampana = [

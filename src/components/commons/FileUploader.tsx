@@ -1,4 +1,4 @@
-import { ImagePlus } from "lucide-react";
+import { ImagePlus, Video } from "lucide-react";
 
 type Props = {
   valor: string;
@@ -21,6 +21,10 @@ type Props = {
   maxHeightClass?: string;
 };
 
+function esVideoDataUrl(valor: string) {
+  return /^data:video\//i.test(valor) || /\.(mp4|webm|ogg|mov)(\?|$)/i.test(valor);
+}
+
 export function FileUploader({
   valor,
   onCambiar,
@@ -42,6 +46,14 @@ export function FileUploader({
     reader.readAsDataURL(file);
   }
 
+  const muestraVideo = Boolean(valor) && esVideoDataUrl(valor);
+  const Icono =
+    accept.includes("video") && accept.includes("image")
+      ? ImagePlus
+      : accept.includes("video")
+        ? Video
+        : ImagePlus;
+
   const area = (
     <div
       className={`rounded-2xl border-2 border-dashed p-5 text-center ${
@@ -52,13 +64,25 @@ export function FileUploader({
     >
       {valor ? (
         <div className="space-y-3">
-          <img
-            src={valor}
-            alt={alt}
-            className={`mx-auto rounded-xl object-contain ${
-              variante === "compact" ? "max-h-40" : maxHeightClass
-            }`}
-          />
+          {muestraVideo ? (
+            <video
+              src={valor}
+              controls
+              className={`mx-auto rounded-xl object-contain ${
+                variante === "compact" ? "max-h-40" : maxHeightClass
+              }`}
+            >
+              Tu navegador no reproduce este video.
+            </video>
+          ) : (
+            <img
+              src={valor}
+              alt={alt}
+              className={`mx-auto rounded-xl object-contain ${
+                variante === "compact" ? "max-h-40" : maxHeightClass
+              }`}
+            />
+          )}
           <div className="flex flex-wrap justify-center gap-2">
             <label
               className={`cursor-pointer rounded-full bg-deep font-extrabold text-deep-foreground ${
@@ -90,7 +114,7 @@ export function FileUploader({
             variante === "compact" ? "gap-1.5 py-2" : "gap-2"
           }`}
         >
-          <ImagePlus
+          <Icono
             className={variante === "compact" ? "h-7 w-7 text-muted-foreground" : "h-8 w-8 text-muted-foreground"}
             aria-hidden
           />

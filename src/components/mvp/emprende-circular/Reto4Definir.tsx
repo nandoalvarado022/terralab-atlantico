@@ -6,7 +6,6 @@ import {
   clavesEmprendeCircular,
   comprobacionesDefinicion,
   etapasRecorridoReal,
-  leyendaRecorridoReal,
   precargaRecorridoDesdeComprender,
   sugerenciasRecorridoDesdeComprender,
   unidadesBaseIndicador,
@@ -193,33 +192,11 @@ export function Reto4Definir({ respuestas, onCambiar }: RetoProps) {
             onCambiar={onCambiar}
           />
         </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
-          <span className="font-extrabold tracking-wider text-deep uppercase">Leyenda:</span>
-          {leyendaRecorridoReal.map((item) => (
-            <span key={item.id} className="inline-flex items-center gap-1.5">
-              <span
-                className="inline-block h-3.5 w-3.5 rounded-sm border-2"
-                style={{ borderColor: item.color, backgroundColor: `${item.color}22` }}
-                aria-hidden
-              />
-              {item.etiqueta}
-            </span>
-          ))}
-          <span className="ml-auto text-[11px] italic">
-            Actores y decisiones se registran dentro de cada etapa.
-          </span>
-        </div>
       </section>
 
       {/* 2. Construyan el reto */}
       <section>
-        <EncabezadoPaso
-          numero={2}
-          titulo="Construyan el reto"
-          color={deep}
-          linea={`${deep}55`}
-        />
+        <EncabezadoPaso numero={2} titulo="Construyan el reto" color={deep} linea={`${deep}55`} />
         <div className="rounded-3xl border-2 border-[#5a9e8a] bg-[#eaf6f1] p-5 shadow-card sm:p-6">
           <div className="space-y-4">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
@@ -310,12 +287,7 @@ export function Reto4Definir({ respuestas, onCambiar }: RetoProps) {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* 3. Definan el indicador */}
         <section>
-          <EncabezadoPaso
-            numero={3}
-            titulo="Definan el indicador"
-            color={azul}
-            linea={azulBorde}
-          />
+          <EncabezadoPaso numero={3} titulo="Definan el indicador" color={azul} linea={azulBorde} />
           <div
             className="rounded-3xl border-2 p-5 shadow-card sm:p-6"
             style={{ backgroundColor: azulFondo, borderColor: azulBorde }}
@@ -346,7 +318,11 @@ export function Reto4Definir({ respuestas, onCambiar }: RetoProps) {
                       onCheckedChange={(v) => onCambiar(clave, v === true ? "si" : "")}
                       className="h-4 w-4 border-[#3b82c4]/50 data-[state=checked]:border-[#3b82c4] data-[state=checked]:bg-[#3b82c4]"
                     />
-                    <label htmlFor={clave} className="cursor-pointer text-sm" style={{ color: azul }}>
+                    <label
+                      htmlFor={clave}
+                      className="cursor-pointer text-sm"
+                      style={{ color: azul }}
+                    >
                       {u.etiqueta}
                     </label>
                   </li>

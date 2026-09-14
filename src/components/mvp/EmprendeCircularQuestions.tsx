@@ -1,14 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
+  clavesEmprendeCircular,
   pantallasEmprendeCircular,
   type PantallaEmprendeCircular,
 } from "@/data/emprende-circular-misiones";
+import { BienvenidaEmprendeCircular } from "./BienvenidaEmprendeCircular";
 import { Reto1Activar } from "./emprende-circular/Reto1Activar";
 import { Reto2Comprender } from "./emprende-circular/Reto2Comprender";
 import { Reto3Experimentar } from "./emprende-circular/Reto3Experimentar";
 import { Reto4Definir } from "./emprende-circular/Reto4Definir";
 import { Reto5Disenar } from "./emprende-circular/Reto5Disenar";
+import { MisionConstruir } from "./MisionConstruir";
+import { MisionInspirar } from "./MisionInspirar";
+import { MisionProbar } from "./MisionProbar";
 
 export { flattenRespuestasEmprendeCircular } from "./emprende-circular/flatten";
 
@@ -41,6 +46,27 @@ function ContenidoPantalla({
       return <Reto4Definir respuestas={respuestas} onCambiar={onCambiar} />;
     case "disenar":
       return <Reto5Disenar respuestas={respuestas} onCambiar={onCambiar} />;
+    case "construir":
+      return (
+        <MisionConstruir
+          valor={respuestas[clavesEmprendeCircular.construirImagen] ?? ""}
+          onCambiar={(v) => onCambiar(clavesEmprendeCircular.construirImagen, v)}
+        />
+      );
+    case "probar":
+      return (
+        <MisionProbar
+          valor={respuestas[clavesEmprendeCircular.probarMejora] ?? ""}
+          onCambiar={(v) => onCambiar(clavesEmprendeCircular.probarMejora, v)}
+        />
+      );
+    case "inspirar":
+      return (
+        <MisionInspirar
+          valor={respuestas[clavesEmprendeCircular.inspirarTexto] ?? ""}
+          onCambiar={(v) => onCambiar(clavesEmprendeCircular.inspirarTexto, v)}
+        />
+      );
     default:
       return null;
   }
@@ -54,6 +80,7 @@ export function EmprendeCircularQuestions({
   onFinalizar,
   cargando,
 }: Props) {
+  const [bienvenidaAbierta, setBienvenidaAbierta] = useState(true);
   const indiceSeguro = Math.min(Math.max(indice, 0), pantallasEmprendeCircular.length - 1);
   const pantalla = pantallasEmprendeCircular[indiceSeguro];
 
@@ -67,6 +94,11 @@ export function EmprendeCircularQuestions({
 
   return (
     <section className="space-y-8">
+      <BienvenidaEmprendeCircular
+        abierto={bienvenidaAbierta && indiceSeguro === 0}
+        onCerrar={() => setBienvenidaAbierta(false)}
+      />
+
       <ol className="flex flex-wrap gap-2 print:hidden">
         {pantallasEmprendeCircular.map((p, i) => (
           <li key={p.id}>
@@ -89,7 +121,7 @@ export function EmprendeCircularQuestions({
 
       <div>
         <p className="text-xs font-extrabold tracking-widest text-primary uppercase">
-          Reto {pantalla.numero} de {pantallasEmprendeCircular.length} · {pantalla.nombre}
+          Misión {pantalla.numero} de {pantallasEmprendeCircular.length} · {pantalla.nombre}
         </p>
         <h2 className="mt-1 text-3xl font-extrabold">{pantalla.tagline ?? pantalla.nombre}</h2>
         <p className="mt-3 text-muted-foreground">{pantalla.instrucciones}</p>
