@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { format } from "date-fns";
+import { endOfDay, format, parseISO, startOfDay } from "date-fns";
 
 import { labs } from "@/data/labs";
 import { adminLogin, adminLogout, listMvps, type MvpGuardado } from "@/lib/admin.functions";
@@ -38,14 +38,26 @@ function VisorRespuestas({ m }: { m: MvpGuardado }) {
   return <p className="text-sm text-muted-foreground">No hay respuestas registradas.</p>;
 }
 
+function MetricCard({ etiqueta, valor }: { etiqueta: string; valor: number | string }) {
+  return (
+    <div className="min-w-[10rem] flex-1 rounded-3xl border border-border bg-card p-5 shadow-card">
+      <p className="text-xs font-extrabold tracking-widest text-primary uppercase">{etiqueta}</p>
+      <p className="mt-2 text-3xl font-extrabold tabular-nums">{valor}</p>
+    </div>
+  );
+}
+
 export function AdminDashboard() {
   const [autenticado, setAutenticado] = useState<boolean | null>(null);
   const [mvps, setMvps] = useState<MvpGuardado[]>([]);
   const [cargando, setCargando] = useState(false);
+  const [exportando, setExportando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [filtroColegio, setFiltroColegio] = useState("");
   const [filtroLab, setFiltroLab] = useState("");
+  const [filtroDesde, setFiltroDesde] = useState("");
+  const [filtroHasta, setFiltroHasta] = useState("");
   const [expandido, setExpandido] = useState<string | null>(null);
 
   const listar = useServerFn(listMvps);
@@ -103,14 +115,55 @@ export function AdminDashboard() {
   }
 
   const mvpsFiltrados = useMemo(() => {
+    const desde = filtroDesde ? startOfDay(parseISO(filtroDesde)) : null;
+    const hasta = filtroHasta ? endOfDay(parseISO(filtroHasta)) : null;
+
     return mvps.filter((m) => {
       const coincideColegio =
         !filtroColegio.trim() ||
         m.colegio.toLowerCase().includes(filtroColegio.trim().toLowerCase());
       const coincideLab = !filtroLab || m.lab === filtroLab;
-      return coincideColegio && coincideLab;
+
+      const creado = new Date(m.created_at);
+      const coincideDesde = !desde || creado >= desde;
+      const coincideHasta = !hasta || creado <= hasta;
+
+      return coincideColegio && coincideLab && coincideDesde && coincideHasta;
     });
-  }, [mvps, filtroColegio, filtroLab]);
+  }, [mvps, filtroColegio, filtroLab, filtroDesde, filtroHasta]);
+
+  const metricas = useMemo(() => {
+    const colegios = new Set(
+      mvpsFiltrados
+        .map((m) => m.colegio.trim().toLowerCase())
+        .filter((c) => c.length > 0),
+    );
+    return {
+      totalDocumentos: mvpsFiltrados.length,
+      totalColegios: colegios.size,
+    };
+  }, [mvpsFiltrados]);
+
+  async function onDescargarExcel() {
+    if (mvpsFiltrados.length === 0) {
+      setError("No hay documentos para exportar con los filtros actuales.");
+      return;
+    }
+    setError(null);
+    setExportando(true);
+    try {
+      const { generarExcelMvps, descargarBlob, nombreArchivoExcelMvps } = await import(
+        "@/lib/admin-export-excel"
+      );
+      const blob = await generarExcelMvps(mvpsFiltrados);
+      descargarBlob(blob, nombreArchivoExcelMvps(mvpsFiltrados.length));
+    } catch (e) {
+      console.error("[admin] export excel", e);
+      setError("No pudimos generar el archivo Excel. Intenta de nuevo.");
+    } finally {
+      setExportando(false);
+    }
+  }
 
   function nombreLab(labId: string) {
     return labs.find((l) => l.id === labId)?.titulo ?? labId;
@@ -174,6 +227,11 @@ export function AdminDashboard() {
         </button>
       </div>
 
+      <div className="mt-6 flex flex-wrap gap-3">
+        <MetricCard etiqueta="Total de documentos" valor={metricas.totalDocumentos} />
+        <MetricCard etiqueta="Colegios únicos" valor={metricas.totalColegios} />
+      </div>
+
       {error && (
         <div
           role="alert"
@@ -183,7 +241,7 @@ export function AdminDashboard() {
         </div>
       )}
 
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div className="mt-6 flex flex-wrap items-end gap-3">
         <input
           value={filtroColegio}
           onChange={(e) => setFiltroColegio(e.target.value)}
@@ -202,10 +260,53 @@ export function AdminDashboard() {
             </option>
           ))}
         </select>
+        <label className="flex flex-col gap-1 text-xs font-extrabold tracking-wider text-muted-foreground uppercase">
+          Desde
+          <input
+            type="date"
+            value={filtroDesde}
+            onChange={(e) => setFiltroDesde(e.target.value)}
+            className="rounded-2xl border-2 border-border bg-card p-3 text-sm font-normal tracking-normal text-foreground normal-case outline-none focus:border-primary"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-xs font-extrabold tracking-wider text-muted-foreground uppercase">
+          Hasta
+          <input
+            type="date"
+            value={filtroHasta}
+            min={filtroDesde || undefined}
+            onChange={(e) => setFiltroHasta(e.target.value)}
+            className="rounded-2xl border-2 border-border bg-card p-3 text-sm font-normal tracking-normal text-foreground normal-case outline-none focus:border-primary"
+          />
+        </label>
+        {(filtroDesde || filtroHasta) && (
+          <button
+            type="button"
+            onClick={() => {
+              setFiltroDesde("");
+              setFiltroHasta("");
+            }}
+            className="rounded-full border-2 border-border px-4 py-3 text-sm font-extrabold text-muted-foreground hover:bg-muted"
+          >
+            Limpiar fechas
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => void onDescargarExcel()}
+          disabled={exportando || mvpsFiltrados.length === 0}
+          className="rounded-full bg-primary px-5 py-3 text-sm font-extrabold text-primary-foreground shadow-pop transition-transform hover:-translate-y-0.5 disabled:opacity-50"
+        >
+          {exportando ? "Generando Excel…" : "Descargar Excel"}
+        </button>
       </div>
 
       {mvpsFiltrados.length === 0 ? (
-        <p className="mt-10 text-muted-foreground">Aún no hay MVPs guardados.</p>
+        <p className="mt-10 text-muted-foreground">
+          {mvps.length === 0
+            ? "Aún no hay MVPs guardados."
+            : "Ningún documento coincide con los filtros."}
+        </p>
       ) : (
         <ul className="mt-8 space-y-4">
           {mvpsFiltrados.map((m) => {

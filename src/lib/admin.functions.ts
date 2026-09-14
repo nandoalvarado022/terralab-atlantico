@@ -26,6 +26,10 @@ const mvpSchema = z.object({
   brigada: z.string(),
   lema: z.string().nullable().optional(),
   correo_lider: z.string().nullable().optional(),
+  integrantes: z.string().nullable().optional(),
+  pistas: z.string().nullable().optional(),
+  desafio: z.string().nullable().optional(),
+  idea_semilla: z.string().nullable().optional(),
   lab: z.string(),
   nombre: z.string(),
   documento: z.string(),
@@ -73,11 +77,14 @@ export const listMvps = createServerFn({ method: "POST" }).handler(async () => {
     throw new Error("UNAUTHORIZED");
   }
 
+  const columnas =
+    "id, created_at, colegio, brigada, lema, correo_lider, integrantes, pistas, desafio, idea_semilla, lab, nombre, documento, prompt, respuestas, respuestas_ecotech";
+  const columnasSinCorreo =
+    "id, created_at, colegio, brigada, lema, integrantes, pistas, desafio, idea_semilla, lab, nombre, documento, prompt, respuestas, respuestas_ecotech";
+
   const { data, error } = await getSupabase()
     .from("mvps")
-    .select(
-      "id, created_at, colegio, brigada, lema, correo_lider, lab, nombre, documento, prompt, respuestas, respuestas_ecotech",
-    )
+    .select(columnas)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -85,13 +92,30 @@ export const listMvps = createServerFn({ method: "POST" }).handler(async () => {
     if (error.code === "42703" && /correo_lider/i.test(error.message)) {
       const fallback = await getSupabase()
         .from("mvps")
-        .select(
-          "id, created_at, colegio, brigada, lema, lab, nombre, documento, prompt, respuestas, respuestas_ecotech",
-        )
+        .select(columnasSinCorreo)
         .order("created_at", { ascending: false });
       if (fallback.error) throw new Error("No pudimos cargar los MVPs guardados.");
       return z.array(mvpSchema).parse(
         (fallback.data ?? []).map((row) => ({ ...row, correo_lider: null })),
+      ) as MvpGuardado[];
+    }
+    // Compatibilidad si faltan columnas de canvas (instalaciones viejas).
+    if (error.code === "42703") {
+      const minimo = await getSupabase()
+        .from("mvps")
+        .select(
+          "id, created_at, colegio, brigada, lema, correo_lider, lab, nombre, documento, prompt, respuestas, respuestas_ecotech",
+        )
+        .order("created_at", { ascending: false });
+      if (minimo.error) throw new Error("No pudimos cargar los MVPs guardados.");
+      return z.array(mvpSchema).parse(
+        (minimo.data ?? []).map((row) => ({
+          ...row,
+          integrantes: null,
+          pistas: null,
+          desafio: null,
+          idea_semilla: null,
+        })),
       ) as MvpGuardado[];
     }
     throw new Error("No pudimos cargar los MVPs guardados.");
