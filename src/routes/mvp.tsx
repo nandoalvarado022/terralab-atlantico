@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { ForjaMvp } from "@/components/mvp/ForjaMvp";
 import { MvpHeader } from "@/components/mvp/MvpHeader";
 import { installDevFillEcoFluencer } from "@/lib/dev-fill-ecofluencer";
+import { installDevFillEmprendeCircular } from "@/lib/dev-fill-emprende-circular";
 
 export const Route = createFileRoute("/mvp")({
   head: () => ({
@@ -29,7 +30,9 @@ export const Route = createFileRoute("/mvp")({
 
 function Mvp() {
   useEffect(() => {
-    installDevFillEcoFluencer();
+    // Siempre registrar en /mvp (el visitante ya está en la herramienta de forja).
+    installDevFillEcoFluencer({ force: true });
+    installDevFillEmprendeCircular({ force: true });
   }, []);
 
   return (

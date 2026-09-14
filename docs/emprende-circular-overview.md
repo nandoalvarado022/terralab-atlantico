@@ -76,6 +76,17 @@ Paso 2: cuatro dimensiones con ícono (F / M / T / R), título y textarea + **lo
 - Respuestas en `sessionStorage` (`terralab-forja-mvp` → `respuestasEmprendeCircular`).
 - Al finalizar: `flattenRespuestasEmprendeCircular` → `pedirMvp` / `construirMvp`.
 
+### Demo en consola
+
+En `/mvp` (DEV o con `localStorage.setItem("terralab-dev-fill","1")`):
+
+```js
+fillEmprendeCircular()
+fillEmprendeCircular({ paso: 3, misionIndice: 7 })
+```
+
+Archivo: `src/lib/dev-fill-emprende-circular.ts`.
+
 ## Extender el flujo
 
 1. Añadir entrada en `pantallasEmprendeCircular`.

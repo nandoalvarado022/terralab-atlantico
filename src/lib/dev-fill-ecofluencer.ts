@@ -19,8 +19,9 @@ import {
   tarjetasBrief,
   tarjetasComprension,
 } from "@/data/ecofluencer-misiones";
+import { FORJA_STORAGE_KEY, isTerralabDevFillEnabled } from "@/lib/forja-storage";
 
-export const FORJA_STORAGE_KEY = "terralab-forja-mvp";
+export { FORJA_STORAGE_KEY } from "@/lib/forja-storage";
 
 /** PNG 1×1 transparente (para campos de imagen en demo). */
 const DEMO_IMAGEN_PNG =
@@ -209,20 +210,10 @@ export function fillEcoFluencer(options: FillEcoFluencerOptions = {}) {
 }
 
 /** Expone `fillEcoFluencer` / `window.fillEcoFluencer` en la consola. */
-export function installDevFillEcoFluencer() {
+export function installDevFillEcoFluencer(options: { force?: boolean } = {}) {
   if (typeof window === "undefined") return;
 
-  const enabled =
-    Boolean(import.meta.env.DEV) ||
-    (() => {
-      try {
-        return window.localStorage.getItem("terralab-dev-fill") === "1";
-      } catch {
-        return false;
-      }
-    })();
-
-  if (!enabled) {
+  if (!options.force && !isTerralabDevFillEnabled()) {
     console.info(
       '[terralab] fillEcoFluencer desactivado. En preview: localStorage.setItem("terralab-dev-fill","1"); location.reload()',
     );
@@ -231,10 +222,13 @@ export function installDevFillEcoFluencer() {
 
   const w = window as Window & {
     fillEcoFluencer?: typeof fillEcoFluencer;
-    terralabDev?: { fillEcoFluencer: typeof fillEcoFluencer };
+    terralabDev?: {
+      fillEcoFluencer?: typeof fillEcoFluencer;
+      fillEmprendeCircular?: unknown;
+    };
   };
   w.fillEcoFluencer = fillEcoFluencer;
-  w.terralabDev = { fillEcoFluencer };
+  w.terralabDev = { ...w.terralabDev, fillEcoFluencer };
   console.info(
     "[terralab] Listo. En consola escribe:\n  window.fillEcoFluencer()\n  window.fillEcoFluencer({ paso: 3, misionIndice: 7 })",
   );

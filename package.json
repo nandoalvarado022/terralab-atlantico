@@ -1,7 +1,11 @@
 {
   "name": "tanstack_start_ts",
   "private": true,
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css",
+    "./src/lib/dev-fill-ecofluencer.ts",
+    "./src/lib/dev-fill-emprende-circular.ts"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite dev",
@@ -58,7 +62,9 @@
     "docx": "^9.7.1",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
+    "jspdf": "^4.2.1",
     "lucide-react": "^0.575.0",
+    "openai": "^7.15.0",
     "react": "19.2.8",
     "react-day-picker": "^9.14.0",
     "react-dom": "19.2.8",

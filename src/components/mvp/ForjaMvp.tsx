@@ -19,7 +19,6 @@ import {
   type CanvasData,
   type Pregunta,
 } from "@/lib/mvp.functions";
-import { armarTextoCopiaPdf } from "@/lib/mvp-prompts";
 import { EcoFluencerQuestions, flattenRespuestasEcoFluencer } from "./EcoFluencerQuestions";
 import {
   EmprendeCircularQuestions,
@@ -116,7 +115,7 @@ export function ForjaMvp() {
   >({});
   const [misionIndice, setMisionIndice] = useState(0);
   const [resultado, setResultado] = useState<Resultado | null>(null);
-  const [cargando, setCargando] = useState<null | "preguntas" | "mvp" | "word">(null);
+  const [cargando, setCargando] = useState<null | "preguntas" | "mvp" | "word" | "pdf">(null);
   const [error, setError] = useState<string | null>(null);
   const [copiado, setCopiado] = useState<string | null>(null);
   const [hidratado, setHidratado] = useState(false);
@@ -147,15 +146,14 @@ export function ForjaMvp() {
       if (raw) {
         const g = JSON.parse(raw) as Guardado;
         setPaso(g.paso ?? 1);
-        const maxGuardado = Math.max(
-          g.pasoMax ?? 1,
-          g.paso ?? 1,
-          g.resultado ? 4 : 1,
-        );
+        const maxGuardado = Math.max(g.pasoMax ?? 1, g.paso ?? 1, g.resultado ? 4 : 1);
         setPasoMax(maxGuardado);
         const canvasCargado = { ...CANVAS_VACIO, ...g.canvas };
         // Si el desafío quedó en el campo viejo `pistas`, muévelo a `desafio`.
-        if (!String(canvasCargado.desafio ?? "").trim() && String(canvasCargado.pistas ?? "").trim()) {
+        if (
+          !String(canvasCargado.desafio ?? "").trim() &&
+          String(canvasCargado.pistas ?? "").trim()
+        ) {
           canvasCargado.desafio = canvasCargado.pistas;
           canvasCargado.pistas = "";
         }
@@ -265,6 +263,9 @@ export function ForjaMvp() {
       });
       setResultado(data);
       irAPaso(4);
+      if (entregaPdf) {
+        await descargarFormulacionPdf(data);
+      }
     } catch (e) {
       fallar(e);
     } finally {
@@ -308,25 +309,43 @@ export function ForjaMvp() {
   }
 
   function textoParaCopiar(): string {
-    if (!resultado) return "";
-    if (!entregaPdf) return resultado.prompt;
-    const { respuestasParaConstruir } = payloadMvpActual();
-    return armarTextoCopiaPdf({
-      labNombre: labActual.nombre,
-      nombreProyecto: resultado.nombre,
-      promptIa: resultado.prompt,
-      documento: resultado.documento,
-      canvas: {
-        colegio: canvas.colegio,
-        brigada: canvas.brigada,
-        lema: canvas.lema,
-        correoLider: canvas.correoLider,
-        integrantes: canvas.integrantes,
-        desafio: canvas.desafio,
-        ideaSemilla: canvas.ideaSemilla,
-      },
-      preguntasRespuestas: respuestasParaConstruir,
-    });
+    return resultado?.prompt ?? "";
+  }
+
+  async function descargarFormulacionPdf(override?: Resultado) {
+    const r = override ?? resultado;
+    if (!r) {
+      setError("Primero generen la formulación del proyecto.");
+      return;
+    }
+    setError(null);
+    setCargando("pdf");
+    try {
+      const respuestasMedia = esEcoFluencer
+        ? respuestasEcoFluencer
+        : esEmprendeCircular
+          ? respuestasEmprendeCircular
+          : {};
+
+      const { generarPdfFormulacion } = await import("@/lib/mvp-pdf");
+      const blob = await generarPdfFormulacion({
+        canvas,
+        labNombre: labActual.nombre,
+        nombreProyecto: r.nombre,
+        documento: r.documento,
+        ficha: r.prompt,
+        respuestasMedia,
+      });
+
+      descargarBlob(
+        blob,
+        `formulacion-${fileSlug(r.nombre || canvas.brigada || "proyecto")}.pdf`,
+      );
+    } catch (e) {
+      fallar(e);
+    } finally {
+      setCargando(null);
+    }
   }
 
   async function copiar(texto: string, etiqueta: string) {
@@ -777,7 +796,7 @@ export function ForjaMvp() {
                   ? "Revisen la formulación. Este documento reúne lo que alimentaron en el canvas y las misiones, listo para PDF."
                   : "Revisen el documento. Es el PRD que Lovable usará para construir el prototipo."
                 : entregaPdf
-                  ? "Descarguen o impriman el documento para entregarlo como formulación del proyecto."
+                  ? "Descarguen el PDF de la formulación: incluye el documento generado y las imágenes que subieron en las misiones."
                   : "Copien el prompt, ábranlo en Lovable y hagan vibecoding con su prototipo."}
             </p>
           </div>
@@ -792,58 +811,84 @@ export function ForjaMvp() {
             </pre>
           </article>
 
-          <div className="rounded-3xl bg-deep p-7 text-deep-foreground print:hidden">
-            <h3 className="text-xl font-extrabold">
-              {entregaPdf ? "Prompt para generar el PDF" : "Prompt para Lovable"}
-            </h3>
-            {entregaPdf && (
+          {entregaPdf ? (
+            <div className="rounded-3xl bg-deep p-7 text-deep-foreground print:hidden">
+              <h3 className="text-xl font-extrabold">Formulación lista para entregar</h3>
               <p className="mt-2 text-sm opacity-80">
-                Al pulsar Copiar se incluye el prompt con instrucciones, la formulación completa, el
-                canvas y las respuestas del formulario.
+                El PDF incluye la formulación generada, los datos del canvas y las imágenes que
+                subieron en cada paso (símbolo, prototipo, construir, etc.).
               </p>
-            )}
-            <pre className="mt-4 max-h-80 overflow-auto text-sm leading-relaxed whitespace-pre-wrap opacity-90">
-              {resultado.prompt}
-            </pre>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => void copiar(textoParaCopiar(), "prompt")}
-                className="rounded-full bg-lime px-6 py-3 font-extrabold text-lime-foreground"
-              >
-                {copiado === "prompt" ? "¡Copiado!" : entregaPdf ? "Copiar" : "Copiar prompt"}
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  descargar(
-                    `${resultado.documento}\n\n---\n\n## ${
-                      entregaPdf ? "Ficha / resumen" : "Prompt para Lovable"
-                    }\n\n${resultado.prompt}\n`,
-                    `mvp-${fileSlug(resultado.nombre)}.md`,
-                    "text/markdown",
-                  )
-                }
-                className="rounded-full border-2 border-lime px-6 py-3 font-extrabold"
-              >
-                Descargar Markdown
-              </button>
-              <button
-                type="button"
-                onClick={() => void descargarWord()}
-                disabled={cargando === "word"}
-                className="rounded-full border-2 border-lime px-6 py-3 font-extrabold disabled:opacity-50"
-              >
-                {cargando === "word" ? "Preparando Word…" : "Descargar documento Word"}
-              </button>
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="rounded-full border-2 border-lime px-6 py-3 font-extrabold"
-              >
-                Imprimir / PDF
-              </button>
-              {!entregaPdf && (
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => void descargarFormulacionPdf()}
+                  disabled={cargando === "pdf"}
+                  className="rounded-full bg-lime px-6 py-3 font-extrabold text-lime-foreground disabled:opacity-50"
+                >
+                  {cargando === "pdf" ? "Preparando PDF…" : "Descargar formulación de proyecto"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void descargarWord()}
+                  disabled={cargando === "word"}
+                  className="rounded-full border-2 border-lime px-6 py-3 font-extrabold disabled:opacity-50"
+                >
+                  {cargando === "word" ? "Preparando Word…" : "Descargar documento Word"}
+                </button>
+              </div>
+              {resultado.prompt?.trim() && (
+                <details className="mt-6">
+                  <summary className="cursor-pointer text-sm font-extrabold opacity-90">
+                    Ver ficha / resumen incluido en el PDF
+                  </summary>
+                  <pre className="mt-3 max-h-64 overflow-auto text-sm leading-relaxed whitespace-pre-wrap opacity-90">
+                    {resultado.prompt}
+                  </pre>
+                </details>
+              )}
+            </div>
+          ) : (
+            <div className="rounded-3xl bg-deep p-7 text-deep-foreground print:hidden">
+              <h3 className="text-xl font-extrabold">Prompt para Lovable</h3>
+              <pre className="mt-4 max-h-80 overflow-auto text-sm leading-relaxed whitespace-pre-wrap opacity-90">
+                {resultado.prompt}
+              </pre>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => void copiar(textoParaCopiar(), "prompt")}
+                  className="rounded-full bg-lime px-6 py-3 font-extrabold text-lime-foreground"
+                >
+                  {copiado === "prompt" ? "¡Copiado!" : "Copiar prompt"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    descargar(
+                      `${resultado.documento}\n\n---\n\n## Prompt para Lovable\n\n${resultado.prompt}\n`,
+                      `mvp-${fileSlug(resultado.nombre)}.md`,
+                      "text/markdown",
+                    )
+                  }
+                  className="rounded-full border-2 border-lime px-6 py-3 font-extrabold"
+                >
+                  Descargar Markdown
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void descargarWord()}
+                  disabled={cargando === "word"}
+                  className="rounded-full border-2 border-lime px-6 py-3 font-extrabold disabled:opacity-50"
+                >
+                  {cargando === "word" ? "Preparando Word…" : "Descargar documento Word"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="rounded-full border-2 border-lime px-6 py-3 font-extrabold"
+                >
+                  Imprimir / PDF
+                </button>
                 <a
                   href="https://lovable.dev/?utm_source=terralab"
                   target="_blank"
@@ -852,9 +897,9 @@ export function ForjaMvp() {
                 >
                   Abrir Lovable
                 </a>
-              )}
+              </div>
             </div>
-          </div>
+          )}
 
           {!entregaPdf && (
             <div className="rounded-3xl bg-sand p-7 print:hidden">
@@ -878,12 +923,12 @@ export function ForjaMvp() {
 
           {entregaPdf && (
             <div className="rounded-3xl bg-sand p-7 print:hidden">
-              <h3 className="text-xl font-extrabold">Cómo sacar el PDF</h3>
+              <h3 className="text-xl font-extrabold">Cómo descargar la formulación</h3>
               <ol className="mt-4 space-y-3 text-sm">
                 {[
                   "Revisen que la formulación recoja el canvas y las misiones que completaron.",
-                  "Usen “Imprimir / PDF” o “Descargar documento Word” para la entrega formal.",
-                  "Si ajustaron respuestas, usen “Volver a generar MVP” para actualizar el documento.",
+                  "Pulsen “Descargar formulación de proyecto” para obtener el PDF con el documento y las imágenes subidas.",
+                  "Si ajustaron respuestas, usen “Volver a generar documento” y descarguen de nuevo el PDF.",
                 ].map((t, i) => (
                   <li key={t} className="flex gap-3">
                     <span className="font-display font-extrabold text-primary">{i + 1}</span>
@@ -946,7 +991,9 @@ export function ForjaMvp() {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction onClick={reiniciar}>Sí, borrar e iniciar de nuevo</AlertDialogAction>
+                  <AlertDialogAction onClick={reiniciar}>
+                    Sí, borrar e iniciar de nuevo
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>

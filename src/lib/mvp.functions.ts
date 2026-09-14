@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import { callGateway, parseJsonLoose } from "./ai-gateway.server";
+import { callGateway, GatewayError, parseJsonLoose } from "./ai-gateway.server";
 import {
   CorreoLiderDuplicadoError,
   CorreoLiderInvalidoError,
@@ -34,6 +34,20 @@ export const canvasSchema = z.object({
 });
 
 export type CanvasData = z.infer<typeof canvasSchema>;
+
+/** Quita fences ``` si el modelo envuelve todo el Markdown. */
+function limpiarDocumentoMarkdown(raw: string): string {
+  const trimmed = raw.trim();
+  const fenced = trimmed.match(/^```(?:markdown|md)?\s*([\s\S]*?)```$/i);
+  return (fenced?.[1] ?? trimmed).trim();
+}
+
+/** Nombre del proyecto desde el primer título Markdown, o fallback del canvas. */
+function nombreDesdeDocumento(documento: string, canvas: CanvasData): string {
+  const heading = documento.match(/^#{1,3}\s+(.+)$/m)?.[1]?.trim();
+  const fallback = canvas.ideaSemilla.trim() || canvas.brigada.trim() || "Proyecto Terra Lab";
+  return (heading || fallback).slice(0, 160);
+}
 
 export const labEnfoque: Record<string, string> = {
   ecotech:
@@ -195,10 +209,25 @@ ${promptLab.instrucciones}`,
       },
     ]);
 
-    const parsed = parseJsonLoose<Record<string, unknown>>(raw);
-    const resultado = z
-      .object({ nombre: z.string(), documento: z.string(), prompt: z.string() })
-      .parse(parsed);
+    // PDF labs (ECOFluencer / Emprende Circular): la IA devuelve Markdown directo.
+    // EcoTech / otros: JSON { nombre, documento, prompt } para Lovable.
+    let resultado: { nombre: string; documento: string; prompt: string };
+    if (promptLab.entrega === "pdf") {
+      const documento = limpiarDocumentoMarkdown(raw);
+      if (documento.length < 40) {
+        throw new GatewayError(502, "La IA no devolvió un documento utilizable para el PDF.");
+      }
+      resultado = {
+        nombre: nombreDesdeDocumento(documento, data.canvas),
+        documento,
+        prompt: "",
+      };
+    } else {
+      const parsed = parseJsonLoose<Record<string, unknown>>(raw);
+      resultado = z
+        .object({ nombre: z.string(), documento: z.string(), prompt: z.string() })
+        .parse(parsed);
+    }
 
     const mapa = data.respuestasMisiones;
     const respuestasParaDb =
