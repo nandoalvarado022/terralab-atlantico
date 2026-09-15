@@ -1,0 +1,49 @@
+src/data/biodiversidad-viva-misiones.ts
+  s_80ed7387eb536d::t_e3b4b9df626b9b 417-418
+  s_80ed7387eb536d::t_047bf13ad5c61e 636-637
+  s_80ed7387eb536d::t_6ff9d18b76636d 641-646
+  s_80ed7387eb536d::t_4facf362f03ef4 670-707
+  s_80ed7387eb536d::t_e244c2fd4c86c6 638-640
+src/components/mvp/biodiversidad-viva/flatten.ts
+  s_80ed7387eb536d::t_0190bf46c1dfe6 4,11,17
+  s_80ed7387eb536d::t_cec76189ca8c4c 191-200
+  s_80ed7387eb536d::t_d854d270f8b1fc 201-221
+  s_80ed7387eb536d::t_49fbd8a079d9e8 222-266
+src/components/mvp/MvpHeader.tsx
+  s_80ed7387eb536d::t_cfe85226446257 6-10,15-19,26-27,32-33
+src/components/mvp/biodiversidad-viva/Mision3Experimentar.tsx
+  s_80ed7387eb536d::t_bf3e3a64385cbf 120-133
+  s_80ed7387eb536d::t_dd98549a7685f5 1-7,40-109,111-112,156,161,170,178,240,242,268
+  s_80ed7387eb536d::t_82e1a8fcea50c4 10-39,110,113-119,134-155,157-160,162-169,171-177,179-239,241,243-267
+docs/biodiversidad-viva-overview.md
+  s_80ed7387eb536d::t_8ea38001ae454e 23
+  s_80ed7387eb536d::t_3d0054491f5f67 114
+  s_80ed7387eb536d::t_eccf65719b8ed9 115
+  s_80ed7387eb536d::t_6e960030cd1ae8 112-113,116-120
+src/lib/dev-fill-biodiversidad-viva.ts
+  s_80ed7387eb536d::t_7c2c119de5033a 137-147
+  s_80ed7387eb536d::t_e143e66a473fc0 13,20
+  s_80ed7387eb536d::t_81d2a704b91fb8 130-131
+  s_80ed7387eb536d::t_2e8b75a40c909f 132-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5f8ffec27abc92c96647aa61042b2752d91836aa",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_80ed7387eb536d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "51eb6434-4414-4c5b-9c18-f27dea7b0d46",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
