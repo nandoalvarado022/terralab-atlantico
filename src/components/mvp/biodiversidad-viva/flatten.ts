@@ -1,17 +1,20 @@
 import {
   accionCuidadoPorId,
   amenazaPorId,
+  amenazasVisiblesHabitat,
   camposDiagnosticoSitio,
   camposIndicadorPrincipal,
   clavesBiodiversidadViva,
   criteriosObservacion,
   etiquetaCategoriaServicio,
   etiquetaNivelCerteza,
+  etiquetaRangoPorcentajeHabitat,
   etiquetaTipoSerVivo,
   etiquetaValorObservacion,
   fraseOportunidadBiodiversidad,
   intervencionDisenoPorId,
   necesidadPorId,
+  opcionesSueloHabitat,
   seccionesConexionAtlantico,
   servicioPorId,
 } from "@/data/biodiversidad-viva-misiones";
@@ -182,6 +185,82 @@ export function flattenRespuestasBiodiversidadViva(
     salida.push({
       pregunta: `Diagnóstico del sitio · ${campo.etiqueta}`,
       respuesta: valor,
+    });
+  }
+
+  const puntoInicio = respuestas[clavesBiodiversidadViva.puntoInicio]?.trim();
+  if (puntoInicio) {
+    salida.push({ pregunta: "Experimentar · Punto de inicio", respuesta: puntoInicio });
+  }
+
+  const puntoCierre = respuestas[clavesBiodiversidadViva.puntoCierre]?.trim();
+  if (puntoCierre) {
+    salida.push({ pregunta: "Experimentar · Cierre", respuesta: puntoCierre });
+  }
+
+  const tipoArboles = respuestas[clavesBiodiversidadViva.tipoArbolesPlantas]?.trim();
+  if (tipoArboles) {
+    salida.push({
+      pregunta: "Experimentar · Tipo de árboles y plantas",
+      respuesta: tipoArboles,
+    });
+  }
+
+  const tiposAve = respuestas[clavesBiodiversidadViva.tiposAve]?.trim();
+  if (tiposAve) {
+    salida.push({ pregunta: "Experimentar · Tipos de ave", respuesta: tiposAve });
+  }
+
+  const tipoInsectos = respuestas[clavesBiodiversidadViva.tipoInsectosPolinizadores]?.trim();
+  if (tipoInsectos) {
+    salida.push({
+      pregunta: "Experimentar · Tipo de insectos o polinizadores",
+      respuesta: tipoInsectos,
+    });
+  }
+
+  const cobertura = etiquetaRangoPorcentajeHabitat(
+    respuestas[clavesBiodiversidadViva.coberturaVegetal],
+  );
+  if (cobertura) {
+    salida.push({
+      pregunta: "Experimentar · Cobertura vegetal",
+      respuesta: cobertura,
+    });
+  }
+
+  const sombra = etiquetaRangoPorcentajeHabitat(respuestas[clavesBiodiversidadViva.sombra]);
+  if (sombra) {
+    salida.push({ pregunta: "Experimentar · Sombra", respuesta: sombra });
+  }
+
+  const suelos = opcionesSueloHabitat
+    .filter((o) => respuestas[clavesBiodiversidadViva.suelo(o.id)] === "si")
+    .map((o) => o.etiqueta);
+  if (suelos.length) {
+    salida.push({ pregunta: "Experimentar · Suelo", respuesta: suelos.join(", ") });
+  }
+
+  const visitas = respuestas[clavesBiodiversidadViva.polinizadoresVisitas]?.trim();
+  const planta = respuestas[clavesBiodiversidadViva.polinizadoresPlanta]?.trim();
+  if (visitas || planta) {
+    const partes = [
+      visitas ? `Total de visitas: ${visitas}` : null,
+      planta ? `Flor o planta visitada: ${planta}` : null,
+    ].filter(Boolean);
+    salida.push({
+      pregunta: "Experimentar · Visitas de polinizadores",
+      respuesta: partes.join(" · "),
+    });
+  }
+
+  const amenazasVisibles = amenazasVisiblesHabitat
+    .filter((o) => respuestas[clavesBiodiversidadViva.amenazaVisible(o.id)] === "si")
+    .map((o) => o.etiqueta);
+  if (amenazasVisibles.length) {
+    salida.push({
+      pregunta: "Experimentar · Amenazas visibles",
+      respuesta: amenazasVisibles.join(", "),
     });
   }
 

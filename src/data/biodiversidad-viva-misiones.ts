@@ -414,7 +414,8 @@ export const pantallasBiodiversidadViva: PantallaBiodiversidadViva[] = [
     numero: 3,
     nombre: "Experimentar",
     tagline: "3. Experimentar",
-    instrucciones: "Próximamente: actividades de experimentación en el sitio.",
+    instrucciones:
+      "Registren tipos de árboles, aves e insectos o polinizadores, y hagan la lectura rápida del hábitat.",
   },
   {
     id: "definir",
@@ -632,6 +633,17 @@ export const clavesBiodiversidadViva = {
   conexionAtlantico: (seccionId: string, opcionId: string) =>
     `bv2-conexion-${seccionId}-${opcionId}`,
   diagnosticoSitio: (id: string) => `bv2-diagnostico-${id}`,
+  puntoInicio: "bv3-punto-inicio",
+  puntoCierre: "bv3-punto-cierre",
+  tipoArbolesPlantas: "bv3-tipo-arboles-plantas",
+  tiposAve: "bv3-tipos-ave",
+  tipoInsectosPolinizadores: "bv3-tipo-insectos-polinizadores",
+  coberturaVegetal: "bv3-cobertura-vegetal",
+  sombra: "bv3-sombra",
+  suelo: (id: string) => `bv3-suelo-${id}`,
+  polinizadoresVisitas: "bv3-polinizadores-visitas",
+  polinizadoresPlanta: "bv3-polinizadores-planta",
+  amenazaVisible: (id: string) => `bv3-amenaza-${id}`,
   activosConservar: "bv4-activos-conservar",
   vaciosAmenazas: "bv4-vacios-amenazas",
   oportunidadEspacio: "bv4-oportunidad-espacio",
@@ -654,6 +666,44 @@ export const clavesBiodiversidadViva = {
   probarMejora: "bv7-probar-mejora",
   inspirarTexto: "bv8-inspirar-texto",
 } as const;
+
+/** Rangos de porcentaje (misión 3 · cobertura / sombra). Selección única. */
+export const rangosPorcentajeHabitat: Array<{ id: string; etiqueta: string }> = [
+  { id: "0-25", etiqueta: "0-25%" },
+  { id: "26-50", etiqueta: "26-50%" },
+  { id: "51-75", etiqueta: "51-75%" },
+  { id: "76-100", etiqueta: "76-100%" },
+];
+
+export type OpcionHabitat = {
+  id: string;
+  etiqueta: string;
+};
+
+/** Condiciones del suelo (misión 3). Multiselección. */
+export const opcionesSueloHabitat: OpcionHabitat[] = [
+  { id: "cubierto", etiqueta: "cubierto" },
+  { id: "desnudo", etiqueta: "desnudo" },
+  { id: "hojarasca", etiqueta: "hojarasca" },
+  { id: "pavimento", etiqueta: "pavimento" },
+  { id: "humedo", etiqueta: "húmedo" },
+  { id: "compactado", etiqueta: "compactado" },
+];
+
+/** Amenazas visibles (misión 3). Multiselección. */
+export const amenazasVisiblesHabitat: OpcionHabitat[] = [
+  { id: "residuos", etiqueta: "residuos" },
+  { id: "pisoteo", etiqueta: "pisoteo" },
+  { id: "poda", etiqueta: "poda" },
+  { id: "ruido", etiqueta: "ruido" },
+  { id: "quimicos", etiqueta: "químicos" },
+  { id: "suelo-sin-cobertura", etiqueta: "suelo sin cobertura" },
+];
+
+export function etiquetaRangoPorcentajeHabitat(id: string | undefined): string {
+  if (!id) return "";
+  return rangosPorcentajeHabitat.find((r) => r.id === id)?.etiqueta ?? id;
+}
 
 export type IntervencionDiseno = {
   id: string;

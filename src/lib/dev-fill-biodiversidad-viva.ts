@@ -10,12 +10,14 @@
 import {
   accionesCuidado,
   amenazasSerVivo,
+  amenazasVisiblesHabitat,
   camposDiagnosticoSitio,
   camposIndicadorPrincipal,
   clavesBiodiversidadViva,
   criteriosObservacion,
   intervencionesDiseno,
   necesidadesSerVivo,
+  opcionesSueloHabitat,
   pantallasBiodiversidadViva,
   seccionesConexionAtlantico,
   serviciosEcosistemicos,
@@ -123,6 +125,24 @@ function respuestasBiodiversidadVivaDemo(): Record<string, string> {
   for (const campo of camposDiagnosticoSitio) {
     r[clavesBiodiversidadViva.diagnosticoSitio(campo.id)] =
       diagnosticosDemo[campo.id] ?? `Respuesta demo: ${campo.etiqueta}`;
+  }
+
+  r[clavesBiodiversidadViva.puntoInicio] = "Jardín de la portería / entrada del colegio";
+  r[clavesBiodiversidadViva.puntoCierre] = "Árbol del patio central, tras 15 minutos de observación";
+  r[clavesBiodiversidadViva.tipoArbolesPlantas] =
+    "Bougainvillea, arbustos ornamentales y algunas hierbas del jardín de entrada";
+  r[clavesBiodiversidadViva.tiposAve] = "Mirlas y colibríes ocasionales";
+  r[clavesBiodiversidadViva.tipoInsectosPolinizadores] =
+    "Mariposas amarillas, abejas y pequeños escarabajos en las flores";
+  r[clavesBiodiversidadViva.coberturaVegetal] = "51-75";
+  r[clavesBiodiversidadViva.sombra] = "26-50";
+  for (const opcion of opcionesSueloHabitat.slice(0, 3)) {
+    r[clavesBiodiversidadViva.suelo(opcion.id)] = "si";
+  }
+  r[clavesBiodiversidadViva.polinizadoresVisitas] = "12";
+  r[clavesBiodiversidadViva.polinizadoresPlanta] = "flores naranjas del jardín de entrada";
+  for (const opcion of amenazasVisiblesHabitat.slice(0, 2)) {
+    r[clavesBiodiversidadViva.amenazaVisible(opcion.id)] = "si";
   }
 
   r[clavesBiodiversidadViva.activosConservar] =

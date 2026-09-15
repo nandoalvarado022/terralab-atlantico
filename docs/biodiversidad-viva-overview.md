@@ -20,7 +20,7 @@ Documento de contexto sobre el flujo de misiones estructuradas de **LAB Biodiver
 | `src/components/mvp/biodiversidad-viva/RevelaLaRedInvisible.tsx` | Punto 2 de la misión 1 |
 | `src/components/mvp/biodiversidad-viva/DescubreLoQueAporta.tsx` | Punto 3 de la misión 1 |
 | `src/components/mvp/biodiversidad-viva/Mision2Comprender.tsx` | Misión 2 (puntos 1–3) |
-| `src/components/mvp/biodiversidad-viva/Mision3Experimentar.tsx` | Misión 3 (vacía por ahora) |
+| `src/components/mvp/biodiversidad-viva/Mision3Experimentar.tsx` | Misión 3 (lectura del hábitat) |
 | `src/components/mvp/biodiversidad-viva/Mision4Definir.tsx` | Misión 4 (sitio + oportunidad) |
 | `src/components/mvp/biodiversidad-viva/Mision5Disenar.tsx` | Misión 5 (reto + intervenciones + esquema) |
 | `src/components/mvp/biodiversidad-viva/flatten.ts` | Flatten hacia MVP |
@@ -109,7 +109,15 @@ Catálogo: `camposDiagnosticoSitio`.
 
 ### 3. Experimentar (`experimentar`) — `Mision3Experimentar`
 
-Pantalla reservada; contenido pendiente.
+**Lectura rápida del hábitat:**
+
+Antes: punto de inicio, cierre, y textos libres — tipo de árboles y plantas, tipos de ave, tipo de insectos o polinizadores.
+
+1. Cobertura vegetal — rango único (`0-25%` … `76-100%`)  
+2. Sombra — rango único  
+3. Suelo — multiselección (`opcionesSueloHabitat`)  
+4. Visitas de polinizadores — total + flor/planta  
+5. Amenazas visibles — multiselección (`amenazasVisiblesHabitat`)  
 
 ### 4. Definir (`definir`) — `Mision4Definir`
 
@@ -181,8 +189,6 @@ Clave: `bv7-probar-mejora`.
 Texto libre: cómo esto inspiró a construir.
 
 Clave: `bv8-inspirar-texto`.
-
-> Nota: la misión **3 · Experimentar** queda vacía por ahora.
 
 ## Comportamientos UX a respetar
 
