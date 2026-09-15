@@ -1,0 +1,93 @@
+src/lib/mvp.functions.ts
+  s_80ed7387eb536d::t_5df4f09bba54e8 213
+src/components/mvp/biodiversidad-viva/Mision5Disenar.tsx
+  s_80ed7387eb536d::t_a01dac243afb32 158
+  s_80ed7387eb536d::t_31f4a865efc642 45,213,272
+  s_80ed7387eb536d::t_6b66639975f214 322-323
+  s_80ed7387eb536d::t_ec4da4ea657778 288-317
+src/lib/dev-fill-emprende-circular.ts
+  s_80ed7387eb536d::t_7116ff67e607e2 7,26-30
+  s_80ed7387eb536d::t_c60c831a378e20 238,241,245
+src/lib/mvp-pdf.ts
+  s_80ed7387eb536d::t_b95257f0962f3c 34
+src/lib/dev-fill-ecofluencer.ts
+  s_80ed7387eb536d::t_e7d50a9907dbe6 198,201,205
+  s_80ed7387eb536d::t_345b6ad3dc7292 7,22-26
+src/lib/forja-storage.ts
+  s_80ed7387eb536d::t_7c521f26abcd5b 1,13-56
+src/lib/dev-fill-biodiversidad-viva.ts
+  s_80ed7387eb536d::t_068ae2fbb5ed26 2,4,22,30,37,41
+  s_80ed7387eb536d::t_0efee1ae2d5bdb 6
+  s_80ed7387eb536d::t_ffacc1e293a789 39
+  s_80ed7387eb536d::t_e9c9664c9858f9 162
+  s_80ed7387eb536d::t_09e6c96baafeb6 7,24-28
+  s_80ed7387eb536d::t_b9ed21c359bc7e 195,199
+  s_80ed7387eb536d::t_e188a58c6c06b3 158-161
+  s_80ed7387eb536d::t_cc102951db158d 220,232
+  s_80ed7387eb536d::t_077d721840cc34 29
+src/components/mvp/biodiversidad-viva/Mision4Definir.tsx
+  s_80ed7387eb536d::t_31f4a865efc642 110-268
+  s_80ed7387eb536d::t_7838d883ef9a07 296-297
+src/data/biodiversidad-viva-misiones.ts
+  s_80ed7387eb536d::t_81e18f76dd0bd1 413,415-421,423,429,431
+  s_80ed7387eb536d::t_458fbba790419a 748
+  s_80ed7387eb536d::t_390df3949098e5 666
+  s_80ed7387eb536d::t_90ec2129155ee8 738
+  s_80ed7387eb536d::t_8d66f58e0da37d 635-652
+  s_80ed7387eb536d::t_31f4a865efc642 761
+  s_80ed7387eb536d::t_35185f3922d872 433
+src/components/mvp/biodiversidad-viva/flatten.ts
+  s_80ed7387eb536d::t_8f7a645ccc8d2b 286-293,295
+src/components/mvp/ForjaMvp.tsx
+  s_80ed7387eb536d::t_9309345a0fc285 22-26
+  s_80ed7387eb536d::t_b0c69ba47df20e 157
+  s_80ed7387eb536d::t_87d055de716876 142
+  s_80ed7387eb536d::t_d363b8a88c1928 472
+  s_80ed7387eb536d::t_aebbb872aae223 211
+src/lib/mvp-prompts.ts
+  s_80ed7387eb536d::t_d98359b5ca2cf2 107-108,111,113-129
+src/components/mvp/BiodiversidadVivaQuestions.tsx
+  s_80ed7387eb536d::t_68a4a0feb6e2c0 42-43,45,47
+  s_80ed7387eb536d::t_365a8539ac4fbd 10-12
+src/lib/mvp-word.ts
+  s_80ed7387eb536d::t_b44eb82c0a7a3d 42
+docs/ecofluencer-overview.md
+  s_80ed7387eb536d::t_aa7a4fd406f0e1 11
+  s_80ed7387eb536d::t_40957a9c72ba66 91
+src/components/mvp/biodiversidad-viva/Mision3Experimentar.tsx
+  s_80ed7387eb536d::t_60febe6d221bbc 1-6
+docs/emprende-circular-overview.md
+  s_80ed7387eb536d::t_45b315cc2d393a 11
+  s_80ed7387eb536d::t_2d64980246ad3e 76
+docs/biodiversidad-viva-overview.md
+  s_80ed7387eb536d::t_7fd354059a76f9 185
+  s_80ed7387eb536d::t_be331100af07ae 23-25
+  s_80ed7387eb536d::t_32fa7bcc1d66d0 110-114,142,164-165
+  s_80ed7387eb536d::t_a4e1492521daa0 192
+  s_80ed7387eb536d::t_8b2b58780a7dea 194
+  s_80ed7387eb536d::t_6508e35301a8bc 203
+  s_80ed7387eb536d::t_46780b836bfc58 11
+  s_80ed7387eb536d::t_325f8021e26653 202,206
+  s_80ed7387eb536d::t_106626d84fd9e2 207
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4cb17d109a2b9c4c5586da9d1b2649a6eca0e7d9",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_80ed7387eb536d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "51eb6434-4414-4c5b-9c18-f27dea7b0d46",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
