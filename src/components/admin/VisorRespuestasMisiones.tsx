@@ -1,7 +1,7 @@
 import type { RespuestaMision } from "@/lib/respuestas-misiones";
 
 function etiquetaCampo(clave: string): string {
-  const sinPrefijo = clave.replace(/^(m\d+|ec\d+|ef\d+)-/, "");
+  const sinPrefijo = clave.replace(/^(m\d+|ec\d+|ef\d+|bv\d+)-/, "");
   return sinPrefijo.replace(/[-_.]/g, " ");
 }
 

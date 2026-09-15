@@ -13,3 +13,4 @@
 
 - Flujo estructurado **ECOFluencer** (lab `influencia`): ver [`docs/ecofluencer-overview.md`](docs/ecofluencer-overview.md).
 - Flujo estructurado **Emprende Circular** (lab `circular`): ver [`docs/emprende-circular-overview.md`](docs/emprende-circular-overview.md).
+- Flujo estructurado **Biodiversidad Viva** (lab `biodiversidad`): ver [`docs/biodiversidad-viva-overview.md`](docs/biodiversidad-viva-overview.md).

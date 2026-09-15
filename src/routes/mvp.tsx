@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import { ForjaMvp } from "@/components/mvp/ForjaMvp";
 import { MvpHeader } from "@/components/mvp/MvpHeader";
+import { installDevFillBiodiversidadViva } from "@/lib/dev-fill-biodiversidad-viva";
 import { installDevFillEcoFluencer } from "@/lib/dev-fill-ecofluencer";
 import { installDevFillEmprendeCircular } from "@/lib/dev-fill-emprende-circular";
 
@@ -33,6 +34,7 @@ function Mvp() {
     // Siempre registrar en /mvp (el visitante ya está en la herramienta de forja).
     installDevFillEcoFluencer({ force: true });
     installDevFillEmprendeCircular({ force: true });
+    installDevFillBiodiversidadViva({ force: true });
   }, []);
 
   return (

@@ -26,7 +26,7 @@ export type CanvasParaGuardar = {
 
 export type GuardarMvpInput = {
   canvas: CanvasParaGuardar;
-  /** Array de misiones (o Q&A plano en biodiversidad) que se guarda en `respuestas`. */
+  /** Array de misiones (o Q&A plano en labs sin misiones estructuradas) que se guarda en `respuestas`. */
   respuestas: RespuestasGuardadas;
   resultado: MvpResultadoIa;
   /** Si true, actualiza el MVP existente del mismo correo en lugar de insertar. */

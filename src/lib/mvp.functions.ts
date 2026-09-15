@@ -11,6 +11,7 @@ import {
 } from "./mvp-save.server";
 import { promptMvpParaLab } from "./mvp-prompts";
 import {
+  empaquetarRespuestasBiodiversidadViva,
   empaquetarRespuestasEcoFluencer,
   empaquetarRespuestasEcoTech,
   empaquetarRespuestasEmprendeCircular,
@@ -174,7 +175,7 @@ export const construirMvp = createServerFn({ method: "POST" })
         canvas: canvasSchema,
         /** Q&A aplanado solo para el prompt de IA. */
         respuestas: z.array(z.object({ pregunta: z.string(), respuesta: z.string() })),
-        /** Record crudo de misiones (EcoTech / Circular / EcoFluencer). */
+        /** Record crudo de misiones (EcoTech / Circular / EcoFluencer / Biodiversidad). */
         respuestasMisiones: z.record(z.string(), z.string()).optional(),
         /** Regenera y actualiza el MVP ya guardado con este correo. */
         regenerar: z.boolean().optional(),
@@ -236,7 +237,9 @@ ${promptLab.instrucciones}`,
         : data.canvas.lab === "circular" && mapa
           ? empaquetarRespuestasEmprendeCircular(mapa)
           : data.canvas.lab === "influencia" && mapa
-            ? empaquetarRespuestasEcoFluencer(mapa)
+          ? empaquetarRespuestasEcoFluencer(mapa)
+          : data.canvas.lab === "biodiversidad" && mapa
+            ? empaquetarRespuestasBiodiversidadViva(mapa)
             : empaquetarRespuestasPrd(data.respuestas);
 
     try {

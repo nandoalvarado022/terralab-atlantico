@@ -24,6 +24,10 @@ import {
   EmprendeCircularQuestions,
   flattenRespuestasEmprendeCircular,
 } from "./EmprendeCircularQuestions";
+import {
+  BiodiversidadVivaQuestions,
+  flattenRespuestasBiodiversidadViva,
+} from "./BiodiversidadVivaQuestions";
 import { MisionesEcoTech, flattenRespuestasEcoTech } from "./MisionesEcoTech";
 
 const CANVAS_VACIO: CanvasData = {
@@ -87,6 +91,7 @@ type Guardado = {
   respuestasEcoTech: Record<string, string>;
   respuestasEcoFluencer: Record<string, string>;
   respuestasEmprendeCircular: Record<string, string>;
+  respuestasBiodiversidadViva: Record<string, string>;
   misionIndice: number;
   resultado: Resultado | null;
 };
@@ -113,6 +118,9 @@ export function ForjaMvp() {
   const [respuestasEmprendeCircular, setRespuestasEmprendeCircular] = useState<
     Record<string, string>
   >({});
+  const [respuestasBiodiversidadViva, setRespuestasBiodiversidadViva] = useState<
+    Record<string, string>
+  >({});
   const [misionIndice, setMisionIndice] = useState(0);
   const [resultado, setResultado] = useState<Resultado | null>(null);
   const [cargando, setCargando] = useState<null | "preguntas" | "mvp" | "word" | "pdf">(null);
@@ -126,7 +134,8 @@ export function ForjaMvp() {
   const esEcoTech = canvas.lab === "ecotech";
   const esEcoFluencer = canvas.lab === "influencia";
   const esEmprendeCircular = canvas.lab === "circular";
-  const esMisiones = esEcoTech || esEcoFluencer || esEmprendeCircular;
+  const esBiodiversidadViva = canvas.lab === "biodiversidad";
+  const esMisiones = esEcoTech || esEcoFluencer || esEmprendeCircular || esBiodiversidadViva;
   const entregaPdf = esEcoFluencer || esEmprendeCircular;
 
   const pasos = useMemo(
@@ -170,6 +179,7 @@ export function ForjaMvp() {
         setRespuestasEcoTech(g.respuestasEcoTech ?? {});
         setRespuestasEcoFluencer(g.respuestasEcoFluencer ?? {});
         setRespuestasEmprendeCircular(g.respuestasEmprendeCircular ?? {});
+        setRespuestasBiodiversidadViva(g.respuestasBiodiversidadViva ?? {});
         setMisionIndice(g.misionIndice ?? 0);
         setResultado(g.resultado ?? null);
       }
@@ -190,6 +200,7 @@ export function ForjaMvp() {
       respuestasEcoTech,
       respuestasEcoFluencer,
       respuestasEmprendeCircular,
+      respuestasBiodiversidadViva,
       misionIndice,
       resultado,
     };
@@ -208,6 +219,7 @@ export function ForjaMvp() {
     respuestasEcoTech,
     respuestasEcoFluencer,
     respuestasEmprendeCircular,
+    respuestasBiodiversidadViva,
     misionIndice,
     resultado,
   ]);
@@ -295,6 +307,12 @@ export function ForjaMvp() {
         respuestasMisiones: respuestasEmprendeCircular,
       };
     }
+    if (esBiodiversidadViva) {
+      return {
+        respuestasParaConstruir: flattenRespuestasBiodiversidadViva(respuestasBiodiversidadViva),
+        respuestasMisiones: respuestasBiodiversidadViva,
+      };
+    }
     return {
       respuestasParaConstruir: preguntas.map((q) => ({
         pregunta: q.pregunta,
@@ -325,7 +343,9 @@ export function ForjaMvp() {
         ? respuestasEcoFluencer
         : esEmprendeCircular
           ? respuestasEmprendeCircular
-          : {};
+          : esBiodiversidadViva
+            ? respuestasBiodiversidadViva
+            : {};
 
       const { generarPdfFormulacion } = await import("@/lib/mvp-pdf");
       const blob = await generarPdfFormulacion({
@@ -407,10 +427,12 @@ export function ForjaMvp() {
           ? flattenRespuestasEcoFluencer(respuestasEcoFluencer)
           : esEmprendeCircular
             ? flattenRespuestasEmprendeCircular(respuestasEmprendeCircular)
-            : preguntas.map((q) => ({
-                pregunta: q.pregunta,
-                respuesta: respuestas[q.id] ?? "",
-              }));
+            : esBiodiversidadViva
+              ? flattenRespuestasBiodiversidadViva(respuestasBiodiversidadViva)
+              : preguntas.map((q) => ({
+                  pregunta: q.pregunta,
+                  respuesta: respuestas[q.id] ?? "",
+                }));
 
       const respuestasMedia = esEcoTech
         ? respuestasEcoTech
@@ -418,7 +440,9 @@ export function ForjaMvp() {
           ? respuestasEcoFluencer
           : esEmprendeCircular
             ? respuestasEmprendeCircular
-            : {};
+            : esBiodiversidadViva
+              ? respuestasBiodiversidadViva
+              : {};
 
       const { generarDocumentoWordMvp } = await import("@/lib/mvp-word");
       const blob = await generarDocumentoWordMvp({
@@ -455,6 +479,7 @@ export function ForjaMvp() {
     setRespuestasEcoTech({});
     setRespuestasEcoFluencer({});
     setRespuestasEmprendeCircular({});
+    setRespuestasBiodiversidadViva({});
     setMisionIndice(0);
     setResultado(null);
     setError(null);
@@ -704,6 +729,23 @@ export function ForjaMvp() {
             pedirMvp(
               flattenRespuestasEmprendeCircular(respuestasEmprendeCircular),
               respuestasEmprendeCircular,
+              Boolean(resultado),
+            )
+          }
+          cargando={cargando === "mvp"}
+        />
+      )}
+
+      {paso === 3 && esBiodiversidadViva && (
+        <BiodiversidadVivaQuestions
+          respuestas={respuestasBiodiversidadViva}
+          onCambiar={(k, v) => setRespuestasBiodiversidadViva((prev) => ({ ...prev, [k]: v }))}
+          indice={misionIndice}
+          onCambiarIndice={setMisionIndice}
+          onFinalizar={() =>
+            pedirMvp(
+              flattenRespuestasBiodiversidadViva(respuestasBiodiversidadViva),
+              respuestasBiodiversidadViva,
               Boolean(resultado),
             )
           }

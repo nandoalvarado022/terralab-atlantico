@@ -5,7 +5,7 @@
  * - EcoTech …………… `promptMvpEcoTech`
  * - ECOFluencer ……… `promptMvpEcoFluencer`   (lab id: influencia)
  * - Emprende Circular … `promptMvpEmprendeCircular` (lab id: circular)
- * - Biodiversidad …… `promptMvpBiodiversidad` (fallback; mismo esquema)
+ * - Biodiversidad Viva … `promptMvpBiodiversidad` (lab id: biodiversidad)
  *
  * Cada prompt tiene:
  * - `sistema`: rol del modelo
@@ -104,7 +104,7 @@ Integra de forma coherente TODO lo relevante que la brigada escribió (brigada, 
 
 /**
  * Biodiversidad Viva (lab `biodiversidad`).
- * Edita este bloque si activan el flujo de MVP para este lab.
+ * Entrega: documento de MVP + prompt Lovable (como EcoTech) a partir de las misiones.
  */
 export const promptMvpBiodiversidad: PromptMvpLab = {
   entrega: "lovable",

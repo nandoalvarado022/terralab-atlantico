@@ -1,3 +1,4 @@
+import { pantallasBiodiversidadViva } from "@/data/biodiversidad-viva-misiones";
 import { pantallasEcoTech } from "@/data/ecotech-misiones";
 import { pantallasEcoFluencer } from "@/data/ecofluencer-misiones";
 import { pantallasEmprendeCircular } from "@/data/emprende-circular-misiones";
@@ -11,7 +12,7 @@ export type RespuestaMision = {
   campos: Record<string, string>;
 };
 
-/** Formato legado usado por el flujo PRD de biodiversidad. */
+/** Formato legado usado por el flujo PRD genérico (labs sin misiones estructuradas). */
 export type RespuestaPlana = { pregunta: string; respuesta: string };
 
 export type RespuestasGuardadas = RespuestaMision[] | RespuestaPlana[];
@@ -124,6 +125,19 @@ export function empaquetarRespuestasEmprendeCircular(
     nombre: pantalla.nombre,
     tagline: pantalla.tagline,
     campos: clavesConPrefijo(respuestas, `ec${pantalla.numero}-`),
+  }));
+}
+
+/** Prefijos `bvN-*` alineados con el número de misión. */
+export function empaquetarRespuestasBiodiversidadViva(
+  respuestas: Record<string, string>,
+): RespuestaMision[] {
+  return pantallasBiodiversidadViva.map((pantalla) => ({
+    id: pantalla.id,
+    numero: pantalla.numero,
+    nombre: pantalla.nombre,
+    tagline: pantalla.tagline,
+    campos: clavesConPrefijo(respuestas, `bv${pantalla.numero}-`),
   }));
 }
 
