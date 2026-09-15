@@ -42,7 +42,7 @@ function CampoRecuperado({
   );
 }
 
-/** Misión 4 · punto 1: recuperar el reto antes de dibujar (precarga desde Definir). */
+/** Misión 5 · punto 1: recuperar el reto antes de dibujar (precarga desde Definir). */
 function RecuperenElReto({ respuestas, onCambiar }: MisionProps) {
   useEffect(() => {
     const sugeridas = sugerenciasDisenoDesdeDefinir(respuestas);
@@ -155,7 +155,7 @@ function TarjetaIntervencion({
   onToggle: () => void;
 }) {
   const elegida = rol !== null;
-  const checkId = `bv4-intervencion-check-${intervencion.id}`;
+  const checkId = `bv5-intervencion-check-${intervencion.id}`;
 
   return (
     <div
@@ -210,7 +210,7 @@ function TarjetaIntervencion({
   );
 }
 
-/** Misión 4 · punto 2: elegir hasta 2 intervenciones. */
+/** Misión 5 · punto 2: elegir hasta 2 intervenciones. */
 function ElijanIntervencion({ respuestas, onCambiar }: MisionProps) {
   const principal = respuestas[clavesBiodiversidadViva.disenoIntervencion(1)] ?? "";
   const complementaria = respuestas[clavesBiodiversidadViva.disenoIntervencion(2)] ?? "";
@@ -269,7 +269,7 @@ function ElijanIntervencion({ respuestas, onCambiar }: MisionProps) {
   );
 }
 
-/** Misión 4 · punto 3: dibujar el esquema (subir imagen). */
+/** Misión 5 · punto 3: nombre de la estrategia + imagen/esquema. */
 function DibujenElEsquema({ respuestas, onCambiar }: MisionProps) {
   return (
     <div className="space-y-4">
@@ -285,21 +285,42 @@ function DibujenElEsquema({ respuestas, onCambiar }: MisionProps) {
         </h3>
       </header>
 
-      <FileUploader
-        valor={respuestas[clavesBiodiversidadViva.disenoEsquemaImagen] ?? ""}
-        onCambiar={(v) => onCambiar(clavesBiodiversidadViva.disenoEsquemaImagen, v)}
-        titulo="Esquema de la propuesta"
-        ayuda="Suban el dibujo o foto del esquema de la intervención."
-        etiquetaSubir="Subir esquema"
-        alt="Esquema de la intervención"
-        variante="card"
-      />
+      <article className="space-y-5 rounded-2xl border-2 border-[#7cbc8f] bg-[#eaf5ee] p-4 sm:p-5">
+        <div>
+          <label
+            htmlFor={clavesBiodiversidadViva.disenoNombreEstrategia}
+            className="text-sm font-extrabold tracking-wide text-[#2d6a4f] uppercase"
+          >
+            Nombre de la estrategia
+          </label>
+          <input
+            id={clavesBiodiversidadViva.disenoNombreEstrategia}
+            type="text"
+            value={respuestas[clavesBiodiversidadViva.disenoNombreEstrategia] ?? ""}
+            onChange={(e) =>
+              onCambiar(clavesBiodiversidadViva.disenoNombreEstrategia, e.target.value)
+            }
+            placeholder="Ej. Pasaporte de la vida escolar"
+            className="mt-2 w-full border-0 border-b-2 border-[#2d6a4f]/35 bg-transparent px-0 py-1.5 text-sm text-[#2d6a4f] outline-none focus:border-[#2d6a4f]"
+          />
+        </div>
+
+        <FileUploader
+          valor={respuestas[clavesBiodiversidadViva.disenoEsquemaImagen] ?? ""}
+          onCambiar={(v) => onCambiar(clavesBiodiversidadViva.disenoEsquemaImagen, v)}
+          titulo="Imagen"
+          ayuda="Suban el dibujo, foto o esquema de la estrategia."
+          etiquetaSubir="Subir imagen"
+          alt="Imagen de la estrategia"
+          variante="compact"
+        />
+      </article>
     </div>
   );
 }
 
-/** Misión 4 · Diseñar. */
-export function Mision4Disenar({ respuestas, onCambiar }: MisionProps) {
+/** Misión 5 · Diseñar. */
+export function Mision5Disenar({ respuestas, onCambiar }: MisionProps) {
   return (
     <div className="space-y-8">
       <RecuperenElReto respuestas={respuestas} onCambiar={onCambiar} />

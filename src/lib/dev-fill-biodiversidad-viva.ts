@@ -1,10 +1,10 @@
 /**
- * Util de desarrollo: rellena canvas + la misión 1 de Biodiversidad Viva.
+ * Util de desarrollo: rellena canvas + todas las misiones de Biodiversidad Viva.
  *
- * En la consola del navegador (solo en DEV, en /mvp):
+ * En la consola del navegador (en /mvp, DEV o con terralab-dev-fill):
  *   fillBiodiversidadViva()
- *   fillBiodiversidadViva({ paso: 3, misionIndice: 0 })
- *   fillBiodiversidadViva({ reload: false })
+ *   fillBiodiversidadViva({ paso: 3, misionIndice: 7 })  // ir a Inspirar (última)
+ *   fillBiodiversidadViva({ reload: false })             // solo escribe localStorage
  */
 
 import {
@@ -19,16 +19,26 @@ import {
   pantallasBiodiversidadViva,
   seccionesConexionAtlantico,
   serviciosEcosistemicos,
+  sugerenciasDisenoDesdeDefinir,
 } from "@/data/biodiversidad-viva-misiones";
-import { FORJA_STORAGE_KEY, isTerralabDevFillEnabled } from "@/lib/forja-storage";
+import {
+  escribirForjaStorage,
+  FORJA_STORAGE_KEY,
+  isTerralabDevFillEnabled,
+} from "@/lib/forja-storage";
+
+export { FORJA_STORAGE_KEY } from "@/lib/forja-storage";
 
 /** PNG 1×1 transparente (para campos de imagen en demo). */
 const DEMO_IMAGEN_PNG =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
 
 export type FillBiodiversidadVivaOptions = {
+  /** Paso del flujo Forja (1–5). Por defecto 3 (misiones). */
   paso?: number;
+  /** Índice de misión Biodiversidad Viva (0 = Enfoca…, 7 = Inspirar). Por defecto 0. */
   misionIndice?: number;
+  /** Si false, no recarga ni navega. Por defecto true. */
   reload?: boolean;
 };
 
@@ -145,6 +155,11 @@ function respuestasBiodiversidadVivaDemo(): Record<string, string> {
 
   r[clavesBiodiversidadViva.disenoIntervencion(1)] = intervencionesDiseno[0]!.id;
   r[clavesBiodiversidadViva.disenoIntervencion(2)] = intervencionesDiseno[4]!.id;
+
+  // Precarga de Diseñar (como al visitar la misión 4)
+  Object.assign(r, sugerenciasDisenoDesdeDefinir(r));
+
+  r[clavesBiodiversidadViva.disenoNombreEstrategia] = "Pasaporte de la vida escolar";
   r[clavesBiodiversidadViva.disenoEsquemaImagen] = DEMO_IMAGEN_PNG;
   r[clavesBiodiversidadViva.construirImagen] = DEMO_IMAGEN_PNG;
   r[clavesBiodiversidadViva.probarMejora] =
@@ -177,11 +192,11 @@ export function buildBiodiversidadVivaDemoGuardado(options: FillBiodiversidadViv
 
 export function fillBiodiversidadViva(options: FillBiodiversidadVivaOptions = {}) {
   const guardado = buildBiodiversidadVivaDemoGuardado(options);
-  sessionStorage.setItem(FORJA_STORAGE_KEY, JSON.stringify(guardado));
+  escribirForjaStorage(JSON.stringify(guardado));
 
   if (options.reload === false) {
     console.info(
-      "[terralab] Biodiversidad Viva demo guardado en sessionStorage. Recarga /mvp para verlo.",
+      "[terralab] Biodiversidad Viva demo guardado en localStorage. Recarga /mvp para verlo.",
       guardado,
     );
     return guardado;
@@ -202,6 +217,7 @@ export function installDevFillBiodiversidadViva(options: { force?: boolean } = {
     return;
   }
 
+  const ultima = Math.max(0, pantallasBiodiversidadViva.length - 1);
   const w = window as Window & {
     fillBiodiversidadViva?: typeof fillBiodiversidadViva;
     terralabDev?: {
@@ -213,7 +229,7 @@ export function installDevFillBiodiversidadViva(options: { force?: boolean } = {
   w.fillBiodiversidadViva = fillBiodiversidadViva;
   w.terralabDev = { ...w.terralabDev, fillBiodiversidadViva };
   console.info(
-    "[terralab] Listo. En consola escribe:\n  window.fillBiodiversidadViva()\n  window.fillBiodiversidadViva({ paso: 3, misionIndice: 1 })",
+    `[terralab] Listo. En consola escribe:\n  window.fillBiodiversidadViva()\n  window.fillBiodiversidadViva({ paso: 3, misionIndice: ${ultima} })`,
   );
 }
 

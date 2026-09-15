@@ -8,7 +8,7 @@ Documento de contexto sobre el flujo de misiones estructuradas de **LAB Circular
 - En el paso 2 de Forja MVP (“Elegir lab y enfoque”), si `canvas.lab === "circular"`:
   - CTA: **“Continuar con las misiones”** (no “Generar las preguntas del PRD”).
   - Paso 3 del wizard: componente `EmprendeCircularQuestions`.
-- Orquestación: `src/components/mvp/ForjaMvp.tsx` (`esEmprendeCircular`, estado `respuestasEmprendeCircular`, persistencia en `sessionStorage`).
+- Orquestación: `src/components/mvp/ForjaMvp.tsx` (`esEmprendeCircular`, estado `respuestasEmprendeCircular`, persistencia en `localStorage`).
 
 ## Archivos clave
 
@@ -73,7 +73,7 @@ Paso 2: cuatro dimensiones con ícono (F / M / T / R), título y textarea + **lo
 - Navegación por pills de número: **libre**.
 - Lab Emprende Circular: no llamar a `generarPreguntas` (IA PRD).
 - Al cambiar de lab en el paso 2, se resetea `misionIndice`.
-- Respuestas en `sessionStorage` (`terralab-forja-mvp` → `respuestasEmprendeCircular`).
+- Respuestas en `localStorage` (`terralab-forja-mvp` → `respuestasEmprendeCircular`). Solo se borran al confirmar **Empezar con otra brigada**.
 - Al finalizar: `flattenRespuestasEmprendeCircular` → `pedirMvp` / `construirMvp`.
 
 ### Demo en consola

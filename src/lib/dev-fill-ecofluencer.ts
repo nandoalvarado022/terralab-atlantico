@@ -4,7 +4,7 @@
  * En la consola del navegador (solo en DEV, en /mvp):
  *   fillEcoFluencer()
  *   fillEcoFluencer({ paso: 3, misionIndice: 7 })  // ir a la última misión
- *   fillEcoFluencer({ reload: false })             // solo escribe sessionStorage
+ *   fillEcoFluencer({ reload: false })             // solo escribe localStorage
  */
 
 import {
@@ -19,7 +19,11 @@ import {
   tarjetasBrief,
   tarjetasComprension,
 } from "@/data/ecofluencer-misiones";
-import { FORJA_STORAGE_KEY, isTerralabDevFillEnabled } from "@/lib/forja-storage";
+import {
+  escribirForjaStorage,
+  FORJA_STORAGE_KEY,
+  isTerralabDevFillEnabled,
+} from "@/lib/forja-storage";
 
 export { FORJA_STORAGE_KEY } from "@/lib/forja-storage";
 
@@ -191,14 +195,14 @@ export function buildEcoFluencerDemoGuardado(options: FillEcoFluencerOptions = {
   };
 }
 
-/** Escribe el demo en sessionStorage y, por defecto, navega a /mvp. */
+/** Escribe el demo en localStorage y, por defecto, navega a /mvp. */
 export function fillEcoFluencer(options: FillEcoFluencerOptions = {}) {
   const guardado = buildEcoFluencerDemoGuardado(options);
-  sessionStorage.setItem(FORJA_STORAGE_KEY, JSON.stringify(guardado));
+  escribirForjaStorage(JSON.stringify(guardado));
 
   if (options.reload === false) {
     console.info(
-      "[terralab] EcoFluencer demo guardado en sessionStorage. Recarga /mvp para verlo.",
+      "[terralab] EcoFluencer demo guardado en localStorage. Recarga /mvp para verlo.",
       guardado,
     );
     return guardado;

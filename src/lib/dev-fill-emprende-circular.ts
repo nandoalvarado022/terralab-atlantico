@@ -4,7 +4,7 @@
  * En la consola del navegador (solo en DEV, en /mvp):
  *   fillEmprendeCircular()
  *   fillEmprendeCircular({ paso: 3, misionIndice: 7 })  // ir a la última misión
- *   fillEmprendeCircular({ reload: false })             // solo escribe sessionStorage
+ *   fillEmprendeCircular({ reload: false })             // solo escribe localStorage
  */
 
 import {
@@ -23,7 +23,11 @@ import {
   pantallasEmprendeCircular,
   unidadesBaseIndicador,
 } from "@/data/emprende-circular-misiones";
-import { FORJA_STORAGE_KEY, isTerralabDevFillEnabled } from "@/lib/forja-storage";
+import {
+  escribirForjaStorage,
+  FORJA_STORAGE_KEY,
+  isTerralabDevFillEnabled,
+} from "@/lib/forja-storage";
 
 /** PNG 1×1 transparente (para campos de imagen en demo). */
 const DEMO_IMAGEN_PNG =
@@ -231,14 +235,14 @@ export function buildEmprendeCircularDemoGuardado(options: FillEmprendeCircularO
   };
 }
 
-/** Escribe el demo en sessionStorage y, por defecto, navega a /mvp. */
+/** Escribe el demo en localStorage y, por defecto, navega a /mvp. */
 export function fillEmprendeCircular(options: FillEmprendeCircularOptions = {}) {
   const guardado = buildEmprendeCircularDemoGuardado(options);
-  sessionStorage.setItem(FORJA_STORAGE_KEY, JSON.stringify(guardado));
+  escribirForjaStorage(JSON.stringify(guardado));
 
   if (options.reload === false) {
     console.info(
-      "[terralab] Emprende Circular demo guardado en sessionStorage. Recarga /mvp para verlo.",
+      "[terralab] Emprende Circular demo guardado en localStorage. Recarga /mvp para verlo.",
       guardado,
     );
     return guardado;

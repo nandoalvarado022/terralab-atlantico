@@ -8,7 +8,7 @@ Documento de contexto sobre el flujo de misiones estructuradas de **LAB Influenc
 - En el paso 2 de Forja MVP (“Elegir lab y enfoque”), si `canvas.lab === "influencia"`:
   - CTA: **“Continuar con las misiones”** (no “Generar las preguntas del PRD”).
   - Paso 3 del wizard: componente `EcoFluencerQuestions` (no formulario PRD ni `MisionesEcoTech`).
-- Orquestación: `src/components/mvp/ForjaMvp.tsx` (`esEcoFluencer`, estado `respuestasEcoFluencer`, persistencia en `sessionStorage`).
+- Orquestación: `src/components/mvp/ForjaMvp.tsx` (`esEcoFluencer`, estado `respuestasEcoFluencer`, persistencia en `localStorage`).
 
 ## Archivos clave
 
@@ -88,7 +88,7 @@ Si un campo destino ya tiene texto, no se sobrescribe.
 - Navegación por pills de número: **libre** (no bloquear retos mayores).
 - Lab EcoFluencer: no llamar a `generarPreguntas` (IA PRD).
 - Al cambiar de lab en el paso 2, se resetea `misionIndice`.
-- Respuestas en `sessionStorage` (`terralab-forja-mvp` → `respuestasEcoFluencer`).
+- Respuestas en `localStorage` (`terralab-forja-mvp` → `respuestasEcoFluencer`). Solo se borran al confirmar **Empezar con otra brigada**.
 - Al finalizar: `flattenRespuestasEcoFluencer` → `pedirMvp` / `construirMvp`.
 
 ## Extender el flujo

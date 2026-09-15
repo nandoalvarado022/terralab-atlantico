@@ -107,7 +107,7 @@ function CampoLinea({
   );
 }
 
-/** Misión 3 · punto 2: leer el sitio como relación vida–condiciones–personas. */
+/** Misión 4 · punto 2: leer el sitio como relación vida–condiciones–personas. */
 function LeanElSitio({ respuestas, onCambiar }: MisionProps) {
   return (
     <div className="space-y-4">
@@ -143,7 +143,7 @@ function LeanElSitio({ respuestas, onCambiar }: MisionProps) {
   );
 }
 
-/** Misión 3 · Formulen la oportunidad en una sola frase. */
+/** Misión 4 · Formulen la oportunidad en una sola frase. */
 function FormulenLaOportunidad({ respuestas, onCambiar }: MisionProps) {
   const hueco =
     "min-w-[8rem] max-w-full flex-1 border-0 border-b-2 border-[#1f4d5a]/35 bg-transparent px-1 py-0.5 text-sm font-bold text-[#1f4d5a] outline-none focus:border-[#e07a3d] sm:min-w-[10rem]";
@@ -229,7 +229,7 @@ function FormulenLaOportunidad({ respuestas, onCambiar }: MisionProps) {
   );
 }
 
-/** Misión 3 · Definan dos objetivos complementarios. */
+/** Misión 4 · Definan dos objetivos complementarios. */
 function ObjetivosComplementarios({ respuestas, onCambiar }: MisionProps) {
   return (
     <div className="space-y-4">
@@ -265,7 +265,7 @@ function ObjetivosComplementarios({ respuestas, onCambiar }: MisionProps) {
   );
 }
 
-/** Misión 3 · Indicador principal (sin el filtro de cuidado). */
+/** Misión 4 · Indicador principal (sin el filtro de cuidado). */
 function IndicadorPrincipal({ respuestas, onCambiar }: MisionProps) {
   return (
     <div className="space-y-4">
@@ -293,8 +293,8 @@ function IndicadorPrincipal({ respuestas, onCambiar }: MisionProps) {
   );
 }
 
-/** Misión 3 · Definir. */
-export function Mision3Definir({ respuestas, onCambiar }: MisionProps) {
+/** Misión 4 · Definir. */
+export function Mision4Definir({ respuestas, onCambiar }: MisionProps) {
   return (
     <div className="space-y-8">
       <LeanElSitio respuestas={respuestas} onCambiar={onCambiar} />

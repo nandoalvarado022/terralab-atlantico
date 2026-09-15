@@ -8,7 +8,7 @@ Documento de contexto sobre el flujo de misiones estructuradas de **LAB Biodiver
 - En el paso 2 de Forja MVP (“Elegir lab y enfoque”), si `canvas.lab === "biodiversidad"`:
   - CTA: **“Continuar con las misiones”** (no “Generar las preguntas del PRD”).
   - Paso 3 del wizard: componente `BiodiversidadVivaQuestions`.
-- Orquestación: `src/components/mvp/ForjaMvp.tsx` (`esBiodiversidadViva`, estado `respuestasBiodiversidadViva`, persistencia en `sessionStorage`).
+- Orquestación: `src/components/mvp/ForjaMvp.tsx` (`esBiodiversidadViva`, estado `respuestasBiodiversidadViva`, persistencia en `localStorage`).
 
 ## Archivos clave
 
@@ -20,8 +20,9 @@ Documento de contexto sobre el flujo de misiones estructuradas de **LAB Biodiver
 | `src/components/mvp/biodiversidad-viva/RevelaLaRedInvisible.tsx` | Punto 2 de la misión 1 |
 | `src/components/mvp/biodiversidad-viva/DescubreLoQueAporta.tsx` | Punto 3 de la misión 1 |
 | `src/components/mvp/biodiversidad-viva/Mision2Comprender.tsx` | Misión 2 (puntos 1–3) |
-| `src/components/mvp/biodiversidad-viva/Mision3Definir.tsx` | Misión 3 (sitio + oportunidad) |
-| `src/components/mvp/biodiversidad-viva/Mision4Disenar.tsx` | Misión 4 (reto + intervenciones + esquema) |
+| `src/components/mvp/biodiversidad-viva/Mision3Experimentar.tsx` | Misión 3 (vacía por ahora) |
+| `src/components/mvp/biodiversidad-viva/Mision4Definir.tsx` | Misión 4 (sitio + oportunidad) |
+| `src/components/mvp/biodiversidad-viva/Mision5Disenar.tsx` | Misión 5 (reto + intervenciones + esquema) |
 | `src/components/mvp/biodiversidad-viva/flatten.ts` | Flatten hacia MVP |
 | `src/components/mvp/biodiversidad-viva/types.ts` | `MisionProps` compartido |
 
@@ -106,7 +107,11 @@ Cuatro textos libres:
 
 Catálogo: `camposDiagnosticoSitio`.
 
-### 3. Definir (`definir`) — `Mision3Definir`
+### 3. Experimentar (`experimentar`) — `Mision3Experimentar`
+
+Pantalla reservada; contenido pendiente.
+
+### 4. Definir (`definir`) — `Mision4Definir`
 
 #### Punto 2 · Lean el sitio como una relación…
 
@@ -134,7 +139,7 @@ Campos: qué se medirá, unidad, línea base, meta, periodo, fuente / responsabl
 
 Catálogo: `camposIndicadorPrincipal`. (Sin el cuadro rojo del filtro de cuidado.)
 
-### 4. Diseñar (`disenar`) — `Mision4Disenar`
+### 5. Diseñar (`disenar`) — `Mision5Disenar`
 
 #### Punto 1 · Recuperen el reto antes de dibujar
 
@@ -156,7 +161,8 @@ Helper: `sugerenciasDisenoDesdeDefinir`.
 
 #### Punto 3 · Dibujen el esquema
 
-Subida de imagen (`FileUploader`) → clave `bv4-esquema-imagen`.
+- Nombre de la estrategia (`bv5-nombre-estrategia`)
+- Imagen / esquema (`FileUploader` → `bv5-esquema-imagen`)
 
 ### 6. Construir (`construir`) — `MisionConstruir`
 
@@ -176,15 +182,16 @@ Texto libre: cómo esto inspiró a construir.
 
 Clave: `bv8-inspirar-texto`.
 
-> Nota: la misión **5** queda reservada por ahora (numeración alineada con Emprende Circular en 6–8).
+> Nota: la misión **3 · Experimentar** queda vacía por ahora.
 
 ## Comportamientos UX a respetar
 
 - Navegación por pills de número: **libre**.
 - Lab Biodiversidad Viva: no llamar a `generarPreguntas` (IA PRD).
 - Al cambiar de lab en el paso 2, se resetea `misionIndice`.
-- Respuestas en `sessionStorage` (`terralab-forja-mvp` → `respuestasBiodiversidadViva`).
+- Respuestas en `localStorage` (`terralab-forja-mvp` → `respuestasBiodiversidadViva`). Solo se borran al confirmar **Empezar con otra brigada**.
 - Al finalizar: `flattenRespuestasBiodiversidadViva` → `pedirMvp` / `construirMvp`.
+- Entrega: **PDF** (formulación), misma regla que ECOFluencer / Emprende Circular — no prompt Lovable de EcoTech. Prompt: `promptMvpBiodiversidad`.
 
 ### Demo en consola
 
@@ -192,8 +199,11 @@ En `/mvp` (DEV o con `localStorage.setItem("terralab-dev-fill","1")`):
 
 ```js
 fillBiodiversidadViva()
-fillBiodiversidadViva({ paso: 3, misionIndice: 1 })
+fillBiodiversidadViva({ paso: 3, misionIndice: 7 })  // última misión (Inspirar)
+fillBiodiversidadViva({ reload: false })             // solo localStorage
 ```
+
+Índices: `0` Enfoca · `1` Comprender · `2` Experimentar · `3` Definir · `4` Diseñar · `5` Construir · `6` Probar · `7` Inspirar.
 
 Archivo: `src/lib/dev-fill-biodiversidad-viva.ts`.
 

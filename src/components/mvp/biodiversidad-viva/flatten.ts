@@ -283,8 +283,16 @@ export function flattenRespuestasBiodiversidadViva(
     });
   }
 
+  const nombreEstrategia = respuestas[clavesBiodiversidadViva.disenoNombreEstrategia]?.trim();
+  if (nombreEstrategia) {
+    salida.push({
+      pregunta: "Diseñar · Nombre de la estrategia",
+      respuesta: nombreEstrategia,
+    });
+  }
+
   if (respuestas[clavesBiodiversidadViva.disenoEsquemaImagen]?.trim()) {
-    salida.push({ pregunta: "Diseñar · Esquema", respuesta: "(imagen adjuntada)" });
+    salida.push({ pregunta: "Diseñar · Imagen / esquema", respuesta: "(imagen adjuntada)" });
   }
 
   if (respuestas[clavesBiodiversidadViva.construirImagen]?.trim()) {

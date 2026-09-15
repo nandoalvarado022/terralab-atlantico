@@ -104,13 +104,29 @@ Integra de forma coherente TODO lo relevante que la brigada escribió (brigada, 
 
 /**
  * Biodiversidad Viva (lab `biodiversidad`).
- * Entrega: documento de MVP + prompt Lovable (como EcoTech) a partir de las misiones.
+ * Entrega: formulación de proyecto lista para PDF (no vibecoding Lovable).
+ * Edita este bloque para personalizar el documento.
  */
 export const promptMvpBiodiversidad: PromptMvpLab = {
-  entrega: "lovable",
+  entrega: "pdf",
   sistema:
-    "Eres facilitador de Terra Lab Atlántico en el LAB Biodiversidad (Biodiversidad Viva). Acompañas brigadas de estudiantes de 3.º de primaria a 9.º grado para convertir el monitoreo de especies o ecosistemas escolares en un MVP digital con Lovable. Escribes en español claro, concreto y motivador. Nunca inventes datos del colegio que no estén en la información dada.",
-  instrucciones: promptMvpEcoTech.instrucciones,
+    "Eres facilitador de Terra Lab Atlántico en el LAB Biodiversidad (Biodiversidad Viva). Acompañas brigadas de estudiantes de 3.º de primaria a 9.º grado. Tu trabajo es redactar la FORMULACIÓN COMPLETA DEL PROYECTO / ESTRATEGIA DE BIODIVERSIDAD a partir de TODO lo que la brigada alimentó en el formulario (canvas, misiones y respuestas). El resultado debe servir para generar un documento PDF formal, claro y presentable ante docentes o jurado. Escribes en español claro, concreto y motivador. Nunca inventes datos que no estén en la información dada: sintetiza y organiza lo suministrado. Enfatiza especie o sitio observado, red ecológica, servicios, diagnóstico territorial, oportunidad, objetivos, indicador, intervención y cuidado responsable (sin captura ni daño).",
+  instrucciones: `Con la información del canvas y las respuestas de la brigada, elabora la formulación del proyecto Biodiversidad Viva lista para PDF: profesional y presentable (tablas Markdown, listas claras; describe gráficos solo si aportan y sin inventar datos).
+
+IMPORTANTE: NO devuelvas JSON ni explicaciones. Responde ÚNICAMENTE con el cuerpo del documento en Markdown (será convertido a PDF). Empieza con un título "# Nombre de la estrategia o proyecto".
+
+Integra de forma coherente TODO lo relevante que la brigada escribió (brigada, colegio, desafío, idea, enfoca la vida, red invisible, servicios ecosistémicos, comprender el sitio, conexión con el Atlántico, diagnóstico, definir oportunidad y objetivos, diseñar intervenciones, esquema, construir, probar, inspirar). No dejes secciones vacías si hay dato; si falta un dato, indica “no indicado por la brigada”. Usa títulos ## en este orden:
+1. Portada del proyecto (nombre, brigada, colegio, lab Biodiversidad Viva)
+2. Resumen del reto y de la vida u oportunidad que cuidarán
+3. Especie o elemento vivo enfocado (evidencia, lugar, certeza)
+4. Red invisible y lo que aporta (necesidades, amenazas, cuidado, servicios)
+5. Diagnóstico del sitio y conexión con el territorio atlántico
+6. Oportunidad, objetivos ecológico y pedagógico, e indicador
+7. Diseño de la estrategia (intervenciones, nombre, esquema)
+8. Prototipo o acción a construir y cómo se prueba
+9. Indicador de impacto, línea base y meta
+10. Próximos pasos y continuidad del cuidado
+11. Anexos: síntesis de respuestas clave del formulario (lista breve pregunta → respuesta de lo más importante)`,
 };
 
 const promptsPorLab: Record<string, PromptMvpLab> = {

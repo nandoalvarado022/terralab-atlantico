@@ -7,8 +7,9 @@ import {
 } from "@/data/biodiversidad-viva-misiones";
 import { Mision1EnfocaLaVida } from "./biodiversidad-viva/Mision1EnfocaLaVida";
 import { Mision2Comprender } from "./biodiversidad-viva/Mision2Comprender";
-import { Mision3Definir } from "./biodiversidad-viva/Mision3Definir";
-import { Mision4Disenar } from "./biodiversidad-viva/Mision4Disenar";
+import { Mision3Experimentar } from "./biodiversidad-viva/Mision3Experimentar";
+import { Mision4Definir } from "./biodiversidad-viva/Mision4Definir";
+import { Mision5Disenar } from "./biodiversidad-viva/Mision5Disenar";
 import { MisionConstruir } from "./MisionConstruir";
 import { MisionInspirar } from "./MisionInspirar";
 import { MisionProbar } from "./MisionProbar";
@@ -38,10 +39,12 @@ function ContenidoPantalla({
       return <Mision1EnfocaLaVida respuestas={respuestas} onCambiar={onCambiar} />;
     case "comprender":
       return <Mision2Comprender respuestas={respuestas} onCambiar={onCambiar} />;
+    case "experimentar":
+      return <Mision3Experimentar respuestas={respuestas} onCambiar={onCambiar} />;
     case "definir":
-      return <Mision3Definir respuestas={respuestas} onCambiar={onCambiar} />;
+      return <Mision4Definir respuestas={respuestas} onCambiar={onCambiar} />;
     case "disenar":
-      return <Mision4Disenar respuestas={respuestas} onCambiar={onCambiar} />;
+      return <Mision5Disenar respuestas={respuestas} onCambiar={onCambiar} />;
     case "construir":
       return (
         <MisionConstruir

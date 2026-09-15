@@ -19,6 +19,11 @@ import {
   type CanvasData,
   type Pregunta,
 } from "@/lib/mvp.functions";
+import {
+  borrarForjaStorage,
+  escribirForjaStorage,
+  leerForjaStorage,
+} from "@/lib/forja-storage";
 import { EcoFluencerQuestions, flattenRespuestasEcoFluencer } from "./EcoFluencerQuestions";
 import {
   EmprendeCircularQuestions,
@@ -78,8 +83,6 @@ const CAMPOS: Array<{
   },
 ];
 
-const STORAGE_KEY = "terralab-forja-mvp";
-
 type Resultado = { nombre: string; documento: string; prompt: string };
 
 type Guardado = {
@@ -136,7 +139,7 @@ export function ForjaMvp() {
   const esEmprendeCircular = canvas.lab === "circular";
   const esBiodiversidadViva = canvas.lab === "biodiversidad";
   const esMisiones = esEcoTech || esEcoFluencer || esEmprendeCircular || esBiodiversidadViva;
-  const entregaPdf = esEcoFluencer || esEmprendeCircular;
+  const entregaPdf = esEcoFluencer || esEmprendeCircular || esBiodiversidadViva;
 
   const pasos = useMemo(
     () => [
@@ -151,7 +154,7 @@ export function ForjaMvp() {
 
   useEffect(() => {
     try {
-      const raw = sessionStorage.getItem(STORAGE_KEY);
+      const raw = leerForjaStorage();
       if (raw) {
         const g = JSON.parse(raw) as Guardado;
         setPaso(g.paso ?? 1);
@@ -205,7 +208,7 @@ export function ForjaMvp() {
       resultado,
     };
     try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(g));
+      escribirForjaStorage(JSON.stringify(g));
     } catch {
       // cuota llena: el avance sigue en memoria
     }
@@ -466,11 +469,7 @@ export function ForjaMvp() {
   }
 
   function reiniciar() {
-    try {
-      sessionStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // sin storage: igual reiniciamos en memoria
-    }
+    borrarForjaStorage();
     setPaso(1);
     setPasoMax(1);
     setCanvas(CANVAS_VACIO);

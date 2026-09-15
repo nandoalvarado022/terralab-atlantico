@@ -31,7 +31,7 @@ const ETIQUETAS_MEDIA: Record<string, string> = {
   "ec5-prototipo-imagen": "Logo o marca del producto / prototipo",
   "ec6-construir-imagen": "Construir · imagen o video",
   "bv1-evidencia-imagen": "Dibujo, foto o huella",
-  "bv4-esquema-imagen": "Diseñar · Esquema",
+  "bv5-esquema-imagen": "Diseñar · Imagen / esquema",
   "bv6-construir-imagen": "Construir · imagen o video",
 };
 

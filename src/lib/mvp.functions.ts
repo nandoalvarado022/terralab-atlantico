@@ -210,7 +210,7 @@ ${promptLab.instrucciones}`,
       },
     ]);
 
-    // PDF labs (ECOFluencer / Emprende Circular): la IA devuelve Markdown directo.
+    // PDF labs (ECOFluencer / Emprende Circular / Biodiversidad Viva): Markdown directo.
     // EcoTech / otros: JSON { nombre, documento, prompt } para Lovable.
     let resultado: { nombre: string; documento: string; prompt: string };
     if (promptLab.entrega === "pdf") {

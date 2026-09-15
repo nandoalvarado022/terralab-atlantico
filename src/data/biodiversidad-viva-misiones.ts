@@ -410,20 +410,27 @@ export const pantallasBiodiversidadViva: PantallaBiodiversidadViva[] = [
       "Observen el lugar, marquen la conexión territorial y cierren con el diagnóstico del sitio.",
   },
   {
-    id: "definir",
+    id: "experimentar",
     numero: 3,
+    nombre: "Experimentar",
+    tagline: "3. Experimentar",
+    instrucciones: "Próximamente: actividades de experimentación en el sitio.",
+  },
+  {
+    id: "definir",
+    numero: 4,
     nombre: "Definir",
-    tagline: "3. Definir",
+    tagline: "4. Definir",
     instrucciones:
       "Lean el sitio, formulen la oportunidad, definan objetivos complementarios y el indicador principal.",
   },
   {
     id: "disenar",
-    numero: 4,
+    numero: 5,
     nombre: "Diseñar",
-    tagline: "4. Diseñar",
+    tagline: "5. Diseñar",
     instrucciones:
-      "Recuperen el reto, elijan hasta dos intervenciones y dibujen el esquema de la propuesta.",
+      "Recuperen el reto, elijan hasta dos intervenciones y nombren la estrategia con su imagen o esquema.",
   },
   {
     id: "construir",
@@ -625,23 +632,24 @@ export const clavesBiodiversidadViva = {
   conexionAtlantico: (seccionId: string, opcionId: string) =>
     `bv2-conexion-${seccionId}-${opcionId}`,
   diagnosticoSitio: (id: string) => `bv2-diagnostico-${id}`,
-  activosConservar: "bv3-activos-conservar",
-  vaciosAmenazas: "bv3-vacios-amenazas",
-  oportunidadEspacio: "bv3-oportunidad-espacio",
-  oportunidadCondicion: "bv3-oportunidad-condicion",
-  oportunidadBeneficiario: "bv3-oportunidad-beneficiario",
-  oportunidadRiesgo: "bv3-oportunidad-riesgo",
-  oportunidadIndicador: "bv3-oportunidad-indicador",
-  objetivoEcologico: "bv3-objetivo-ecologico",
-  objetivoPedagogico: "bv3-objetivo-pedagogico",
-  indicadorPrincipal: (campo: string) => `bv3-indicador-${campo}`,
-  disenoRetoDefinido: "bv4-reto-definido",
-  disenoObjetivoEcologico: "bv4-objetivo-ecologico",
-  disenoObjetivoPedagogico: "bv4-objetivo-pedagogico",
-  disenoEvidenciaSitio: "bv4-evidencia-sitio",
-  disenoDatoVerificar: "bv4-dato-verificar",
-  disenoIntervencion: (n: 1 | 2) => `bv4-intervencion-${n}`,
-  disenoEsquemaImagen: "bv4-esquema-imagen",
+  activosConservar: "bv4-activos-conservar",
+  vaciosAmenazas: "bv4-vacios-amenazas",
+  oportunidadEspacio: "bv4-oportunidad-espacio",
+  oportunidadCondicion: "bv4-oportunidad-condicion",
+  oportunidadBeneficiario: "bv4-oportunidad-beneficiario",
+  oportunidadRiesgo: "bv4-oportunidad-riesgo",
+  oportunidadIndicador: "bv4-oportunidad-indicador",
+  objetivoEcologico: "bv4-objetivo-ecologico",
+  objetivoPedagogico: "bv4-objetivo-pedagogico",
+  indicadorPrincipal: (campo: string) => `bv4-indicador-${campo}`,
+  disenoRetoDefinido: "bv5-reto-definido",
+  disenoObjetivoEcologico: "bv5-objetivo-ecologico",
+  disenoObjetivoPedagogico: "bv5-objetivo-pedagogico",
+  disenoEvidenciaSitio: "bv5-evidencia-sitio",
+  disenoDatoVerificar: "bv5-dato-verificar",
+  disenoIntervencion: (n: 1 | 2) => `bv5-intervencion-${n}`,
+  disenoNombreEstrategia: "bv5-nombre-estrategia",
+  disenoEsquemaImagen: "bv5-esquema-imagen",
   construirImagen: "bv6-construir-imagen",
   probarMejora: "bv7-probar-mejora",
   inspirarTexto: "bv8-inspirar-texto",
@@ -655,7 +663,7 @@ export type IntervencionDiseno = {
   fondo: string;
 };
 
-/** Intervenciones (misión 4 · punto 2). Máximo 2 elegidas. */
+/** Intervenciones (misión 5 · punto 2). Máximo 2 elegidas. */
 export const intervencionesDiseno: IntervencionDiseno[] = [
   {
     id: "jardin-polinizadores",
@@ -727,7 +735,7 @@ export type CampoIndicadorPrincipal = {
   etiqueta: string;
 };
 
-/** Campos del indicador principal (misión 3 · Definir). */
+/** Campos del indicador principal (misión 4 · Definir). */
 export const camposIndicadorPrincipal: CampoIndicadorPrincipal[] = [
   { id: "que-se-medira", etiqueta: "Qué se medirá" },
   { id: "unidad", etiqueta: "Unidad" },
@@ -737,7 +745,7 @@ export const camposIndicadorPrincipal: CampoIndicadorPrincipal[] = [
   { id: "fuente-responsable", etiqueta: "Fuente / responsable" },
 ];
 
-/** Arma la frase de oportunidad (misión 3) a partir de los huecos. */
+/** Arma la frase de oportunidad (misión 4) a partir de los huecos. */
 export function fraseOportunidadBiodiversidad(
   respuestas: Record<string, string>,
 ): string | null {
@@ -750,7 +758,7 @@ export function fraseOportunidadBiodiversidad(
   return `En ${espacio || "[espacio]"}, mejoraremos o visibilizaremos ${condicion || "[condición o grupo]"} para ${beneficiario || "[beneficiario]"}, sin ${riesgo || "[riesgo]"}, y verificaremos ${indicador || "[indicador]"}.`;
 }
 
-/** Precarga de Diseñar (misión 4) desde Definir / Comprender. */
+/** Precarga de Diseñar (misión 5) desde Definir / Comprender. */
 export function sugerenciasDisenoDesdeDefinir(
   respuestas: Record<string, string>,
 ): Record<string, string> {
