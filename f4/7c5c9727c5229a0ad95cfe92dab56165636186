@@ -1,0 +1,34 @@
+src/components/mvp/ForjaMvp.tsx
+  s_56e4038bb43492::t_9a73587dad1908 23
+  s_56e4038bb43492::t_2b087c707403bf 268,273-275
+  h_15f0de19236f1a 22,363
+src/lib/respuestas-misiones.ts
+  s_56e4038bb43492::t_089a9307402dc7 34-37,39,46-47
+  s_56e4038bb43492::t_d67fa747028b79 48-49
+src/lib/mvp.functions.ts
+  s_56e4038bb43492::t_94dbcb0c7beb89 252
+  s_56e4038bb43492::t_6757f1361c0127 19-20
+  s_56e4038bb43492::t_098debaa658baf 194-203
+  s_56e4038bb43492::t_5decb74ffa9b01 249-251
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f47c5c9727c5229a0ad95cfe92dab56165636186",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_56e4038bb43492": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2bce4ce6-1551-44ec-baa7-c31502203a27",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
