@@ -19,11 +19,8 @@ import {
   type CanvasData,
   type Pregunta,
 } from "@/lib/mvp.functions";
-import {
-  borrarForjaStorage,
-  escribirForjaStorage,
-  leerForjaStorage,
-} from "@/lib/forja-storage";
+import { borrarForjaStorage, escribirForjaStorage, leerForjaStorage } from "@/lib/forja-storage";
+import { sanitizarMapaRespuestas } from "@/lib/respuestas-misiones";
 import { EcoFluencerQuestions, flattenRespuestasEcoFluencer } from "./EcoFluencerQuestions";
 import {
   EmprendeCircularQuestions,
@@ -268,11 +265,14 @@ export function ForjaMvp() {
     setError(null);
     setCargando("mvp");
     try {
+      // Evita 413: no enviar fotos/vídeos en base64 al server fn (solo marcas cortas).
       const data = await construir({
         data: {
           canvas,
           respuestas: respuestasParaConstruir,
-          respuestasMisiones,
+          respuestasMisiones: respuestasMisiones
+            ? sanitizarMapaRespuestas(respuestasMisiones)
+            : undefined,
           regenerar,
         },
       });
@@ -360,10 +360,7 @@ export function ForjaMvp() {
         respuestasMedia,
       });
 
-      descargarBlob(
-        blob,
-        `formulacion-${fileSlug(r.nombre || canvas.brigada || "proyecto")}.pdf`,
-      );
+      descargarBlob(blob, `formulacion-${fileSlug(r.nombre || canvas.brigada || "proyecto")}.pdf`);
     } catch (e) {
       fallar(e);
     } finally {

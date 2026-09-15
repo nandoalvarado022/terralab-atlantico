@@ -16,6 +16,8 @@ import {
   empaquetarRespuestasEcoTech,
   empaquetarRespuestasEmprendeCircular,
   empaquetarRespuestasPrd,
+  sanitizarMapaRespuestas,
+  sanitizarValorRespuesta,
 } from "./respuestas-misiones";
 
 export const canvasSchema = z.object({
@@ -189,7 +191,16 @@ export const construirMvp = createServerFn({ method: "POST" })
       throw new CorreoLiderDuplicadoError(correo);
     }
 
-    const qa = data.respuestas
+    // Nunca reenviar data URLs a la IA ni hinchar el body: solo texto / marcas.
+    const mapa = data.respuestasMisiones
+      ? sanitizarMapaRespuestas(data.respuestasMisiones)
+      : undefined;
+    const respuestasLimpias = data.respuestas.map((r) => ({
+      pregunta: r.pregunta,
+      respuesta: sanitizarValorRespuesta(r.respuesta),
+    }));
+
+    const qa = respuestasLimpias
       .filter((r) => r.respuesta.trim())
       .map((r) => `- ${r.pregunta}\n  → ${r.respuesta}`)
       .join("\n");
@@ -229,18 +240,16 @@ ${promptLab.instrucciones}`,
         .object({ nombre: z.string(), documento: z.string(), prompt: z.string() })
         .parse(parsed);
     }
-
-    const mapa = data.respuestasMisiones;
     const respuestasParaDb =
       data.canvas.lab === "ecotech" && mapa
         ? empaquetarRespuestasEcoTech(mapa)
         : data.canvas.lab === "circular" && mapa
           ? empaquetarRespuestasEmprendeCircular(mapa)
           : data.canvas.lab === "influencia" && mapa
-          ? empaquetarRespuestasEcoFluencer(mapa)
-          : data.canvas.lab === "biodiversidad" && mapa
-            ? empaquetarRespuestasBiodiversidadViva(mapa)
-            : empaquetarRespuestasPrd(data.respuestas);
+            ? empaquetarRespuestasEcoFluencer(mapa)
+            : data.canvas.lab === "biodiversidad" && mapa
+              ? empaquetarRespuestasBiodiversidadViva(mapa)
+              : empaquetarRespuestasPrd(respuestasLimpias);
 
     try {
       await guardarMvpEnSupabase({

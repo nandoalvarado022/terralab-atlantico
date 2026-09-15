@@ -31,13 +31,20 @@ export function sanitizarValorRespuesta(valor: string): string {
   return v;
 }
 
-function sanitizarCampos(campos: Record<string, string>): Record<string, string> {
+/** Sustituye data URLs de imagen/video por marcas cortas; omite vacíos. */
+export function sanitizarMapaRespuestas(
+  respuestas: Record<string, string>,
+): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const [k, v] of Object.entries(campos)) {
+  for (const [k, v] of Object.entries(respuestas)) {
     const limpio = sanitizarValorRespuesta(v ?? "");
     if (limpio) out[k] = limpio;
   }
   return out;
+}
+
+function sanitizarCampos(campos: Record<string, string>): Record<string, string> {
+  return sanitizarMapaRespuestas(campos);
 }
 
 function clavesConPrefijo(respuestas: Record<string, string>, ...prefijos: string[]) {
