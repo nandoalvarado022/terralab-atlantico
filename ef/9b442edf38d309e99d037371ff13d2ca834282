@@ -1,0 +1,218 @@
+src/lib/mvp.functions.ts
+  s_80ed7387eb536d::t_c0a29f7db7d5b1 178
+  s_80ed7387eb536d::t_e8a6ae7eb97a2d 14
+  s_80ed7387eb536d::t_9fe2bc890dc064 240-242
+docs/biodiversidad-viva-overview.md
+  s_80ed7387eb536d::t_a6ff5d2d08dd97 74-87
+  s_80ed7387eb536d::t_ca9673eb9ddeb1 22
+  s_80ed7387eb536d::t_837376c5a7f512 62-66,71,73
+  s_80ed7387eb536d::t_b29cefb585da48 118-125
+  s_80ed7387eb536d::t_55dde4f443e76c 18,20,26,28,30,34,36-39,50,203-204
+  s_80ed7387eb536d::t_72a3185e47166a 126-136
+  s_80ed7387eb536d::t_92317b3e4d6935 153-156
+  s_80ed7387eb536d::t_f0d9362e13a48e 195
+  s_80ed7387eb536d::t_850f66aac69db4 67-70,72
+  s_80ed7387eb536d::t_ba7dfe4c1e092c 157-160
+  s_80ed7387eb536d::t_e6ecc2d8233805 51,53-54,59,61
+  s_80ed7387eb536d::t_4a6a63034d5162 109,111-116
+  s_80ed7387eb536d::t_5f89280b87b9aa 1-17,25,27,29,31-33,35,40-49,181-194,196-202,205-206
+  s_80ed7387eb536d::t_a0632d9d31bf20 24
+  s_80ed7387eb536d::t_36c49aa40d9774 88-97
+  s_80ed7387eb536d::t_aea261106e7b64 161-180
+  s_80ed7387eb536d::t_0aad61699a1a6a 137-152
+  s_80ed7387eb536d::t_d6689156b902c9 23
+  s_80ed7387eb536d::t_9c0a38f65d99a8 98-108
+  s_80ed7387eb536d::t_27b429f57fa6f4 110,117
+  s_80ed7387eb536d::t_d38917b74e6023 52,55-58,60
+  s_80ed7387eb536d::t_7a75fe6f3ae464 19,21
+AGENTS.md
+  s_80ed7387eb536d::t_8042ecdab1694b 16
+src/lib/respuestas-misiones.ts
+  s_80ed7387eb536d::t_9f66883c41eedd 131-143
+  s_80ed7387eb536d::t_c374a7b5841b25 1
+  s_80ed7387eb536d::t_1ef0c0f6cba1de 15
+src/components/mvp/BiodiversidadVivaQuestions.tsx
+  s_80ed7387eb536d::t_e0414974f0ae5f 41-42
+  s_80ed7387eb536d::t_0dec05a0e0524e 1-3,5-7,15-37,66-151
+  s_80ed7387eb536d::t_5c5044d3174529 12-14
+  s_80ed7387eb536d::t_aa60e1d722e32f 9
+  s_80ed7387eb536d::t_eb5e6f9b876a41 10
+  s_80ed7387eb536d::t_37910358b10f8c 8,38
+  s_80ed7387eb536d::t_d6401b779b07c6 39-40
+  s_80ed7387eb536d::t_842bbba67f4028 45-65
+  s_80ed7387eb536d::t_c9b5074afd5443 11
+  s_80ed7387eb536d::t_1f6b68221cb4df 4
+  s_80ed7387eb536d::t_a5c431397fdee4 43-44
+src/components/mvp/biodiversidad-viva/types.ts
+  s_80ed7387eb536d::t_f57c5d7a329045 1
+  s_80ed7387eb536d::t_aa10ac392e23db 2-4
+src/components/mvp/biodiversidad-viva/DescubreLoQueAporta.tsx
+  s_80ed7387eb536d::t_c83c1d79293807 227-390,393,398-400,463-503,523-555
+  s_80ed7387eb536d::t_8b304ce7a4d8c4 1-11,16-23,25-26,29-226,391-392,394-397,401-462,504-522,556-559
+  s_80ed7387eb536d::t_b7bc172edd4ecd 12-15,24,27-28
+src/components/mvp/biodiversidad-viva/Mision2Comprender.tsx
+  s_80ed7387eb536d::t_e60e3f6048e9d3 3
+  s_80ed7387eb536d::t_e9ea062e7d9ddd 159-192,199-241,284
+  s_80ed7387eb536d::t_be79acb0d9fe9d 193-198
+  s_80ed7387eb536d::t_ad115cbbc62caa 1,7,9
+  s_80ed7387eb536d::t_6929227a7e2f3b 242-278,285
+  s_80ed7387eb536d::t_ebf5fbd7272c67 2,4-6,8,10-158,279-283,286-288
+src/components/mvp/biodiversidad-viva/Mision3Definir.tsx
+  s_80ed7387eb536d::t_d009a7ef67b737 1-4,7-34,75-104,114-118,227-290,302-303
+  s_80ed7387eb536d::t_831b80c61064d6 146-226,291-295,301
+  s_80ed7387eb536d::t_c8ae9f919a7cbc 5-6,35-74,105-113,119-145,296-300,304-306
+src/components/admin/VisorRespuestasMisiones.tsx
+  s_80ed7387eb536d::t_8ed4d504fe40c5 4
+src/components/mvp/biodiversidad-viva/RevelaLaRedInvisible.tsx
+  s_80ed7387eb536d::t_41a22965a7856b 12-13,23,182-378,380,387,390-391,393,396-399
+  s_80ed7387eb536d::t_d494c054adc915 174
+  s_80ed7387eb536d::t_76100e7458b998 21
+  s_80ed7387eb536d::t_5fafaac5993676 9-11
+  s_80ed7387eb536d::t_66743043a2b264 14-16,18-20
+  s_80ed7387eb536d::t_8e020c5ca018b8 22
+  s_80ed7387eb536d::t_7bc6cce5703289 24-26,171-173
+  s_80ed7387eb536d::t_7dde752a10a98a 175-177,179-181
+  s_80ed7387eb536d::t_ae2b3009179a3b 379
+  s_80ed7387eb536d::t_45ac86c32d7ed0 381-386
+  s_80ed7387eb536d::t_a4d702a09f4e4b 388-389
+  s_80ed7387eb536d::t_c0843f620b2f94 392
+  s_80ed7387eb536d::t_5a335c7d839b78 394-395
+  s_80ed7387eb536d::t_e8c7265f56935c 400-402
+src/components/mvp/biodiversidad-viva/flatten.ts
+  s_80ed7387eb536d::t_8f284f5d59b605 125-148
+  s_80ed7387eb536d::t_03547543131bdf 3,14,55-74,83-100
+  s_80ed7387eb536d::t_9b234ca195e8d3 290-310
+  s_80ed7387eb536d::t_22c2365c338d46 266-285
+  s_80ed7387eb536d::t_2edb02dcc772ff 204-211
+  s_80ed7387eb536d::t_47e393e5c9bb1f 13
+  s_80ed7387eb536d::t_746085bb854712 5
+  s_80ed7387eb536d::t_da6db08501daca 165-178
+  s_80ed7387eb536d::t_1f04b4d27fc75f 8,16
+  s_80ed7387eb536d::t_12bf18b930fdb7 7,11
+  s_80ed7387eb536d::t_333a3c8b823641 4
+  s_80ed7387eb536d::t_5dc8cf1a4a5671 149-164
+  s_80ed7387eb536d::t_3f2680126cc427 1,6,9-10,17-54,101-102,311-312
+  s_80ed7387eb536d::t_9abaddd3d050e7 15
+  s_80ed7387eb536d::t_646873f843d671 12
+  s_80ed7387eb536d::t_231a0d78699f8f 103-124
+  s_80ed7387eb536d::t_4d461e9f819e69 179-187
+  s_80ed7387eb536d::t_1e67688621c3b1 212-240
+  s_80ed7387eb536d::t_5b4f53057295e2 241-265
+  s_80ed7387eb536d::t_38d668427f2498 188-203
+  s_80ed7387eb536d::t_fb92639660e905 286-289
+  s_80ed7387eb536d::t_fb8722c1eb17a7 2,75-82
+src/data/biodiversidad-viva-misiones.ts
+  s_80ed7387eb536d::t_49ec8f84d73594 420-425,427
+  s_80ed7387eb536d::t_b58d27d8a59ceb 645-647
+  s_80ed7387eb536d::t_26e480917ea563 94
+  s_80ed7387eb536d::t_dc18545ce77cd3 530-588
+  s_80ed7387eb536d::t_ce5048bda75262 638-642
+  s_80ed7387eb536d::t_6b4eac439d2dbe 628-629
+  s_80ed7387eb536d::t_4aba212cbc4749 27
+  s_80ed7387eb536d::t_b33db755e87c20 394,610-612,614
+  s_80ed7387eb536d::t_bc77c5ddc03b64 413,415-417
+  s_80ed7387eb536d::t_dd20d6304f441d 643,649-723
+  s_80ed7387eb536d::t_14279022ddda28 752-785
+  s_80ed7387eb536d::t_05ed9b2bbdf06e 630-634,739-751
+  s_80ed7387eb536d::t_dedd52822788cb 644
+  s_80ed7387eb536d::t_4b42351a3cdeb9 50
+  s_80ed7387eb536d::t_1872c1e3838650 426
+  s_80ed7387eb536d::t_2f3e3485b3daf4 192-196,613
+  s_80ed7387eb536d::t_737b0d5523260a 404-409,411,451-529,623-624
+  s_80ed7387eb536d::t_d2e01241da76da 627
+  s_80ed7387eb536d::t_70d9d1e9c4ce65 138
+  s_80ed7387eb536d::t_9e4c22dfdce917 635-637,724-738
+  s_80ed7387eb536d::t_1056f4d5e16c89 418
+  s_80ed7387eb536d::t_0035c46a4e852a 197-393,402,615-618
+  s_80ed7387eb536d::t_28e3923112f71e 410
+  s_80ed7387eb536d::t_743396928198cc 19
+  s_80ed7387eb536d::t_3c42b94387f7da 1-18,20-26,28-43,395-401,449-450,602-609,648
+  s_80ed7387eb536d::t_0cebd45fc0ae9f 412,414,419
+  s_80ed7387eb536d::t_4d2a4fa5cce536 589-601
+  s_80ed7387eb536d::t_cde7a0a65ef6ed 44-49,51-93,95-137,139-191,403
+  s_80ed7387eb536d::t_83d5512fd3866e 428-448
+  s_80ed7387eb536d::t_b40e8a2bf0e49d 619-622
+  s_80ed7387eb536d::t_55b29556c647e5 625-626
+src/components/mvp/biodiversidad-viva/Mision4Disenar.tsx
+  s_80ed7387eb536d::t_802eb6006334cb 4,7,9,136-271,306
+  s_80ed7387eb536d::t_d30dbabcd321c4 272-300,307
+  s_80ed7387eb536d::t_5a2ff7e83bb9d0 1-2,5-6,8,10-135,301-305,308-310
+  s_80ed7387eb536d::t_156f7d1e6e2686 3
+src/lib/dev-fill-biodiversidad-viva.ts
+  s_80ed7387eb536d::t_63058bbbc7d028 118-121,145
+  s_80ed7387eb536d::t_195553140ce5ad 128-144
+  s_80ed7387eb536d::t_657aae59dc0ce2 148
+  s_80ed7387eb536d::t_3305499e5b91bc 122-127
+  s_80ed7387eb536d::t_4d09e4a41fabb7 154
+  s_80ed7387eb536d::t_a4b218ce5be3a6 91-98
+  s_80ed7387eb536d::t_c38facc24c21b2 14
+  s_80ed7387eb536d::t_d617b3c6d9c3c2 10,15,18-19,22,62-66,69-72,160-161
+  s_80ed7387eb536d::t_75c4c66dc33f4c 16
+  s_80ed7387eb536d::t_93dddf8d0fb114 2,11-12,67-68
+  s_80ed7387eb536d::t_e533330ed01f73 13
+  s_80ed7387eb536d::t_2653bc06b44f6e 85-90
+  s_80ed7387eb536d::t_a7a96e4cb2accd 149-153
+  s_80ed7387eb536d::t_14eae73132ce7f 216
+  s_80ed7387eb536d::t_f5f20b48631f1e 21
+  s_80ed7387eb536d::t_d1b8347ac5c8d3 146-147
+  s_80ed7387eb536d::t_9ed7e771cbc4df 1,3-9,23-61,155-159,162-215,217-222
+  s_80ed7387eb536d::t_c3a77a9be06ade 20
+  s_80ed7387eb536d::t_8a2b0180025068 73-84
+  s_80ed7387eb536d::t_7def23632b8305 105-117
+  s_80ed7387eb536d::t_addec29243e764 99-104
+  s_80ed7387eb536d::t_ce9bdf0c4cb342 17
+src/lib/mvp-prompts.ts
+  s_80ed7387eb536d::t_1a7bd35db2bbf4 8
+  s_80ed7387eb536d::t_e47df2d58440ed 107
+src/lib/mvp-word.ts
+  s_80ed7387eb536d::t_baec8c1f8c3f70 41
+  s_80ed7387eb536d::t_8a956a29c13bb4 42
+  s_80ed7387eb536d::t_1f21061dfd53de 43
+src/lib/mvp-save.server.ts
+  s_80ed7387eb536d::t_51a50894658290 29
+src/components/mvp/biodiversidad-viva/Mision1EnfocaLaVida.tsx
+  s_80ed7387eb536d::t_d7197d6b3beb37 7
+  s_80ed7387eb536d::t_f06f3bf3d866fa 8-237,239-243,245-247
+  s_80ed7387eb536d::t_0284b8a47dd6db 238,244
+  s_80ed7387eb536d::t_bc3615c7c0c25b 4-6
+src/lib/mvp-pdf.ts
+  s_80ed7387eb536d::t_70e6c72d70a98a 34
+  s_80ed7387eb536d::t_91920e4bd30ff8 35
+  s_80ed7387eb536d::t_4fb2b50a3f94b1 33
+src/routes/mvp.tsx
+  s_80ed7387eb536d::t_e73d0c1963961c 6
+  s_80ed7387eb536d::t_87b8b26bea46e8 37
+src/components/mvp/ForjaMvp.tsx
+  s_80ed7387eb536d::t_0f955caea82de6 482
+  s_80ed7387eb536d::t_dfb3b599a9e579 739-755
+  s_80ed7387eb536d::t_e65db373a42fed 94
+  s_80ed7387eb536d::t_bc96c6b9360393 203,222
+  s_80ed7387eb536d::t_0c171b6b817367 27-30
+  s_80ed7387eb536d::t_415b02109b00fc 121-123
+  s_80ed7387eb536d::t_59cf3a61bb27f5 346-348
+  s_80ed7387eb536d::t_a4d71bd10e150b 182
+  s_80ed7387eb536d::t_4cfbcc98f9d7b0 137-138
+  s_80ed7387eb536d::t_fc03742f5aa368 310-315
+  s_80ed7387eb536d::t_3040e9ccc85a14 430-435,443-445
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ef9b442edf38d309e99d037371ff13d2ca834282",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_80ed7387eb536d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "51eb6434-4414-4c5b-9c18-f27dea7b0d46",
+        "model": "default"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
