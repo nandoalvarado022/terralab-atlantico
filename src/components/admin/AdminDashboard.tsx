@@ -3,7 +3,13 @@ import { useServerFn } from "@tanstack/react-start";
 import { endOfDay, format, parseISO, startOfDay } from "date-fns";
 
 import { labs } from "@/data/labs";
-import { adminLogin, adminLogout, listMvps, type MvpGuardado } from "@/lib/admin.functions";
+import {
+  adminLogin,
+  adminLogout,
+  listMvps,
+  listTerraChallenge,
+  type MvpGuardado,
+} from "@/lib/admin.functions";
 import { aplanarCamposMisiones, esArrayMisiones, esArrayPlano } from "@/lib/respuestas-misiones";
 import { VisorEcoTech } from "./VisorEcoTech";
 import { VisorRespuestasMisiones } from "./VisorRespuestasMisiones";
@@ -52,6 +58,7 @@ export function AdminDashboard() {
   const [mvps, setMvps] = useState<MvpGuardado[]>([]);
   const [cargando, setCargando] = useState(false);
   const [exportando, setExportando] = useState(false);
+  const [exportandoChallenge, setExportandoChallenge] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [filtroColegio, setFiltroColegio] = useState("");
@@ -61,6 +68,7 @@ export function AdminDashboard() {
   const [expandido, setExpandido] = useState<string | null>(null);
 
   const listar = useServerFn(listMvps);
+  const listarChallenge = useServerFn(listTerraChallenge);
   const login = useServerFn(adminLogin);
   const logout = useServerFn(adminLogout);
 
@@ -134,9 +142,7 @@ export function AdminDashboard() {
 
   const metricas = useMemo(() => {
     const colegios = new Set(
-      mvpsFiltrados
-        .map((m) => m.colegio.trim().toLowerCase())
-        .filter((c) => c.length > 0),
+      mvpsFiltrados.map((m) => m.colegio.trim().toLowerCase()).filter((c) => c.length > 0),
     );
     return {
       totalDocumentos: mvpsFiltrados.length,
@@ -152,9 +158,8 @@ export function AdminDashboard() {
     setError(null);
     setExportando(true);
     try {
-      const { generarExcelMvps, descargarBlob, nombreArchivoExcelMvps } = await import(
-        "@/lib/admin-export-excel"
-      );
+      const { generarExcelMvps, descargarBlob, nombreArchivoExcelMvps } =
+        await import("@/lib/admin-export-excel");
       const blob = await generarExcelMvps(mvpsFiltrados);
       descargarBlob(blob, nombreArchivoExcelMvps(mvpsFiltrados.length));
     } catch (e) {
@@ -162,6 +167,37 @@ export function AdminDashboard() {
       setError("No pudimos generar el archivo Excel. Intenta de nuevo.");
     } finally {
       setExportando(false);
+    }
+  }
+
+  async function onDescargarTerraChallenge() {
+    setError(null);
+    setExportandoChallenge(true);
+    try {
+      const filas = await listarChallenge();
+      if (filas.length === 0) {
+        setError("No hay envíos de Terralab Challenge para exportar.");
+        return;
+      }
+      const { generarExcelTerraChallenge, descargarBlob, nombreArchivoExcelTerraChallenge } =
+        await import("@/lib/admin-export-excel");
+      const blob = await generarExcelTerraChallenge(filas);
+      descargarBlob(blob, nombreArchivoExcelTerraChallenge(filas.length));
+    } catch (e) {
+      console.error("[admin] export terralab challenge", e);
+      const mensaje = e instanceof Error ? e.message : "";
+      if (mensaje === "UNAUTHORIZED") {
+        setAutenticado(false);
+        setMvps([]);
+        return;
+      }
+      setError(
+        /terra_challenge/i.test(mensaje)
+          ? mensaje
+          : "No pudimos generar el reporte de Terralab Challenge. Intenta de nuevo.",
+      );
+    } finally {
+      setExportandoChallenge(false);
     }
   }
 
@@ -298,6 +334,14 @@ export function AdminDashboard() {
           className="rounded-full bg-primary px-5 py-3 text-sm font-extrabold text-primary-foreground shadow-pop transition-transform hover:-translate-y-0.5 disabled:opacity-50"
         >
           {exportando ? "Generando Excel…" : "Descargar Excel"}
+        </button>
+        <button
+          type="button"
+          onClick={() => void onDescargarTerraChallenge()}
+          disabled={exportandoChallenge}
+          className="rounded-full border-2 border-primary px-5 py-3 text-sm font-extrabold text-primary transition-transform hover:-translate-y-0.5 disabled:opacity-50"
+        >
+          {exportandoChallenge ? "Generando reporte…" : "Reporte Terralab Challenge"}
         </button>
       </div>
 

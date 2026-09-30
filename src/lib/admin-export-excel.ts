@@ -3,11 +3,8 @@ import { format } from "date-fns";
 
 import { labs } from "@/data/labs";
 import type { MvpGuardado } from "@/lib/admin.functions";
-import {
-  esArrayMisiones,
-  esArrayPlano,
-  sanitizarValorRespuesta,
-} from "@/lib/respuestas-misiones";
+import { PREGUNTAS_TERRA_CHALLENGE, type TerraChallengeReporte } from "@/lib/terra-challenge";
+import { esArrayMisiones, esArrayPlano, sanitizarValorRespuesta } from "@/lib/respuestas-misiones";
 
 /** Límite seguro de celda Excel (~32k). */
 const MAX_CELDA = 31_000;
@@ -196,6 +193,58 @@ export async function generarExcelMvps(mvps: MvpGuardado[]): Promise<Blob> {
 export function nombreArchivoExcelMvps(cantidad: number): string {
   const stamp = format(new Date(), "yyyy-MM-dd-HHmm");
   return `terralab-mvps-${cantidad}docs-${stamp}.xlsx`;
+}
+
+/** Una hoja, una fila por envío de Terralab Challenge. */
+export async function generarExcelTerraChallenge(filas: TerraChallengeReporte[]): Promise<Blob> {
+  const wb = new ExcelJS.Workbook();
+  wb.creator = "Terra Lab Atlántico";
+  wb.created = new Date();
+
+  const hoja = wb.addWorksheet("Terralab Challenge", {
+    views: [{ state: "frozen", ySplit: 1 }],
+  });
+  hoja.columns = [
+    { header: "Fecha", key: "fecha", width: 18 },
+    { header: "Correo líder", key: "correo", width: 28 },
+    { header: "Colegio", key: "colegio", width: 28 },
+    { header: "Terranautas", key: "terranautas", width: 36 },
+    { header: "Nombre del proyecto", key: "proyecto", width: 28 },
+    ...PREGUNTAS_TERRA_CHALLENGE.map((p) => ({
+      header: p.pregunta,
+      key: p.key,
+      width: 40,
+    })),
+  ];
+  estiloCabecera(hoja.getRow(1));
+
+  for (const fila of filas) {
+    const respuestas = Object.fromEntries(
+      PREGUNTAS_TERRA_CHALLENGE.map((p) => [p.key, celda(fila[p.key])]),
+    );
+    hoja.addRow({
+      fecha: format(new Date(fila.created_at), "yyyy-MM-dd HH:mm"),
+      correo: celda(fila.correo_lider),
+      colegio: celda(fila.colegio),
+      terranautas: celda(fila.terranautas),
+      proyecto: celda(fila.nombre_proyecto),
+      ...respuestas,
+    });
+  }
+  hoja.eachRow((row, i) => {
+    if (i === 1) return;
+    row.alignment = { vertical: "top", wrapText: true };
+  });
+
+  const buffer = await wb.xlsx.writeBuffer();
+  return new Blob([buffer as ArrayBuffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+}
+
+export function nombreArchivoExcelTerraChallenge(cantidad: number): string {
+  const stamp = format(new Date(), "yyyy-MM-dd-HHmm");
+  return `terralab-terra-challenge-${cantidad}-${stamp}.xlsx`;
 }
 
 export function descargarBlob(blob: Blob, nombre: string) {

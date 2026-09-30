@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { callGateway, GatewayError, parseJsonLoose } from "./ai-gateway.server";
 import {
+  buscarCanvasPorCorreoLider,
   CorreoLiderDuplicadoError,
   CorreoLiderInvalidoError,
   correoLiderYaRegistrado,
@@ -92,6 +93,15 @@ function contexto(canvas: CanvasData) {
     `Enfoque del lab: ${enfoque(canvas.lab)}`,
   ].join("\n");
 }
+
+/** Paso 1 — canvas ya guardado en Supabase para ese correo de líder (null si es nuevo). */
+export const obtenerCanvasPorCorreo = createServerFn({ method: "GET" })
+  .inputValidator((input: unknown) =>
+    z.object({ correoLider: z.string().trim().email() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    return buscarCanvasPorCorreoLider(validarCorreoLider(data.correoLider));
+  });
 
 /** Paso 1 — transcribe la foto del canvas impreso. */
 export const transcribirCanvas = createServerFn({ method: "POST" })
