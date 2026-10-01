@@ -215,6 +215,9 @@ export async function generarExcelTerraChallenge(filas: TerraChallengeReporte[])
       key: p.key,
       width: 40,
     })),
+    { header: "Logo", key: "logo", width: 40 },
+    { header: "Imagen prototipo", key: "imagenPrototipo", width: 40 },
+    { header: "PDF", key: "pdf", width: 40 },
   ];
   estiloCabecera(hoja.getRow(1));
 
@@ -229,6 +232,9 @@ export async function generarExcelTerraChallenge(filas: TerraChallengeReporte[])
       terranautas: celda(fila.terranautas),
       proyecto: celda(fila.nombre_proyecto),
       ...respuestas,
+      logo: celda(fila.logo),
+      imagenPrototipo: celda(fila.imagen_prototipo),
+      pdf: celda(fila.pdf),
     });
   }
   hoja.eachRow((row, i) => {

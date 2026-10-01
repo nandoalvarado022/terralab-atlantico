@@ -144,6 +144,9 @@ const terraFilaSchema = z.object({
   viabilidad: z.string(),
   propuesta_valor: z.string(),
   compromiso_colegio: z.string(),
+  logo: z.string().nullable().optional(),
+  imagen_prototipo: z.string().nullable().optional(),
+  pdf: z.string().nullable().optional(),
 });
 
 const terraEquipoSchema = z.object({
@@ -161,11 +164,27 @@ export const listTerraChallenge = createServerFn({ method: "POST" }).handler(asy
   }
 
   const columnas =
+    "id, created_at, correo_lider, reto, solucion, aprendizaje_prototipo, cambio_concreto, viabilidad, propuesta_valor, compromiso_colegio, logo, imagen_prototipo, pdf";
+  const columnasSinArchivos =
     "id, created_at, correo_lider, reto, solucion, aprendizaje_prototipo, cambio_concreto, viabilidad, propuesta_valor, compromiso_colegio";
-  const { data, error } = await getSupabase()
+  let { data, error } = await getSupabase()
     .from("terra_challenge")
     .select(columnas)
     .order("created_at", { ascending: false });
+
+  if (error?.code === "42703" && /logo|imagen_prototipo|pdf/i.test(error.message)) {
+    const fallback = await getSupabase()
+      .from("terra_challenge")
+      .select(columnasSinArchivos)
+      .order("created_at", { ascending: false });
+    data = (fallback.data ?? []).map((row) => ({
+      ...row,
+      logo: null,
+      imagen_prototipo: null,
+      pdf: null,
+    }));
+    error = fallback.error;
+  }
 
   if (error) {
     if (error.code === "42P01" || error.code === "PGRST205") {
@@ -210,6 +229,9 @@ export const listTerraChallenge = createServerFn({ method: "POST" }).handler(asy
       colegio: equipo?.colegio ?? "",
       terranautas: equipo?.terranautas ?? "",
       nombre_proyecto: equipo?.nombre ?? "",
+      logo: fila.logo ?? "",
+      imagen_prototipo: fila.imagen_prototipo ?? "",
+      pdf: fila.pdf ?? "",
     } satisfies TerraChallengeReporte;
   });
 });

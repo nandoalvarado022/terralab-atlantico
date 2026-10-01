@@ -13,8 +13,10 @@ export type OpcionesSubida = {
 };
 
 export type ArchivoSubido = {
+  /** URL completa de acceso (https://firebasestorage.googleapis.com/...?alt=media&token=...). Es la que se guarda en BD. */
   url: string;
-  ruta: string;
+  /** Ruta relativa dentro del bucket, p. ej. "proyectos/lider@colegio.edu.co/logo.png". */
+  rutaEnBucket: string;
   nombre: string;
   tamano: number;
   contentType: string | undefined;
@@ -38,14 +40,14 @@ export function subirArchivo(
   const nombreOriginal = archivo instanceof File ? archivo.name : undefined;
   const nombre = opciones.nombre ?? nombreUnico(nombreOriginal);
   const carpeta = normalizarCarpeta(opciones.carpeta);
-  const ruta = carpeta ? `${carpeta}/${nombre}` : nombre;
+  const rutaEnBucket = carpeta ? `${carpeta}/${nombre}` : nombre;
 
   const metadata: UploadMetadata = {
     contentType: archivo.type || undefined,
     ...opciones.metadata,
   };
 
-  const tarea = uploadBytesResumable(ref(getFirebaseStorage(), ruta), archivo, metadata);
+  const tarea = uploadBytesResumable(ref(getFirebaseStorage(), rutaEnBucket), archivo, metadata);
 
   return new Promise((resolve, reject) => {
     tarea.on(
@@ -60,7 +62,7 @@ export function subirArchivo(
           const url = await getDownloadURL(tarea.snapshot.ref);
           resolve({
             url,
-            ruta,
+            rutaEnBucket,
             nombre,
             tamano: tarea.snapshot.totalBytes,
             contentType: tarea.snapshot.metadata.contentType,

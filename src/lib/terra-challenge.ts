@@ -35,7 +35,7 @@ export const PREGUNTAS_TERRA_CHALLENGE = [
     key: "cambio_concreto",
     criterio: "Impacto esperado",
     porcentaje: 20,
-    pregunta: "¿Qué cambio concreto espera lograr?",
+    pregunta: "¿Qué cambio concreto esperan lograr?",
     ayudas: [
       "¿Qué indicadores medirán su propuesta?",
       "¿Cuál es la situación inicial o línea base?",
@@ -73,7 +73,7 @@ export const PREGUNTAS_TERRA_CHALLENGE = [
     pregunta:
       "¿Cuál es la propuesta que le harán al colegio para comprometerse a trabajar en el proyecto a largo plazo?",
     ayudas: [
-      "¿Quiénes liderarán la continuidad de la propuesta aun cuando el equipo ya no esté en el colegio?",
+      "¿Quiénes liderarán la continuidad de la propuesta aún cuando el equipo ya no esté en el colegio?",
       "¿Qué recursos necesita para continuar?",
     ],
   },
@@ -90,6 +90,9 @@ export type TerraChallengeReporte = RespuestasTerraChallenge & {
   colegio: string;
   terranautas: string;
   nombre_proyecto: string;
+  logo: string;
+  imagen_prototipo: string;
+  pdf: string;
 };
 
 export function respuestasTerraVacias(): RespuestasTerraChallenge {

@@ -3,7 +3,6 @@ import { z } from "zod";
 
 import { buscarCanvasPorCorreoLider, validarCorreoLider } from "./mvp-save.server";
 import { getSupabase } from "./supabase.server";
-import type { ClaveTerraChallenge } from "./terra-challenge";
 
 const respuestaCampo = z.string().trim().min(1, "Responde todas las preguntas");
 
@@ -16,6 +15,13 @@ const guardarSchema = z.object({
   viabilidad: respuestaCampo,
   propuesta_valor: respuestaCampo,
   compromiso_colegio: respuestaCampo,
+  logo: z.string().trim().url("La URL del logo no es válida").nullable(),
+  imagenPrototipo: z
+    .string()
+    .trim()
+    .url("La URL de la imagen del prototipo no es válida")
+    .nullable(),
+  pdf: z.string().trim().url("La URL del PDF no es válida").nullable(),
 });
 
 /** Inserta un envío nuevo. No actualiza filas anteriores del mismo correo. */
@@ -28,7 +34,7 @@ export const guardarTerraChallenge = createServerFn({ method: "POST" })
       throw new Error("No encontramos un equipo con ese correo de líder.");
     }
 
-    const fila: Record<ClaveTerraChallenge | "correo_lider", string> = {
+    const fila = {
       correo_lider: correo,
       reto: data.reto,
       solucion: data.solucion,
@@ -37,6 +43,9 @@ export const guardarTerraChallenge = createServerFn({ method: "POST" })
       viabilidad: data.viabilidad,
       propuesta_valor: data.propuesta_valor,
       compromiso_colegio: data.compromiso_colegio,
+      logo: data.logo,
+      imagen_prototipo: data.imagenPrototipo,
+      pdf: data.pdf,
     };
 
     const { error } = await getSupabase().from("terra_challenge").insert(fila);
@@ -45,6 +54,11 @@ export const guardarTerraChallenge = createServerFn({ method: "POST" })
       if (error.code === "42P01" || error.code === "PGRST205") {
         console.error(
           "[terra_challenge] falta la tabla. Ejecuta supabase/migrations/20260930_terra_challenge.sql",
+        );
+      }
+      if (error.code === "42703") {
+        console.error(
+          "[terra_challenge] faltan columnas de archivos. Ejecuta supabase/migrations/20261001_terra_challenge_archivos.sql",
         );
       }
       throw new Error("No pudimos guardar las respuestas. Intenta de nuevo.");

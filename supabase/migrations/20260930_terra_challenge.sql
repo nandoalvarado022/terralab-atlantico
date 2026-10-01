@@ -11,7 +11,10 @@ create table if not exists public.terra_challenge (
   cambio_concreto text not null,
   viabilidad text not null,
   propuesta_valor text not null,
-  compromiso_colegio text not null
+  compromiso_colegio text not null,
+  logo text,
+  imagen_prototipo text,
+  pdf text
 );
 
 create index if not exists terra_challenge_correo_lider_idx

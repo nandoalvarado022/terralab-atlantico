@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { FileText, ImagePlus } from "lucide-react";
 
+import { subirArchivo } from "@/lib/firebase-upload";
 import { obtenerCanvasPorCorreo } from "@/lib/mvp.functions";
 import {
   PREGUNTAS_TERRA_CHALLENGE,
@@ -31,6 +33,10 @@ export function TerraChallengeForm() {
   const [error, setError] = useState<string | null>(null);
   const [exito, setExito] = useState(false);
   const [modalLab, setModalLab] = useState(false);
+  const [logo, setLogo] = useState<File | null>(null);
+  const [imagenPrototipo, setImagenPrototipo] = useState<File | null>(null);
+  const [pdf, setPdf] = useState<File | null>(null);
+  const [progreso, setProgreso] = useState<string | null>(null);
 
   const correoListo =
     equipo !== null && correo.trim().toLowerCase() === equipo.correoLider.toLowerCase();
@@ -41,6 +47,9 @@ export function TerraChallengeForm() {
     setExito(false);
     setEquipo(null);
     setRespuestas(respuestasTerraVacias());
+    setLogo(null);
+    setImagenPrototipo(null);
+    setPdf(null);
     setCargando("buscar");
     try {
       const canvas = await buscar({ data: { correoLider: correo.trim() } });
@@ -77,23 +86,60 @@ export function TerraChallengeForm() {
       setError("Responde todas las preguntas.");
       return;
     }
+    if ((logo && !esImagen(logo)) || (imagenPrototipo && !esImagen(imagenPrototipo))) {
+      setError("El logo y la imagen del prototipo deben ser archivos de imagen.");
+      return;
+    }
+    if (pdf && pdf.type !== "application/pdf" && !pdf.name.toLowerCase().endsWith(".pdf")) {
+      setError("El documento debe ser un PDF.");
+      return;
+    }
     setError(null);
     setExito(false);
     setCargando("guardar");
     try {
+      const carpeta = `proyectos/${equipo.correoLider.trim().toLowerCase()}`;
+
+      async function subirOpcional(archivo: File | null, prefijo: string, etiqueta: string) {
+        if (!archivo) return null;
+        setProgreso(`Subiendo ${etiqueta}…`);
+        const subido = await subirArchivo(archivo, {
+          carpeta,
+          nombre: nombreArchivo(prefijo, archivo),
+          onProgreso: (n) => setProgreso(`Subiendo ${etiqueta}… ${n}%`),
+        });
+        return subido.url;
+      }
+
+      const logoUrl = await subirOpcional(logo, "logo", "logo");
+      const imagenPrototipoUrl = await subirOpcional(
+        imagenPrototipo,
+        "imagen-prototipo",
+        "imagen del prototipo",
+      );
+      const pdfUrl = await subirOpcional(pdf, "documento", "PDF");
+
+      setProgreso("Guardando respuestas…");
       await guardar({
         data: {
           correoLider: equipo.correoLider,
           ...limpias,
+          logo: logoUrl,
+          imagenPrototipo: imagenPrototipoUrl,
+          pdf: pdfUrl,
         },
       });
       setRespuestas(respuestasTerraVacias());
+      setLogo(null);
+      setImagenPrototipo(null);
+      setPdf(null);
       setExito(true);
     } catch (err) {
       const mensaje = err instanceof Error ? err.message : "";
       setError(mensaje || "No pudimos guardar las respuestas. Intenta de nuevo.");
     } finally {
       setCargando(null);
+      setProgreso(null);
     }
   }
 
@@ -108,23 +154,7 @@ export function TerraChallengeForm() {
         proyecto. Después responde las preguntas del reto.
       </p>
 
-      {error && (
-        <div
-          role="alert"
-          className="mt-6 rounded-2xl border-2 border-destructive/40 bg-destructive/10 p-4 text-sm font-bold"
-        >
-          {error}
-        </div>
-      )}
-
-      {exito && (
-        <div
-          role="status"
-          className="mt-6 rounded-2xl border-2 border-lime bg-secondary p-4 text-sm font-bold"
-        >
-          Respuestas guardadas. Puedes enviar otro registro con el mismo equipo.
-        </div>
-      )}
+      <AvisoEnvio error={error} exito={exito} />
 
       <form onSubmit={onBuscar} className="mt-8">
         <label htmlFor="correo-lider" className="text-xs font-extrabold tracking-wider uppercase">
@@ -216,15 +246,149 @@ export function TerraChallengeForm() {
             ))}
           </div>
 
+          <div className="space-y-5">
+            <CampoArchivo
+              id="logo"
+              label="Logo"
+              pista="Opcional · PNG, JPG o similar"
+              accept="image/*"
+              archivo={logo}
+              onArchivo={setLogo}
+            />
+            <CampoArchivo
+              id="imagen-prototipo"
+              label="Imagen prototipo"
+              pista="Opcional · PNG, JPG o similar"
+              accept="image/*"
+              archivo={imagenPrototipo}
+              onArchivo={setImagenPrototipo}
+            />
+            <CampoArchivo
+              id="pdf"
+              label="PDF"
+              pista="Opcional · Documento PDF"
+              accept="application/pdf,.pdf"
+              archivo={pdf}
+              onArchivo={setPdf}
+            />
+          </div>
+
           <button
             type="submit"
             disabled={cargando !== null}
             className="rounded-full bg-primary px-7 py-3 font-extrabold text-primary-foreground shadow-pop transition-transform hover:-translate-y-0.5 disabled:opacity-50"
           >
-            {cargando === "guardar" ? "Guardando…" : "Enviar respuestas"}
+            {cargando === "guardar" ? (progreso ?? "Guardando…") : "Enviar respuestas"}
           </button>
+
+          <AvisoEnvio error={error} exito={exito} />
         </form>
       )}
+    </div>
+  );
+}
+
+function AvisoEnvio({ error, exito }: { error: string | null; exito: boolean }) {
+  return (
+    <>
+      {error && (
+        <div
+          role="alert"
+          className="mt-6 rounded-2xl border-2 border-destructive/40 bg-destructive/10 p-4 text-sm font-bold"
+        >
+          {error}
+        </div>
+      )}
+
+      {exito && (
+        <div
+          role="status"
+          className="mt-6 rounded-2xl border-2 border-lime bg-secondary p-4 text-sm font-bold"
+        >
+          Respuestas guardadas.
+        </div>
+      )}
+    </>
+  );
+}
+
+function esImagen(archivo: File) {
+  return archivo.type.startsWith("image/") || /\.(png|jpe?g|webp|gif|svg)$/i.test(archivo.name);
+}
+
+function nombreArchivo(prefijo: string, archivo: File) {
+  const punto = archivo.name.lastIndexOf(".");
+  const extension = punto > 0 ? archivo.name.slice(punto).toLowerCase() : "";
+  return `${prefijo}-${Date.now()}${extension}`;
+}
+
+function CampoArchivo({
+  id,
+  label,
+  pista,
+  accept,
+  archivo,
+  onArchivo,
+}: {
+  id: string;
+  label: string;
+  pista: string;
+  accept: string;
+  archivo: File | null;
+  onArchivo: (archivo: File | null) => void;
+}) {
+  const [vista, setVista] = useState<string | null>(null);
+  const esPdf = accept.includes("pdf");
+
+  useEffect(() => {
+    if (!archivo || esPdf) {
+      setVista(null);
+      return;
+    }
+    const url = URL.createObjectURL(archivo);
+    setVista(url);
+    return () => URL.revokeObjectURL(url);
+  }, [archivo, esPdf]);
+
+  return (
+    <div className="rounded-3xl border border-border bg-card p-5">
+      <label htmlFor={id} className="text-sm font-extrabold">
+        {label}
+      </label>
+      <p className="mt-1 text-sm text-muted-foreground">{pista}</p>
+      {vista && <img src={vista} alt={label} className="mt-4 max-h-48 rounded-xl object-contain" />}
+      {archivo && esPdf && (
+        <p className="mt-4 flex items-center gap-2 text-sm font-bold">
+          <FileText className="h-4 w-4" aria-hidden />
+          {archivo.name}
+        </p>
+      )}
+      <div className="mt-4 flex flex-wrap gap-2">
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-deep px-4 py-2 text-xs font-extrabold text-deep-foreground">
+          {esPdf ? (
+            <FileText className="h-4 w-4" aria-hidden />
+          ) : (
+            <ImagePlus className="h-4 w-4" aria-hidden />
+          )}
+          {archivo ? "Cambiar" : "Subir archivo"}
+          <input
+            id={id}
+            type="file"
+            accept={accept}
+            className="hidden"
+            onChange={(e) => onArchivo(e.target.files?.[0] ?? null)}
+          />
+        </label>
+        {archivo && (
+          <button
+            type="button"
+            onClick={() => onArchivo(null)}
+            className="rounded-full border-2 border-border px-4 py-2 text-xs font-extrabold text-muted-foreground hover:bg-muted"
+          >
+            Quitar
+          </button>
+        )}
+      </div>
     </div>
   );
 }
