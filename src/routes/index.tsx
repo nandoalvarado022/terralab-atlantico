@@ -119,6 +119,9 @@ function Index() {
             <Link to="/mvp" className="hover:text-primary">
               Forja MVP
             </Link>
+            <Link to="/terra-challenge" className="hover:text-primary">
+              Terralab Challenge
+            </Link>
           </div>
           <a
             href="#banco"

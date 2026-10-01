@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as MvpRouteImport } from './routes/mvp'
+import { Route as TerraChallengeRouteImport } from './routes/terra-challenge'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +29,44 @@ const MvpRoute = MvpRouteImport.update({
   path: '/mvp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TerraChallengeRoute = TerraChallengeRouteImport.update({
+  id: '/terra-challenge',
+  path: '/terra-challenge',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/mvp': typeof MvpRoute
+  '/terra-challenge': typeof TerraChallengeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/mvp': typeof MvpRoute
+  '/terra-challenge': typeof TerraChallengeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/mvp': typeof MvpRoute
+  '/terra-challenge': typeof TerraChallengeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/mvp'
+  fullPaths: '/' | '/admin' | '/mvp' | '/terra-challenge'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/mvp'
-  id: '__root__' | '/' | '/admin' | '/mvp'
+  to: '/' | '/admin' | '/mvp' | '/terra-challenge'
+  id: '__root__' | '/' | '/admin' | '/mvp' | '/terra-challenge'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   MvpRoute: typeof MvpRoute
+  TerraChallengeRoute: typeof TerraChallengeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MvpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terra-challenge': {
+      id: '/terra-challenge'
+      path: '/terra-challenge'
+      fullPath: '/terra-challenge'
+      preLoaderRoute: typeof TerraChallengeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   MvpRoute: MvpRoute,
+  TerraChallengeRoute: TerraChallengeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

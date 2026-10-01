@@ -85,6 +85,50 @@ export async function correoLiderYaRegistrado(correoNormalizado: string): Promis
   return Boolean(data && data.length > 0);
 }
 
+export type CanvasGuardadoPaso1 = Omit<CanvasParaGuardar, "lab"> & {
+  /** Nombre del proyecto generado en Forja MVP. */
+  nombre: string;
+};
+
+/** Datos del paso 1 del canvas ya guardado con ese correo de líder, o null si no existe. */
+export async function buscarCanvasPorCorreoLider(
+  correoNormalizado: string,
+): Promise<CanvasGuardadoPaso1 | null> {
+  const { data, error } = await getSupabase()
+    .from("mvps")
+    .select(
+      "colegio, brigada, lema, correo_lider, integrantes, pistas, desafio, idea_semilla, nombre",
+    )
+    .eq("correo_lider", correoNormalizado)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    if (error.code === "42703") {
+      throw new Error(
+        `Falta una columna del canvas en la tabla mvps de Supabase: ${error.message}`,
+      );
+    }
+    console.error("[mvps] error al buscar canvas por correo_lider", error);
+    throw new Error("No pudimos consultar el correo del líder. Intenta de nuevo.");
+  }
+
+  if (!data) return null;
+
+  return {
+    colegio: data.colegio ?? "",
+    brigada: data.brigada ?? "",
+    lema: data.lema ?? "",
+    correoLider: data.correo_lider ?? correoNormalizado,
+    integrantes: data.integrantes ?? "",
+    pistas: data.pistas ?? "",
+    desafio: data.desafio ?? "",
+    ideaSemilla: data.idea_semilla ?? "",
+    nombre: data.nombre ?? "",
+  };
+}
+
 /**
  * Persiste un MVP en Supabase.
  * - `respuestas`: array (una posición = JSON de cada misión, o Q&A plano).

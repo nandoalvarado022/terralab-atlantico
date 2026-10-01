@@ -9,6 +9,7 @@ import {
   type RespuestaPlana,
 } from "./respuestas-misiones";
 import { getSupabase } from "./supabase.server";
+import type { TerraChallengeReporte } from "./terra-challenge";
 
 const respuestaPlanaSchema = z.object({ pregunta: z.string(), respuesta: z.string() });
 const respuestaMisionSchema = z.object({
@@ -95,9 +96,11 @@ export const listMvps = createServerFn({ method: "POST" }).handler(async () => {
         .select(columnasSinCorreo)
         .order("created_at", { ascending: false });
       if (fallback.error) throw new Error("No pudimos cargar los MVPs guardados.");
-      return z.array(mvpSchema).parse(
-        (fallback.data ?? []).map((row) => ({ ...row, correo_lider: null })),
-      ) as MvpGuardado[];
+      return z
+        .array(mvpSchema)
+        .parse(
+          (fallback.data ?? []).map((row) => ({ ...row, correo_lider: null })),
+        ) as MvpGuardado[];
     }
     // Compatibilidad si faltan columnas de canvas (instalaciones viejas).
     if (error.code === "42703") {
@@ -127,5 +130,108 @@ export const listMvps = createServerFn({ method: "POST" }).handler(async () => {
       return m;
     }
     return { ...m, respuestas: [] as RespuestaPlana[] };
+  });
+});
+
+const terraFilaSchema = z.object({
+  id: z.string(),
+  created_at: z.string(),
+  correo_lider: z.string(),
+  reto: z.string(),
+  solucion: z.string(),
+  aprendizaje_prototipo: z.string(),
+  cambio_concreto: z.string(),
+  viabilidad: z.string(),
+  propuesta_valor: z.string(),
+  compromiso_colegio: z.string(),
+  logo: z.string().nullable().optional(),
+  imagen_prototipo: z.string().nullable().optional(),
+  pdf: z.string().nullable().optional(),
+});
+
+const terraEquipoSchema = z.object({
+  correo_lider: z.string().nullable(),
+  colegio: z.string().nullable(),
+  integrantes: z.string().nullable(),
+  nombre: z.string().nullable(),
+});
+
+/** Cada envío de Terralab Challenge, con colegio y proyecto tomados de mvps. */
+export const listTerraChallenge = createServerFn({ method: "POST" }).handler(async () => {
+  const session = await adminSession();
+  if (!session.data.authenticated) {
+    throw new Error("UNAUTHORIZED");
+  }
+
+  const columnas =
+    "id, created_at, correo_lider, reto, solucion, aprendizaje_prototipo, cambio_concreto, viabilidad, propuesta_valor, compromiso_colegio, logo, imagen_prototipo, pdf";
+  const columnasSinArchivos =
+    "id, created_at, correo_lider, reto, solucion, aprendizaje_prototipo, cambio_concreto, viabilidad, propuesta_valor, compromiso_colegio";
+  let { data, error } = await getSupabase()
+    .from("terra_challenge")
+    .select(columnas)
+    .order("created_at", { ascending: false });
+
+  if (error?.code === "42703" && /logo|imagen_prototipo|pdf/i.test(error.message)) {
+    const fallback = await getSupabase()
+      .from("terra_challenge")
+      .select(columnasSinArchivos)
+      .order("created_at", { ascending: false });
+    data = (fallback.data ?? []).map((row) => ({
+      ...row,
+      logo: null,
+      imagen_prototipo: null,
+      pdf: null,
+    }));
+    error = fallback.error;
+  }
+
+  if (error) {
+    if (error.code === "42P01" || error.code === "PGRST205") {
+      throw new Error(
+        "Falta la tabla terra_challenge en Supabase. Ejecuta la migración supabase/migrations/20260930_terra_challenge.sql.",
+      );
+    }
+    console.error("[terra_challenge] error al listar", error);
+    throw new Error("No pudimos cargar los envíos de Terralab Challenge.");
+  }
+
+  const filas = z.array(terraFilaSchema).parse(data ?? []);
+  const correos = [...new Set(filas.map((f) => f.correo_lider))];
+  const equipos = new Map<string, { colegio: string; terranautas: string; nombre: string }>();
+
+  if (correos.length > 0) {
+    const mvps = await getSupabase()
+      .from("mvps")
+      .select("correo_lider, colegio, integrantes, nombre")
+      .in("correo_lider", correos);
+
+    if (mvps.error) {
+      console.error("[terra_challenge] error al unir mvps", mvps.error);
+      throw new Error("No pudimos completar el reporte con los datos del equipo.");
+    }
+
+    for (const row of z.array(terraEquipoSchema).parse(mvps.data ?? [])) {
+      const correo = (row.correo_lider ?? "").trim().toLowerCase();
+      if (!correo || equipos.has(correo)) continue;
+      equipos.set(correo, {
+        colegio: row.colegio ?? "",
+        terranautas: row.integrantes ?? "",
+        nombre: row.nombre ?? "",
+      });
+    }
+  }
+
+  return filas.map((fila) => {
+    const equipo = equipos.get(fila.correo_lider.trim().toLowerCase());
+    return {
+      ...fila,
+      colegio: equipo?.colegio ?? "",
+      terranautas: equipo?.terranautas ?? "",
+      nombre_proyecto: equipo?.nombre ?? "",
+      logo: fila.logo ?? "",
+      imagen_prototipo: fila.imagen_prototipo ?? "",
+      pdf: fila.pdf ?? "",
+    } satisfies TerraChallengeReporte;
   });
 });
