@@ -266,7 +266,7 @@ export function TerraChallengeForm() {
             <CampoArchivo
               id="pdf"
               label="PDF"
-              pista="Opcional · Documento PDF"
+              pista="Opcional · Sube una presentación de tu proyecto (PDF)"
               accept="application/pdf,.pdf"
               archivo={pdf}
               onArchivo={setPdf}
