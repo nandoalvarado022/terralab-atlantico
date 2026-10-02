@@ -1,0 +1,14 @@
+src/components/mvp/TerraChallengeForm.tsx
+  h_15f0de19236f1a 269
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "06becc74d3a5c48daa14091c06e80b7b6c1d6e7c",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
