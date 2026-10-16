@@ -1,0 +1,71 @@
+src/lib/ingreso.functions.ts
+  s_4e553000b210be::t_52bc0de1bd89e4 159-161
+  s_4e553000b210be::t_fe32f1319d0c13 50
+  s_3ca2dea0eb7c0f::t_725a4830eb8e71 1,3-6,8-21,23,27-28,33-49,102-103,108,112,126,132,142-144,148,153,156,168,172-173,175,180-182,185-186
+  s_4e553000b210be::t_09fed4b819b9c9 2,7,22,24-26,29-32,51-101,104-107,109-111,113-125,127-131,133-141,145-147,149-152,154-155,157-158,162-167,169-171,174,176-179,183-184
+src/lib/mvp.functions.ts
+  s_4e553000b210be::t_6882adfcc09387 5
+  s_4e553000b210be::t_70f5b8f4fb0b61 208
+  s_4e553000b210be::t_48402cec15b791 184-192
+  s_4e553000b210be::t_b9e87b17b17c13 209-211
+src/components/mvp/MvpHeader.tsx
+  h_15f0de19236f1a 29
+  h_15f0de19236f1a 28,30-32
+src/components/mvp/ForjaMvp.tsx
+  s_3ca2dea0eb7c0f::t_13e05d19ccadd6 136-137,141-142
+  s_3ca2dea0eb7c0f::t_996078dedcf94d 202,204-226
+  s_3ca2dea0eb7c0f::t_8779185d8911a1 565
+  s_3ca2dea0eb7c0f::t_cfd42778f54752 607-611,614-620
+  s_4e553000b210be::t_deece50669cdad 612-613
+  s_3ca2dea0eb7c0f::t_747a71017a07b4 503-539,542-543
+  s_3ca2dea0eb7c0f::t_a11cbab46b2afb 17-20,27
+  s_3ca2dea0eb7c0f::t_e01643536aab8e 652-680
+  s_3ca2dea0eb7c0f::t_96cea1c4fae437 16
+  s_3ca2dea0eb7c0f::t_2501a227628ae9 203
+src/lib/supabase-auth.server.ts
+  s_4e553000b210be::t_0f3a9489d7432b 1-58
+src/lib/mvp-save.server.ts
+  s_3ca2dea0eb7c0f::t_6d6ecf6770d0eb 88
+  s_3ca2dea0eb7c0f::t_ed89b8acd306c9 128
+  s_3ca2dea0eb7c0f::t_fcfe7eb0eac940 100
+src/components/mvp/LoginCanvas.tsx
+  s_4e553000b210be::t_715a205c65250c 1,5-9,11,51-52,58-62,64,66-70,72-76,81-82,85,87,89-94,96-97,99-113,115-122,124-125,128-135,138,140-141,143-165,167,169,173-176,179-182,184,186,189,191,195-201,203-204,207-208,210-212,214,220-232,235-246,248-272,274-292,295-312,315-333,339-342,348-351,357-374,383-385
+  s_4e553000b210be::t_3f43988ff557ba 83
+  s_3ca2dea0eb7c0f::t_c399ca00a38156 2-4,10,12-16,53-57,63,65,71,79-80,123,126-127,136-137,139,142,166,168,170-172,177-178,183,185,187-188,190,192-194,202,205-206,209,213,215-219,233-234,247,273,293-294,313-314,375-382,386-388
+  s_4e553000b210be::t_7b0dc06fbe4262 17-50
+  s_4e553000b210be::t_52bc0de1bd89e4 334-338,343-347,352-356
+  s_4e553000b210be::t_f9d02f066d7fec 77-78,84,86,88,95,98,114
+package.json
+  h_15f0de19236f1a 52
+pnpm-lock.yaml
+  h_15f0de19236f1a 95-97,1789-1793,2387-2390,5449-5453,6192-6193
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dde31ddd1b4bd19f82df2297db59cd2eb6c392ed",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_3ca2dea0eb7c0f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e8b8d669-56d1-4f14-81cf-db927d1f91f0",
+        "model": "grok-4.7"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    },
+    "s_4e553000b210be": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "add3d96a-a181-484a-bbdf-3629109b54dd",
+        "model": "grok-4.7"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
