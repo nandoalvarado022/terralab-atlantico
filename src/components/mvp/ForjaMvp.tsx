@@ -14,11 +14,17 @@ import {
 } from "@/components/ui/alert-dialog";
 import { labs } from "@/data/labs";
 import {
+  cerrarSesionIngreso,
+  estadoSesionIngreso,
+  type CanvasIngreso,
+} from "@/lib/ingreso.functions";
+import {
   construirMvp,
   generarPreguntas,
   type CanvasData,
   type Pregunta,
 } from "@/lib/mvp.functions";
+import { LoginCanvas } from "./LoginCanvas";
 import { borrarForjaStorage, escribirForjaStorage, leerForjaStorage } from "@/lib/forja-storage";
 import { sanitizarMapaRespuestas } from "@/lib/respuestas-misiones";
 import { EcoFluencerQuestions, flattenRespuestasEcoFluencer } from "./EcoFluencerQuestions";
@@ -127,9 +133,13 @@ export function ForjaMvp() {
   const [error, setError] = useState<string | null>(null);
   const [copiado, setCopiado] = useState<string | null>(null);
   const [hidratado, setHidratado] = useState(false);
+  const [correoVerificado, setCorreoVerificado] = useState<string | null>(null);
+  const [ingresoListo, setIngresoListo] = useState(false);
 
   const preguntar = useServerFn(generarPreguntas);
   const construir = useServerFn(construirMvp);
+  const consultarIngreso = useServerFn(estadoSesionIngreso);
+  const cerrarIngreso = useServerFn(cerrarSesionIngreso);
 
   const esEcoTech = canvas.lab === "ecotech";
   const esEcoFluencer = canvas.lab === "influencia";
@@ -188,6 +198,31 @@ export function ForjaMvp() {
     }
     setHidratado(true);
   }, []);
+
+  useEffect(() => {
+    if (!hidratado) return;
+    let activo = true;
+    consultarIngreso()
+      .then((sesion) => {
+        if (activo && sesion?.correo) setCorreoVerificado(sesion.correo);
+      })
+      .catch(() => {
+        // sin sesión válida: el paso 1 muestra el login
+      })
+      .finally(() => {
+        if (activo) setIngresoListo(true);
+      });
+    return () => {
+      activo = false;
+    };
+  }, [hidratado, consultarIngreso]);
+
+  useEffect(() => {
+    if (!correoVerificado) return;
+    setCanvas((prev) =>
+      prev.correoLider === correoVerificado ? prev : { ...prev, correoLider: correoVerificado },
+    );
+  }, [correoVerificado]);
 
   useEffect(() => {
     if (!hidratado) return;
@@ -465,8 +500,47 @@ export function ForjaMvp() {
     }
   }
 
+  function onIngreso(correo: string, registro: CanvasIngreso | null) {
+    const correoPrevio = canvas.correoLider.trim().toLowerCase();
+    const cambioDeEquipo = correoPrevio !== "" && correoPrevio !== correo;
+    setCorreoVerificado(correo);
+    if (cambioDeEquipo) {
+      setPaso(1);
+      setPasoMax(1);
+      setPreguntas([]);
+      setRespuestas({});
+      setRespuestasEcoTech({});
+      setRespuestasEcoFluencer({});
+      setRespuestasEmprendeCircular({});
+      setRespuestasBiodiversidadViva({});
+      setMisionIndice(0);
+      setResultado(null);
+    }
+    setCanvas((prev) => {
+      if (registro) {
+        return {
+          ...CANVAS_VACIO,
+          colegio: registro.colegio,
+          brigada: registro.brigada,
+          lema: registro.lema,
+          integrantes: registro.integrantes,
+          pistas: registro.pistas,
+          desafio: registro.desafio,
+          ideaSemilla: registro.ideaSemilla,
+          lab: registro.lab || "ecotech",
+          correoLider: correo,
+        };
+      }
+      const base = cambioDeEquipo ? CANVAS_VACIO : prev;
+      return { ...base, correoLider: correo };
+    });
+    setError(null);
+  }
+
   function reiniciar() {
     borrarForjaStorage();
+    void cerrarIngreso();
+    setCorreoVerificado(null);
     setPaso(1);
     setPasoMax(1);
     setCanvas(CANVAS_VACIO);
@@ -488,7 +562,7 @@ export function ForjaMvp() {
   const tieneDesafioOIdea = desafioOk || ideaSemillaOk;
   const puedeAvanzar = correoLiderOk && tieneDesafioOIdea;
 
-  if (!hidratado) {
+  if (!hidratado || !ingresoListo) {
     return <div className="mx-auto max-w-4xl px-5 py-10 sm:py-14" aria-busy="true" />;
   }
 
@@ -530,7 +604,20 @@ export function ForjaMvp() {
         </div>
       )}
 
-      {paso === 1 && (
+      {paso === 1 && !correoVerificado && (
+        <section className="space-y-8">
+          <div>
+            <h2 className="text-3xl font-extrabold">1. Carga el canvas de la brigada</h2>
+            <p className="mt-3 text-muted-foreground">
+              Ingresa con el correo y la contraseña del líder. Si ese correo ya tiene un canvas
+              guardado, lo cargamos al entrar.
+            </p>
+          </div>
+          <LoginCanvas onIngreso={onIngreso} />
+        </section>
+      )}
+
+      {paso === 1 && correoVerificado && (
         <section className="space-y-8">
           <div>
             <h2 className="text-3xl font-extrabold">1. Carga el canvas de la brigada</h2>
@@ -562,27 +649,35 @@ export function ForjaMvp() {
                     className="mt-2 w-full rounded-2xl border-2 border-border bg-card p-3 text-sm outline-none focus:border-primary"
                   />
                 ) : (
-                  <input
-                    id={`campo-${c.key}`}
-                    type={c.type ?? "text"}
-                    value={canvas[c.key] ?? ""}
-                    placeholder={c.hint}
-                    autoComplete={c.type === "email" ? "email" : undefined}
-                    onChange={(e) => {
-                      const valor = e.target.value;
-                      setCanvas((prev) => ({ ...prev, [c.key]: valor }));
-                    }}
-                    onBlur={
-                      c.type === "email"
-                        ? () =>
-                            setCanvas((prev) => ({
-                              ...prev,
-                              correoLider: String(prev.correoLider ?? "").trim(),
-                            }))
-                        : undefined
-                    }
-                    className="mt-2 w-full rounded-2xl border-2 border-border bg-card p-3 text-sm outline-none focus:border-primary"
-                  />
+                  <>
+                    <input
+                      id={`campo-${c.key}`}
+                      type={c.type ?? "text"}
+                      value={c.key === "correoLider" ? correoVerificado : (canvas[c.key] ?? "")}
+                      placeholder={c.hint}
+                      autoComplete={c.type === "email" ? "email" : undefined}
+                      readOnly={c.key === "correoLider"}
+                      aria-readonly={c.key === "correoLider" ? true : undefined}
+                      onChange={
+                        c.key === "correoLider"
+                          ? undefined
+                          : (e) => {
+                              const valor = e.target.value;
+                              setCanvas((prev) => ({ ...prev, [c.key]: valor }));
+                            }
+                      }
+                      className={`mt-2 w-full rounded-2xl border-2 border-border bg-card p-3 text-sm outline-none focus:border-primary ${
+                        c.key === "correoLider"
+                          ? "cursor-not-allowed bg-muted text-muted-foreground"
+                          : ""
+                      }`}
+                    />
+                    {c.key === "correoLider" && (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Este correo quedó fijo con el ingreso y no se puede cambiar.
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             ))}

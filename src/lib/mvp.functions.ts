@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { callGateway, GatewayError, parseJsonLoose } from "./ai-gateway.server";
+import { crearClienteAuth } from "./supabase-auth.server";
 import {
   buscarCanvasPorCorreoLider,
   CorreoLiderDuplicadoError,
@@ -180,6 +181,15 @@ Usa ids cortos en minúscula sin espacios. Lenguaje para estudiantes de colegio.
   });
 
 /** Paso 4 — documento de MVP + prompt para Lovable. */
+async function correoDeLaSesion() {
+  const supabase = crearClienteAuth();
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user?.email) {
+    throw new Error("Inicia sesión para continuar.");
+  }
+  return validarCorreoLider(data.user.email);
+}
+
 export const construirMvp = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z
@@ -195,8 +205,10 @@ export const construirMvp = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data }) => {
-    // Validar correo (formato). La unicidad solo aplica en la primera generación.
-    const correo = validarCorreoLider(data.canvas.correoLider);
+    const correo = await correoDeLaSesion();
+    if (validarCorreoLider(data.canvas.correoLider) !== correo) {
+      throw new Error("El correo del líder no coincide con la sesión.");
+    }
     if (!data.regenerar && (await correoLiderYaRegistrado(correo))) {
       throw new CorreoLiderDuplicadoError(correo);
     }

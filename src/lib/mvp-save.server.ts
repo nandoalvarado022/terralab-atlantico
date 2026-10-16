@@ -85,7 +85,7 @@ export async function correoLiderYaRegistrado(correoNormalizado: string): Promis
   return Boolean(data && data.length > 0);
 }
 
-export type CanvasGuardadoPaso1 = Omit<CanvasParaGuardar, "lab"> & {
+export type CanvasGuardadoPaso1 = CanvasParaGuardar & {
   /** Nombre del proyecto generado en Forja MVP. */
   nombre: string;
 };
@@ -97,7 +97,7 @@ export async function buscarCanvasPorCorreoLider(
   const { data, error } = await getSupabase()
     .from("mvps")
     .select(
-      "colegio, brigada, lema, correo_lider, integrantes, pistas, desafio, idea_semilla, nombre",
+      "colegio, brigada, lema, correo_lider, integrantes, pistas, desafio, idea_semilla, lab, nombre",
     )
     .eq("correo_lider", correoNormalizado)
     .order("created_at", { ascending: false })
@@ -125,6 +125,7 @@ export async function buscarCanvasPorCorreoLider(
     pistas: data.pistas ?? "",
     desafio: data.desafio ?? "",
     ideaSemilla: data.idea_semilla ?? "",
+    lab: data.lab ?? "ecotech",
     nombre: data.nombre ?? "",
   };
 }

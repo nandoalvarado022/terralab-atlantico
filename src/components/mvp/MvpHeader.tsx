@@ -25,7 +25,11 @@ export function MvpHeader() {
   return (
     <header className="sticky top-0 z-50 h-16 border-b border-border bg-background/90 backdrop-blur print:hidden sm:h-[4.5rem]">
       <div className="mx-auto flex h-full max-w-4xl items-center px-5">
-        <Link to="/mvp" className="inline-flex items-center" aria-label="Forja MVP · Terra Lab Atlántico">
+        <Link
+          to="/"
+          className="inline-flex items-center"
+          aria-label="Forja MVP · Terra Lab Atlántico"
+        >
           <img
             src={logo}
             alt="Terra Lab Atlántico"
