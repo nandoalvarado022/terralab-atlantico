@@ -1,0 +1,46 @@
+src/lib/forja-ingreso.ts
+  s_dc13e87a4da952::t_43adfed2f8105a 1-5
+src/components/mvp/ForjaMvp.tsx
+  s_dc13e87a4da952::t_6a72c7b92d7057 575-576
+  s_dc13e87a4da952::t_3c8546b24b32c1 627,641,731,800,817,834,851,868,939,948,1097,1106
+  s_dc13e87a4da952::t_08ccf080b40801 228
+  s_dc13e87a4da952::t_fc70bccf926a60 935,1158
+  s_dc13e87a4da952::t_21a0ce5e65c49a 206-209,212-217,220
+  s_dc13e87a4da952::t_0a7ebf96d0d99d 596-597,601-602
+  s_dc13e87a4da952::t_30a8163aab87a3 587-588
+  s_dc13e87a4da952::t_53b11ab9a5c827 632-634
+  s_dc13e87a4da952::t_fd16f0907c8042 16
+  s_dc13e87a4da952::t_422f7c7d9001a7 286
+  s_dc13e87a4da952::t_aaa8c2f864263e 598-600
+src/components/mvp/LoginCanvas.tsx
+  s_dc13e87a4da952::t_d05524b322383c 4,14
+  s_dc13e87a4da952::t_61f1be37c04bd2 396
+  s_dc13e87a4da952::t_99f6f8c8fe3b59 86
+  s_dc13e87a4da952::t_1779eba1d0329d 61
+  s_dc13e87a4da952::t_82b01683db3b90 327
+  s_dc13e87a4da952::t_9736517df72e7c 367-395
+  s_dc13e87a4da952::t_634fad6f1bfa95 356-362,366
+  s_dc13e87a4da952::t_f1d1251105d5be 306
+  s_dc13e87a4da952::t_d3d0f8021ae64c 134-161
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2915f7a968628ce6818ef9d3c73a4a314852f88a",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_dc13e87a4da952": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "97e77ea0-3d17-44d8-a7b8-bff77aba8d86",
+        "model": "grok-4.7"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
