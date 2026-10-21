@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 
+import { PEDIR_CONTRASENA_FORJA } from "@/lib/forja-ingreso";
 import {
   actualizarClave,
   confirmarEnlaceAuth,
@@ -10,6 +11,7 @@ import {
   type CanvasIngreso,
   type ResultadoIngreso,
 } from "@/lib/ingreso.functions";
+import { obtenerCanvasPorCorreo } from "@/lib/mvp.functions";
 
 const campoClass =
   "mt-2 w-full rounded-2xl border-2 border-border bg-card p-3 text-sm outline-none focus:border-primary read-only:bg-muted";
@@ -56,6 +58,7 @@ export function LoginCanvas({
   onIngreso: (correo: string, canvas: CanvasIngreso | null) => void;
 }) {
   const ingresar = useServerFn(iniciarSesion);
+  const buscarCanvas = useServerFn(obtenerCanvasPorCorreo);
   const registrar = useServerFn(crearCuenta);
   const recuperar = useServerFn(enviarRecuperacion);
   const confirmar = useServerFn(confirmarEnlaceAuth);
@@ -80,6 +83,7 @@ export function LoginCanvas({
   const correoOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(correo.trim());
 
   useEffect(() => {
+    if (!PEDIR_CONTRASENA_FORJA) return;
     const pendiente = leerEnlaceAuth((args) => confirmarRef.current(args));
     if (!pendiente) return;
 
@@ -125,6 +129,34 @@ export function LoginCanvas({
     e.preventDefault();
     if (!correoOk) {
       setError("Indica un correo electrónico válido.");
+      return;
+    }
+    if (!PEDIR_CONTRASENA_FORJA) {
+      setError(null);
+      setAviso(null);
+      setCargando(true);
+      try {
+        const registro = await buscarCanvas({ data: { correoLider: correo.trim() } });
+        onIngreso(
+          registro?.correoLider || correo.trim().toLowerCase(),
+          registro
+            ? {
+                colegio: registro.colegio,
+                brigada: registro.brigada,
+                lema: registro.lema,
+                integrantes: registro.integrantes,
+                pistas: registro.pistas,
+                desafio: registro.desafio,
+                ideaSemilla: registro.ideaSemilla,
+                lab: registro.lab,
+              }
+            : null,
+        );
+      } catch (err) {
+        setError(mensajeError(err, "No pudimos cargar el canvas. Intenta de nuevo."));
+      } finally {
+        setCargando(false);
+      }
       return;
     }
     if (modo !== "recuperar" && clave.length < 6) {
@@ -271,7 +303,7 @@ export function LoginCanvas({
         />
       </div>
 
-      {modo !== "recuperar" && (
+      {PEDIR_CONTRASENA_FORJA && modo !== "recuperar" && (
         <div>
           <label htmlFor="clave-ingreso" className="text-sm font-extrabold">
             {tituloClave}
@@ -292,7 +324,7 @@ export function LoginCanvas({
         </div>
       )}
 
-      {modo === "crear" && (
+      {PEDIR_CONTRASENA_FORJA && modo === "crear" && (
         <div>
           <label htmlFor="clave-ingreso-2" className="text-sm font-extrabold">
             Repite la contraseña
@@ -321,43 +353,47 @@ export function LoginCanvas({
         >
           {cargando
             ? "Un momento…"
-            : modo === "crear"
-              ? "Crear cuenta"
-              : modo === "recuperar"
-                ? "Enviar enlace"
-                : "Ingresar"}
+            : !PEDIR_CONTRASENA_FORJA
+              ? "Continuar"
+              : modo === "crear"
+                ? "Crear cuenta"
+                : modo === "recuperar"
+                  ? "Enviar enlace"
+                  : "Ingresar"}
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-extrabold">
-        {modo !== "ingresar" && (
-          <button
-            type="button"
-            onClick={() => cambiarModo("ingresar")}
-            className="underline decoration-2 underline-offset-4 hover:text-primary"
-          >
-            Ya tengo cuenta
-          </button>
-        )}
-        {modo !== "crear" && (
-          <button
-            type="button"
-            onClick={() => cambiarModo("crear")}
-            className="underline decoration-2 underline-offset-4 hover:text-primary"
-          >
-            Crear cuenta
-          </button>
-        )}
-        {modo !== "recuperar" && (
-          <button
-            type="button"
-            onClick={() => cambiarModo("recuperar")}
-            className="underline decoration-2 underline-offset-4 hover:text-primary"
-          >
-            Olvidé mi contraseña
-          </button>
-        )}
-      </div>
+      {PEDIR_CONTRASENA_FORJA && (
+        <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-extrabold">
+          {modo !== "ingresar" && (
+            <button
+              type="button"
+              onClick={() => cambiarModo("ingresar")}
+              className="underline decoration-2 underline-offset-4 hover:text-primary"
+            >
+              Ya tengo cuenta
+            </button>
+          )}
+          {modo !== "crear" && (
+            <button
+              type="button"
+              onClick={() => cambiarModo("crear")}
+              className="underline decoration-2 underline-offset-4 hover:text-primary"
+            >
+              Crear cuenta
+            </button>
+          )}
+          {modo !== "recuperar" && (
+            <button
+              type="button"
+              onClick={() => cambiarModo("recuperar")}
+              className="underline decoration-2 underline-offset-4 hover:text-primary"
+            >
+              Olvidé mi contraseña
+            </button>
+          )}
+        </div>
+      )}
 
       {aviso && <p className="text-sm text-muted-foreground">{aviso}</p>}
       {error && <Alerta>{error}</Alerta>}

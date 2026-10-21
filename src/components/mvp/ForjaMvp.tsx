@@ -13,6 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { labs } from "@/data/labs";
+import { PEDIR_CONTRASENA_FORJA } from "@/lib/forja-ingreso";
 import {
   cerrarSesionIngreso,
   estadoSesionIngreso,
@@ -202,12 +203,21 @@ export function ForjaMvp() {
   useEffect(() => {
     if (!hidratado) return;
     let activo = true;
+    const correoGuardado = canvas.correoLider.trim().toLowerCase();
+    const correoLocal = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(correoGuardado)
+      ? correoGuardado
+      : null;
     consultarIngreso()
       .then((sesion) => {
-        if (activo && sesion?.correo) setCorreoVerificado(sesion.correo);
+        if (!activo) return;
+        if (sesion?.correo) {
+          setCorreoVerificado(sesion.correo);
+          return;
+        }
+        if (!PEDIR_CONTRASENA_FORJA && correoLocal) setCorreoVerificado(correoLocal);
       })
       .catch(() => {
-        // sin sesión válida: el paso 1 muestra el login
+        if (activo && !PEDIR_CONTRASENA_FORJA && correoLocal) setCorreoVerificado(correoLocal);
       })
       .finally(() => {
         if (activo) setIngresoListo(true);
@@ -215,7 +225,7 @@ export function ForjaMvp() {
     return () => {
       activo = false;
     };
-  }, [hidratado, consultarIngreso]);
+  }, [hidratado, consultarIngreso, canvas.correoLider]);
 
   useEffect(() => {
     if (!correoVerificado) return;
@@ -273,6 +283,7 @@ export function ForjaMvp() {
   }
 
   function irAPaso(n: number) {
+    if (n > 1 && !correoVerificado) return;
     setPaso(n);
     setPasoMax((m) => Math.max(m, n));
   }
@@ -561,6 +572,8 @@ export function ForjaMvp() {
   const ideaSemillaOk = String(canvas.ideaSemilla ?? "").trim().length > 0;
   const tieneDesafioOIdea = desafioOk || ideaSemillaOk;
   const puedeAvanzar = correoLiderOk && tieneDesafioOIdea;
+  const sesionIngresada = Boolean(correoVerificado);
+  const pasoVisible = sesionIngresada ? paso : 1;
 
   if (!hidratado || !ingresoListo) {
     return <div className="mx-auto max-w-4xl px-5 py-10 sm:py-14" aria-busy="true" />;
@@ -571,8 +584,8 @@ export function ForjaMvp() {
       <ol className="mb-10 flex flex-wrap gap-2 print:hidden">
         {pasos.map((p, i) => {
           const n = i + 1;
-          const activo = n === paso;
-          const alcanzable = n <= pasoMax;
+          const activo = n === pasoVisible;
+          const alcanzable = n === 1 || (sesionIngresada && n <= pasoMax);
           const hecho = alcanzable && !activo;
           return (
             <li key={p}>
@@ -580,6 +593,13 @@ export function ForjaMvp() {
                 type="button"
                 onClick={() => alcanzable && irAPaso(n)}
                 disabled={!alcanzable}
+                title={
+                  n > 1 && !sesionIngresada
+                    ? PEDIR_CONTRASENA_FORJA
+                      ? "Ingresa con correo y contraseña para ver este paso"
+                      : "Ingresa el correo del líder para ver este paso"
+                    : undefined
+                }
                 className={`rounded-full border-2 px-4 py-2 text-xs font-extrabold tracking-wide uppercase transition-colors ${
                   activo
                     ? "border-primary bg-primary text-primary-foreground"
@@ -604,20 +624,21 @@ export function ForjaMvp() {
         </div>
       )}
 
-      {paso === 1 && !correoVerificado && (
+      {pasoVisible === 1 && !correoVerificado && (
         <section className="space-y-8">
           <div>
             <h2 className="text-3xl font-extrabold">1. Carga el canvas de la brigada</h2>
             <p className="mt-3 text-muted-foreground">
-              Ingresa con el correo y la contraseña del líder. Si ese correo ya tiene un canvas
-              guardado, lo cargamos al entrar.
+              {PEDIR_CONTRASENA_FORJA
+                ? "Ingresa con el correo y la contraseña del líder. Si ese correo ya tiene un canvas guardado, lo cargamos al entrar."
+                : "Escribe el correo del líder. Si ese correo ya tiene un canvas guardado, lo cargamos y puedes seguir el flujo."}
             </p>
           </div>
           <LoginCanvas onIngreso={onIngreso} />
         </section>
       )}
 
-      {paso === 1 && correoVerificado && (
+      {pasoVisible === 1 && correoVerificado && (
         <section className="space-y-8">
           <div>
             <h2 className="text-3xl font-extrabold">1. Carga el canvas de la brigada</h2>
@@ -707,7 +728,7 @@ export function ForjaMvp() {
         </section>
       )}
 
-      {paso === 2 && (
+      {pasoVisible === 2 && (
         <section className="space-y-8">
           <div>
             <h2 className="text-3xl font-extrabold">2. Elige el lab y su enfoque</h2>
@@ -776,7 +797,7 @@ export function ForjaMvp() {
         </section>
       )}
 
-      {paso === 3 && esEcoTech && (
+      {pasoVisible === 3 && esEcoTech && (
         <MisionesEcoTech
           respuestas={respuestasEcoTech}
           onCambiar={(k, v) => setRespuestasEcoTech({ ...respuestasEcoTech, [k]: v })}
@@ -793,7 +814,7 @@ export function ForjaMvp() {
         />
       )}
 
-      {paso === 3 && esEcoFluencer && (
+      {pasoVisible === 3 && esEcoFluencer && (
         <EcoFluencerQuestions
           respuestas={respuestasEcoFluencer}
           onCambiar={(k, v) => setRespuestasEcoFluencer((prev) => ({ ...prev, [k]: v }))}
@@ -810,7 +831,7 @@ export function ForjaMvp() {
         />
       )}
 
-      {paso === 3 && esEmprendeCircular && (
+      {pasoVisible === 3 && esEmprendeCircular && (
         <EmprendeCircularQuestions
           respuestas={respuestasEmprendeCircular}
           onCambiar={(k, v) => setRespuestasEmprendeCircular((prev) => ({ ...prev, [k]: v }))}
@@ -827,7 +848,7 @@ export function ForjaMvp() {
         />
       )}
 
-      {paso === 3 && esBiodiversidadViva && (
+      {pasoVisible === 3 && esBiodiversidadViva && (
         <BiodiversidadVivaQuestions
           respuestas={respuestasBiodiversidadViva}
           onCambiar={(k, v) => setRespuestasBiodiversidadViva((prev) => ({ ...prev, [k]: v }))}
@@ -844,7 +865,7 @@ export function ForjaMvp() {
         />
       )}
 
-      {paso === 3 && !esMisiones && (
+      {pasoVisible === 3 && !esMisiones && (
         <section className="space-y-8">
           <div>
             <h2 className="text-3xl font-extrabold">3. Contesten lo que falta del PRD</h2>
@@ -911,11 +932,11 @@ export function ForjaMvp() {
         </section>
       )}
 
-      {paso >= 4 && resultado && (
+      {pasoVisible >= 4 && resultado && (
         <section className="space-y-8">
           <div>
             <h2 className="text-3xl font-extrabold">
-              {paso === 4
+              {pasoVisible === 4
                 ? entregaPdf
                   ? "4. Formulación del proyecto"
                   : "4. El MVP de la brigada"
@@ -924,7 +945,7 @@ export function ForjaMvp() {
                   : "5. Llévenlo a Lovable"}
             </h2>
             <p className="mt-3 text-muted-foreground">
-              {paso === 4
+              {pasoVisible === 4
                 ? entregaPdf
                   ? "Revisen la formulación. Este documento reúne lo que alimentaron en el canvas y las misiones, listo para PDF."
                   : "Revisen el documento. Es el PRD que Lovable usará para construir el prototipo."
@@ -1073,7 +1094,7 @@ export function ForjaMvp() {
           )}
 
           <div className="flex flex-wrap gap-3 print:hidden">
-            {paso === 4 && (
+            {pasoVisible === 4 && (
               <button
                 type="button"
                 onClick={() => irAPaso(5)}
@@ -1082,7 +1103,7 @@ export function ForjaMvp() {
                 Siguiente paso
               </button>
             )}
-            {paso === 4 && (
+            {pasoVisible === 4 && (
               <button
                 type="button"
                 onClick={regenerarMvp}
@@ -1134,7 +1155,7 @@ export function ForjaMvp() {
         </section>
       )}
 
-      {paso >= 4 && !resultado && (
+      {pasoVisible >= 4 && !resultado && (
         <p className="text-muted-foreground">
           Aún no hay un MVP generado.{" "}
           <button type="button" onClick={() => irAPaso(1)} className="font-extrabold underline">
