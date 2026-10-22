@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { callGateway, GatewayError, parseJsonLoose } from "./ai-gateway.server";
+import { PEDIR_CONTRASENA_FORJA } from "./forja-ingreso";
 import { crearClienteAuth } from "./supabase-auth.server";
 import {
   buscarCanvasPorCorreoLider,
@@ -205,13 +206,12 @@ export const construirMvp = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data }) => {
-    const correo = await correoDeLaSesion();
-    if (validarCorreoLider(data.canvas.correoLider) !== correo) {
+    const correoCanvas = validarCorreoLider(data.canvas.correoLider);
+    const correo = PEDIR_CONTRASENA_FORJA ? await correoDeLaSesion() : correoCanvas;
+    if (PEDIR_CONTRASENA_FORJA && correoCanvas !== correo) {
       throw new Error("El correo del líder no coincide con la sesión.");
     }
-    if (!data.regenerar && (await correoLiderYaRegistrado(correo))) {
-      throw new CorreoLiderDuplicadoError(correo);
-    }
+    const yaRegistrado = data.regenerar || (await correoLiderYaRegistrado(correo));
 
     // Nunca reenviar data URLs a la IA ni hinchar el body: solo texto / marcas.
     const mapa = data.respuestasMisiones
@@ -278,7 +278,7 @@ ${promptLab.instrucciones}`,
         canvas: data.canvas,
         respuestas: respuestasParaDb,
         resultado,
-        ...(data.regenerar ? { regenerar: true } : {}),
+        ...(yaRegistrado ? { regenerar: true } : {}),
       });
     } catch (e) {
       if (e instanceof CorreoLiderDuplicadoError || e instanceof CorreoLiderInvalidoError) {

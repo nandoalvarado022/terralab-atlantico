@@ -130,10 +130,50 @@ export async function buscarCanvasPorCorreoLider(
   };
 }
 
+async function actualizarMvpPorCorreo(
+  sb: ReturnType<typeof getSupabase>,
+  correoLider: string,
+  fila: {
+    colegio: string;
+    brigada: string;
+    lema: string;
+    correo_lider: string;
+    integrantes: string;
+    pistas: string;
+    desafio: string;
+    idea_semilla: string;
+    lab: string;
+    respuestas: RespuestasGuardadas;
+    respuestas_ecotech: Record<string, string> | null;
+    nombre: string;
+    documento: string;
+    prompt: string;
+  },
+): Promise<boolean> {
+  const { data, error } = await sb
+    .from("mvps")
+    .update(fila)
+    .eq("correo_lider", correoLider)
+    .select("id")
+    .limit(1);
+
+  if (error) {
+    if (error.code === "42703" && /correo_lider/i.test(error.message)) {
+      throw new Error(
+        "Falta la columna correo_lider en Supabase. Ejecuta la migración supabase/migrations/20260314_correo_lider.sql.",
+      );
+    }
+    console.error("[mvps] error al actualizar", error);
+    throw new Error("No pudimos actualizar el MVP en la base de datos.");
+  }
+
+  return Boolean(data && data.length > 0);
+}
+
 /**
  * Persiste un MVP en Supabase.
+ * Si el correo del líder ya existe, actualiza esa fila (respuestas y documento).
  * - `respuestas`: array (una posición = JSON de cada misión, o Q&A plano).
- * - `correo_lider`: único (índice en DB + chequeo previo).
  * - `respuestas_ecotech`: mapa plano solo para EcoTech (compatibilidad con el visor legado).
  */
 export async function guardarMvpEnSupabase(input: GuardarMvpInput): Promise<void> {
@@ -162,35 +202,17 @@ export async function guardarMvpEnSupabase(input: GuardarMvpInput): Promise<void
     prompt: input.resultado.prompt,
   };
 
-  if (input.regenerar) {
-    const { data, error } = await sb
-      .from("mvps")
-      .update(fila)
-      .eq("correo_lider", correoLider)
-      .select("id")
-      .limit(1);
-
-    if (error) {
-      if (error.code === "42703" && /correo_lider/i.test(error.message)) {
-        throw new Error(
-          "Falta la columna correo_lider en Supabase. Ejecuta la migración supabase/migrations/20260314_correo_lider.sql.",
-        );
-      }
-      console.error("[mvps] error al actualizar", error);
-      throw new Error("No pudimos actualizar el MVP en la base de datos.");
-    }
-
-    if (data && data.length > 0) return;
-
-    // Si no había fila previa, insertar como primera generación.
-  } else if (await correoLiderYaRegistrado(correoLider)) {
-    throw new CorreoLiderDuplicadoError(correoLider);
+  if (input.regenerar || (await correoLiderYaRegistrado(correoLider))) {
+    const actualizado = await actualizarMvpPorCorreo(sb, correoLider, fila);
+    if (actualizado) return;
   }
 
   const { error } = await sb.from("mvps").insert(fila);
 
   if (error) {
     if (error.code === "23505") {
+      const actualizado = await actualizarMvpPorCorreo(sb, correoLider, fila);
+      if (actualizado) return;
       throw new CorreoLiderDuplicadoError(correoLider);
     }
     if (error.code === "42703" && /correo_lider/i.test(error.message)) {

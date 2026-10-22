@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 
 import {
@@ -136,6 +136,7 @@ export function ForjaMvp() {
   const [hidratado, setHidratado] = useState(false);
   const [correoVerificado, setCorreoVerificado] = useState<string | null>(null);
   const [ingresoListo, setIngresoListo] = useState(false);
+  const omitirRestauracionCorreo = useRef(false);
 
   const preguntar = useServerFn(generarPreguntas);
   const construir = useServerFn(construirMvp);
@@ -202,6 +203,10 @@ export function ForjaMvp() {
 
   useEffect(() => {
     if (!hidratado) return;
+    if (omitirRestauracionCorreo.current) {
+      omitirRestauracionCorreo.current = false;
+      return;
+    }
     let activo = true;
     const correoGuardado = canvas.correoLider.trim().toLowerCase();
     const correoLocal = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(correoGuardado)
@@ -549,6 +554,7 @@ export function ForjaMvp() {
   }
 
   function reiniciar() {
+    omitirRestauracionCorreo.current = true;
     borrarForjaStorage();
     void cerrarIngreso();
     setCorreoVerificado(null);
@@ -713,6 +719,31 @@ export function ForjaMvp() {
             >
               Continuar al lab
             </button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  type="button"
+                  className="rounded-full border-2 border-deep px-7 py-3 font-extrabold hover:bg-secondary"
+                >
+                  Limpiar y volver a empezar
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Limpiar y volver a empezar?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Se borrará lo guardado en este navegador: canvas, respuestas y el documento
+                    generado. Después tendrás que escribir de nuevo el correo del líder.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={reiniciar}>
+                    Sí, limpiar y empezar de nuevo
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             {!puedeAvanzar && (
               <span className="text-sm text-muted-foreground">
                 {!correoLiderOk && !tieneDesafioOIdea
