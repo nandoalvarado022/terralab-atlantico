@@ -1,0 +1,44 @@
+scripts/generar-informe-entrega.mjs
+  s_dc13e87a4da952::t_5e7fbe1565ea52 290
+  s_dc13e87a4da952::t_126211ec14b455 156,158-164
+  s_dc13e87a4da952::t_0be36372992781 1-155,157,165-202,204-217,219-270,274-275,277-280,282-285,291-292,295-297,305-322
+  s_dc13e87a4da952::t_5a68c5d5dbe7c5 218
+  s_dc13e87a4da952::t_13495caaa4160e 271-273
+  s_dc13e87a4da952::t_ee98e56fee1067 276,281,286-289,293-294,298-304
+  s_dc13e87a4da952::t_efe74ff1f82a33 203
+src/lib/mvp.functions.ts
+  s_dc13e87a4da952::t_963705bee277f0 214
+  s_dc13e87a4da952::t_a1706affb6979d 209-211
+  s_dc13e87a4da952::t_0f8923c1a49e23 281
+  s_dc13e87a4da952::t_d44198ffb5ea5f 5
+src/components/mvp/ForjaMvp.tsx
+  s_dc13e87a4da952::t_81575f445cd178 206-209
+  s_dc13e87a4da952::t_b0a9594b988bb6 722-746
+  s_dc13e87a4da952::t_48bf42a3394943 1
+  s_dc13e87a4da952::t_99213d6d577dd5 557
+  s_dc13e87a4da952::t_a725939b64be50 139
+src/lib/mvp-save.server.ts
+  s_dc13e87a4da952::t_8aa1d7a4c3adb4 205-207,214-215
+  s_dc13e87a4da952::t_ccda8aa0c901cf 133-172,175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3cca1c381f3330ae0a9009cf97801ae94f02052e",
+  "prompts": {},
+  "humans": {
+    "h_15f0de19236f1a": {
+      "author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_dc13e87a4da952": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "97e77ea0-3d17-44d8-a7b8-bff77aba8d86",
+        "model": "grok-4.7"
+      },
+      "human_author": "Nando (Hernando Alvarado) <nandoalvarado022@gmail.com>"
+    }
+  }
+}
